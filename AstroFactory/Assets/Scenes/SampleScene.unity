@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f6440b401c7354aad302117ec70a22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tile: {fileID: 6477798048171789766, guid: 333f81b0f1055fa429515020683f9112, type: 3}
+  Tile: {fileID: 2153589962136780007, guid: 53f72de2dba7f1e4fa0cacf4293f88d9, type: 3}
 --- !u!4 &50870588
 Transform:
   m_ObjectHideFlags: 0
@@ -266,11 +266,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: -0.3
   far clip plane: 1000
   field of view: 0.5
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 2.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -496,7 +496,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7127769706924348086, guid: fc6a70df7f6eb604185fd4625e64db44, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -517,8 +517,8 @@ Transform:
   m_GameObject: {fileID: 1482524899}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.5}
-  m_LocalScale: {x: 3, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 519420032}

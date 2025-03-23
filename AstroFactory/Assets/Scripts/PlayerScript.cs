@@ -5,6 +5,8 @@ public class PlayerScript : MonoBehaviour
     float vertical;
     float horizontal;
     readonly float speed = 5.0f;
+    readonly float rotationSpeed = 360f; // Degrees per second
+
 
     void Update()
     {
@@ -20,6 +22,8 @@ public class PlayerScript : MonoBehaviour
     void Move()
     {
         Vector3 movement = new Vector2(horizontal, vertical);
+        Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, movement);
         transform.position += speed * Time.deltaTime * movement;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 }
