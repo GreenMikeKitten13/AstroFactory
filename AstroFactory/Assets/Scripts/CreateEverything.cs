@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreateEverything : MonoBehaviour
@@ -11,9 +10,9 @@ public class CreateEverything : MonoBehaviour
        GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
 
         player.AddComponent<PlayerScript>();
+        player.name = "SpaceShip";
 
-        //make Camera child of the player
-        Camera.transform.SetParent(player.transform);
+        Camera.AddComponent<CameraScript>();
 
     }
 }
