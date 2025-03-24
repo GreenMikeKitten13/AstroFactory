@@ -14,7 +14,7 @@ public class CreateMap : MonoBehaviour
             for (int z = 0; z < GridSize; z++)
             {
                 float noiseValue = Mathf.PerlinNoise(x * scale, z * scale); // Value between 0 and 1
-                float colorValue = Mathf.Lerp(0.4f, 1f, noiseValue); // Scale to a good brightness range
+                float colorValue = Mathf.Lerp(0.7f, 1f, noiseValue); // Scale to a good brightness range
 
                 GameObject newTile = Instantiate(Tile, new Vector2(x, z), Quaternion.identity);
                 newTile.GetComponent<SpriteRenderer>().color = new Color(colorValue, colorValue, colorValue);
