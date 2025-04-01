@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -9,44 +11,44 @@ public class PlayerScript : MonoBehaviour
     bool cooldown = false;
 
     private Vector2 movement;
+    GameObject bulletPrefab;
 
-    public GameObject bulletPrefab;
-
+    private void Start()
+    {
+        Addressables.LoadAssetAsync<GameObject>("BulletPrefab").Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                bulletPrefab = handle.Result;
+            }
+            else
+            {
+                Debug.LogError("Failed to load BulletPrefab from Addressables!");
+            }
+        };
+    }
 
     void Update()
     {
         float vertical = Input.GetAxisRaw("Vertical");
         float horizontal = Input.GetAxisRaw("Horizontal");
-        float fire = Input.GetAxisRaw("Fire1"); // "Fire1" corresponds to Left Ctrl or F by default
+        float fire = Input.GetAxisRaw("Fire1");
 
-        // Convert input into a movement vector relative to the character's facing direction
         movement = transform.up * vertical + transform.right * horizontal;
 
-        // Normalize to prevent diagonal speed boost
         if (movement.magnitude > 1f) movement.Normalize();
+        if (movement.sqrMagnitude > 0.01f) RotateTowardsMovement(movement);
+        if (Mouse.current.leftButton.isPressed) RotateTowardsMouse();
 
-        // Rotate towards movement direction if moving
-        if (movement.sqrMagnitude > 0.01f)
-        {
-            RotateTowardsMovement(movement);
-        }
-
-        // Rotate towards mouse when left mouse button is held
-        if (Mouse.current.leftButton.isPressed)
-        {
-            RotateTowardsMouse();
-        }
-
-        // Fire when pressing "Fire1" (F key) and no cooldown
-        if (fire != 0 && !cooldown)
+        if (fire != 0 && !cooldown && bulletPrefab != null)
         {
             Shoot();
         }
+
     }
 
     void FixedUpdate()
     {
-        // Move character in the direction it is facing
         transform.position += speed * Time.fixedDeltaTime * (Vector3)movement;
     }
 
@@ -67,21 +69,24 @@ public class PlayerScript : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, targetAngle);
     }
 
+    GameObject bullet;
     void Shoot()
     {
-        Debug.Log("Fire");
-        GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
-        bullet.GetComponent<Rigidbody2D>().AddForce(transform.up * 10, ForceMode2D.Impulse);
-        bullet.GetComponent<SpriteRenderer>().sortingOrder = 2;
-
-        // Start cooldown
         cooldown = true;
         StartCoroutine(ResetCooldown());
+
+        Debug.Log("Fire");
+        bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+        bullet.GetComponent<Rigidbody2D>().AddForce(transform.up * 20, ForceMode2D.Impulse);
+        bullet.GetComponent<SpriteRenderer>().sortingOrder = 2;
+
+
     }
 
     IEnumerator ResetCooldown()
     {
         yield return new WaitForSeconds(0.8f);
         cooldown = false;
+        if (bullet != null) Destroy(bullet);
     }
 }
