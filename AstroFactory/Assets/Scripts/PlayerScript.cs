@@ -73,14 +73,14 @@ public class PlayerScript : MonoBehaviour
     void Shoot()
     {
         cooldown = true;
-        StartCoroutine(ResetCooldown());
+        
 
         Debug.Log("Fire");
         bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
         bullet.GetComponent<Rigidbody2D>().AddForce(transform.up * 20, ForceMode2D.Impulse);
         bullet.GetComponent<SpriteRenderer>().sortingOrder = 2;
 
-
+        StartCoroutine(ResetCooldown());
     }
 
     IEnumerator ResetCooldown()

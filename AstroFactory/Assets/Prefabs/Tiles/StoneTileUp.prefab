@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -4764470572449171285}
   - component: {fileID: 8788589603053150101}
   - component: {fileID: 7153368420882918751}
+  - component: {fileID: -2181007669007071690}
   m_Layer: 0
   m_Name: StoneTileUp
   m_TagString: Untagged
@@ -216,3 +217,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!208 &-2181007669007071690
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4364837628648227194}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.63500005, y: 0.63500005, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

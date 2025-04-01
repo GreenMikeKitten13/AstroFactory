@@ -5,6 +5,27 @@ TagManager:
   serializedVersion: 3
   tags:
   - Bullet
+  - 100hp
+  - 095hp
+  - 090hp
+  - 085hp
+  - 080hp
+  - 075hp
+  - 070hp
+  - 065hp
+  - 060hp
+  - 055hp
+  - 050hp
+  - 045hp
+  - 040hp
+  - 035hp
+  - 030hp
+  - 025hp
+  - 020hp
+  - 015hp
+  - 010hp
+  - 005hp
+  - 000hp
   layers:
   - Default
   - TransparentFX
