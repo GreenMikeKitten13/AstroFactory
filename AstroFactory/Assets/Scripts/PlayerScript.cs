@@ -21,10 +21,6 @@ public class PlayerScript : MonoBehaviour
             {
                 bulletPrefab = handle.Result;
             }
-            else
-            {
-                Debug.LogError("Failed to load BulletPrefab from Addressables!");
-            }
         };
     }
 
@@ -73,9 +69,7 @@ public class PlayerScript : MonoBehaviour
     void Shoot()
     {
         cooldown = true;
-        
 
-        Debug.Log("Fire");
         bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
         bullet.GetComponent<Rigidbody2D>().AddForce(transform.up * 20, ForceMode2D.Impulse);
         bullet.GetComponent<SpriteRenderer>().sortingOrder = 2;
