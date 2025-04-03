@@ -19,8 +19,7 @@ public class BaseScript : MonoBehaviour
         cooldown = true;
         health -= 5;
 
-        
-        Debug.Log(health.ToString().Length);
+
         if (health.ToString().Length == 1)
         {
             transform.tag = "00"+health + "hp";

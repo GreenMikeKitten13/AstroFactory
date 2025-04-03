@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreateEverything : MonoBehaviour
@@ -13,6 +14,5 @@ public class CreateEverything : MonoBehaviour
         player.name = "SpaceShip";
 
         Camera.AddComponent<CameraScript>();
-
     }
 }
