@@ -1,13 +1,36 @@
-[gd_scene load_steps=4 format=3 uid="uid://tgstcfagj857"]
+[gd_scene load_steps=10 format=3 uid="uid://tgstcfagj857"]
 
-[ext_resource type="Texture2D" uid="uid://vodw6dckoavs" path="res://lil man.png" id="1_x4av3"]
+[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://lil car.png" id="2_rf2cd"]
 [ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man.obj" id="2_rpqi1"]
+[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://lil car.obj" id="3_a814b"]
+[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://lil mech.png" id="4_5crlr"]
+[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://lil mech.obj" id="5_hbc2u"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uxrcv"]
-albedo_texture = ExtResource("1_x4av3")
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_torvr"]
+load_path = "res://.godot/imported/lil car.png-1a0ca1b9983841d6a4b00a16cb974f19.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8xkvn"]
+albedo_texture = SubResource("CompressedTexture2D_torvr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p5x2j"]
+albedo_texture = ExtResource("2_rf2cd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yvb8b"]
+albedo_texture = ExtResource("4_5crlr")
 
 [node name="MainScene" type="Node3D"]
 
 [node name="LilMan" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_uxrcv")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0441377, 0.0529525, -0.0162904)
+material_override = SubResource("StandardMaterial3D_8xkvn")
 mesh = ExtResource("2_rpqi1")
+
+[node name="LilCar" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.49386, 0.0594087, -1.05819)
+material_override = SubResource("StandardMaterial3D_p5x2j")
+mesh = ExtResource("3_a814b")
+
+[node name="LilMech" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.146968, 1.8249, 1.82919)
+material_override = SubResource("StandardMaterial3D_yvb8b")
+mesh = ExtResource("5_hbc2u")
