@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://tgstcfagj857"]
+
+[ext_resource type="Texture2D" uid="uid://vodw6dckoavs" path="res://lil man.png" id="1_x4av3"]
+[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man.obj" id="2_rpqi1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uxrcv"]
+albedo_texture = ExtResource("1_x4av3")
+
+[node name="MainScene" type="Node3D"]
+
+[node name="LilMan" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_uxrcv")
+mesh = ExtResource("2_rpqi1")
