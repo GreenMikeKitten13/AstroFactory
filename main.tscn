@@ -1,6 +1,16 @@
-[gd_scene load_steps=17 format=4 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=31 format=4 uid="uid://qachlfwuf6f6"]
 
+[ext_resource type="ArrayMesh" uid="uid://bxktwj4pklx8l" path="res://lil iron/lil iron.obj" id="2_efxa6"]
+[ext_resource type="Texture2D" uid="uid://2apxa5euhdgc" path="res://lil lave/lil lava.png" id="3_dg77c"]
 [ext_resource type="Script" uid="uid://cfy3joyi857h0" path="res://player_controller.gd" id="3_h2yge"]
+[ext_resource type="ArrayMesh" uid="uid://cic1oiu375s4w" path="res://lil lave/lil lava.obj" id="4_ycdy4"]
+[ext_resource type="ArrayMesh" uid="uid://b4rdmriju14it" path="res://lil lave/lil iron/lil iron.obj" id="5_w48qg"]
+[ext_resource type="Texture2D" uid="uid://b3cetsri8504t" path="res://lil sand/lil sand.png" id="6_vivmo"]
+[ext_resource type="ArrayMesh" uid="uid://bpx4h3efw4rj8" path="res://lil sand/lil sand.obj" id="7_2cqfq"]
+[ext_resource type="Texture2D" uid="uid://bm7o7w04yoy1k" path="res://lil stone/lil stone.png" id="8_yaehf"]
+[ext_resource type="ArrayMesh" uid="uid://cexhjjaylp6jw" path="res://lil stone/lil stone.obj" id="9_074og"]
+[ext_resource type="Texture2D" uid="uid://m8x4lw2pb4tj" path="res://lil water/lil water.png" id="10_cegan"]
+[ext_resource type="ArrayMesh" uid="uid://chfxcklfnj5cl" path="res://lil water/lil water.obj" id="11_82xsv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -127,6 +137,18 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_2lxph")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_getpj"]
+albedo_texture = ExtResource("3_dg77c")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ryguw"]
+albedo_texture = ExtResource("6_vivmo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d13ii"]
+albedo_texture = ExtResource("8_yaehf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1u8w0"]
+albedo_texture = ExtResource("10_cegan")
+
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -141,17 +163,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -2.4995, -5.25)
 size = Vector3(32.5, 0.001, 34)
 
 [node name="LilMan_camera_follower" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 9.53674e-07)
 visible = false
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("ArrayMesh_0xm2m")
 script = ExtResource("3_h2yge")
 
 [node name="Camera3D" type="Camera3D" parent="LilMan_camera_follower"]
-transform = Transform3D(-1, -3.61147e-08, 7.96145e-08, 0, 0.910684, 0.413104, -8.74228e-08, 0.413104, -0.910684, 0.365, 1.735, -5.245)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -7.15)
 
 [node name="LilMan" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 9.53674e-07)
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("ArrayMesh_0xm2m")
 
@@ -161,6 +181,34 @@ material_override = SubResource("StandardMaterial3D_efxa6")
 mesh = SubResource("ArrayMesh_1bvp3")
 
 [node name="LilCar" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -6.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, -6.5)
 material_override = SubResource("StandardMaterial3D_dg77c")
 mesh = SubResource("ArrayMesh_7mycd")
+
+[node name="LilIron" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+mesh = ExtResource("2_efxa6")
+
+[node name="LilLava" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 1.5)
+material_override = SubResource("StandardMaterial3D_getpj")
+mesh = ExtResource("4_ycdy4")
+
+[node name="LilIron2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 4)
+mesh = ExtResource("5_w48qg")
+
+[node name="LilSand" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 5.5)
+material_override = SubResource("StandardMaterial3D_ryguw")
+mesh = ExtResource("7_2cqfq")
+
+[node name="LilStone" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 4, 5)
+material_override = SubResource("StandardMaterial3D_d13ii")
+mesh = ExtResource("9_074og")
+
+[node name="LilWater" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, 1.5)
+material_override = SubResource("StandardMaterial3D_1u8w0")
+mesh = ExtResource("11_82xsv")
