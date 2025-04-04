@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c86vocjonu71"
-path.s3tc="res://.godot/imported/lil mech.png-51ae073eb494701a296efaabf168d9f5.s3tc.ctex"
+path.s3tc="res://.godot/imported/lil mech.png-ff21e695848367d2df578c088f3b4bc7.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://lil mech.png"
-dest_files=["res://.godot/imported/lil mech.png-51ae073eb494701a296efaabf168d9f5.s3tc.ctex"]
+source_file="res://Player_chartacters/lil mech.png"
+dest_files=["res://.godot/imported/lil mech.png-ff21e695848367d2df578c088f3b4bc7.s3tc.ctex"]
 
 [params]
 

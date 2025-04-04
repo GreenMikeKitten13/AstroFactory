@@ -1,12 +1,12 @@
 [gd_scene load_steps=14 format=3 uid="uid://qachlfwuf6f6"]
 
-[ext_resource type="Texture2D" uid="uid://vodw6dckoavs" path="res://lil man.png" id="1_0xm2m"]
-[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man.obj" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://vodw6dckoavs" path="res://Player_chartacters/lil man.png" id="1_0xm2m"]
+[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://Player_chartacters/lil man.obj" id="2_h2yge"]
 [ext_resource type="Script" uid="uid://cfy3joyi857h0" path="res://player_controller.gd" id="3_h2yge"]
-[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://lil mech.png" id="4_272bh"]
-[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://lil mech.obj" id="5_5vw27"]
-[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://lil car.png" id="6_kek77"]
-[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://lil car.obj" id="7_4c57u"]
+[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://Player_chartacters/lil mech.png" id="4_272bh"]
+[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://Player_chartacters/lil mech.obj" id="5_5vw27"]
+[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://Player_chartacters/lil car.png" id="6_kek77"]
+[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://Player_chartacters/lil car.obj" id="7_4c57u"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -43,16 +43,20 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -2.4995, -5.25)
 size = Vector3(32.5, 0.001, 34)
 
-[node name="LilMan" type="MeshInstance3D" parent="."]
+[node name="LilMan_camera_follower" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 9.53674e-07)
+visible = false
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = ExtResource("2_h2yge")
 script = ExtResource("3_h2yge")
 
-[node name="Camera3D" type="Camera3D" parent="LilMan"]
+[node name="Camera3D" type="Camera3D" parent="LilMan_camera_follower"]
 transform = Transform3D(-1, -3.61147e-08, 7.96145e-08, 0, 0.910684, 0.413104, -8.74228e-08, 0.413104, -0.910684, 0.365, 1.735, -5.245)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LilMan"]
+[node name="LilMan" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 9.53674e-07)
+material_override = SubResource("StandardMaterial3D_1bvp3")
+mesh = ExtResource("2_h2yge")
 
 [node name="LilMech" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0.5)
