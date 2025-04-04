@@ -1,10 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://tgstcfagj857"]
+[gd_scene load_steps=10 format=3 uid="uid://b4o4pttxa1qd2"]
 
-[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://lil car.png" id="2_rf2cd"]
-[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man.obj" id="2_rpqi1"]
-[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://lil car.obj" id="3_a814b"]
-[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://lil mech.png" id="4_5crlr"]
-[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://lil mech.obj" id="5_hbc2u"]
+[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://lil car/lil car.png" id="2_rf2cd"]
+[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man/lil man.obj" id="2_rpqi1"]
+[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://lil car/lil car.obj" id="3_a814b"]
+[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://lil mech/lil mech.png" id="4_5crlr"]
+[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://lil mech/lil mech.obj" id="5_hbc2u"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_torvr"]
 load_path = "res://.godot/imported/lil car.png-1a0ca1b9983841d6a4b00a16cb974f19.s3tc.ctex"

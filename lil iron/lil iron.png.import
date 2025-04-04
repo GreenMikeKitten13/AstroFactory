@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c168epaaol1f6"
-path.s3tc="res://.godot/imported/lil car.png-7ca739bb8c18f2f6f244eed5d384c56a.s3tc.ctex"
+uid="uid://cy3ggneqycdql"
+path.s3tc="res://.godot/imported/lil iron.png-ae1c4614ddfbac22da0dc95dd5e0501c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Player_chartacters/lil car.png"
-dest_files=["res://.godot/imported/lil car.png-7ca739bb8c18f2f6f244eed5d384c56a.s3tc.ctex"]
+source_file="res://lil iron/lil iron.png"
+dest_files=["res://.godot/imported/lil iron.png-ae1c4614ddfbac22da0dc95dd5e0501c.s3tc.ctex"]
 
 [params]
 
