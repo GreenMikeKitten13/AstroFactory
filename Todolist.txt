@@ -1,6 +1,4 @@
 Player:
-	.movement:
-		-fix w a s d
 	.inventory
 	.building
 	.shooting

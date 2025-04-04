@@ -1,27 +1,31 @@
 extends MeshInstance3D
 
 @export var speed: float = 10.0
+var velocity = Vector3.ZERO
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _process(delta):
+	var direction = Vector3.ZERO
 
 	if Input.is_action_pressed("Forward"): 
-		$"../LilMan".position.z += speed * delta
-		global_position.z += speed * delta
+		direction.z += 1
 	if Input.is_action_pressed("Backward"):  
-		global_position.z -= speed * delta
-		$"../LilMan".position.z -= speed * delta
+		direction.z -= 1
 	if Input.is_action_pressed("Left"):  
-		global_position.x += speed * delta
-		$"../LilMan".position.x += speed * delta
+		direction.x += 1
 	if Input.is_action_pressed("Right"):  
-		global_position.x -= speed * delta
-		$"../LilMan".position.x -= speed * delta
+		direction.x -= 1
+		
+	direction = direction.normalized()
+	direction = direction.rotated(Vector3.UP, rotation.y)
+	global_position += direction * speed * delta
+	$"../LilMan".position = global_position
 
 func _input(event):
 	if event is InputEventMouseMotion:
+		rotation.y += event.relative.x * -0.01
+		rotation.x = max(min(rotation.x + event.relative.y * 0.005, deg_to_rad(90)), deg_to_rad(-90))
+		print(rad_to_deg(rotation.x))
 		$"../LilMan".rotation.y += event.relative[0] * -0.01
-		$".".rotation.x += event.relative[1] * 0.01
-		$".".rotation.y += event.relative[0] * -0.01
