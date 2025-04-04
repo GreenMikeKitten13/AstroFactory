@@ -1,12 +1,22 @@
-[gd_scene load_steps=14 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=29 format=3 uid="uid://qachlfwuf6f6"]
 
-[ext_resource type="Texture2D" uid="uid://vodw6dckoavs" path="res://lil man.png" id="1_0xm2m"]
-[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man.obj" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://vodw6dckoavs" path="res://lil man/lil man.png" id="1_0xm2m"]
+[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man/lil man.obj" id="2_h2yge"]
 [ext_resource type="Script" uid="uid://cfy3joyi857h0" path="res://player_controller.gd" id="3_h2yge"]
-[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://lil mech.png" id="4_272bh"]
-[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://lil mech.obj" id="5_5vw27"]
-[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://lil car.png" id="6_kek77"]
-[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://lil car.obj" id="7_4c57u"]
+[ext_resource type="Texture2D" uid="uid://c86vocjonu71" path="res://lil mech/lil mech.png" id="4_272bh"]
+[ext_resource type="ArrayMesh" uid="uid://bcitre2el5eu7" path="res://lil mech/lil mech.obj" id="5_5vw27"]
+[ext_resource type="Texture2D" uid="uid://c168epaaol1f6" path="res://lil car/lil car.png" id="6_kek77"]
+[ext_resource type="ArrayMesh" uid="uid://cvrv0bca7gv36" path="res://lil car/lil car.obj" id="7_4c57u"]
+[ext_resource type="Texture2D" uid="uid://c6nmxof135klt" path="res://lil copper/lil copper.png" id="8_2cqfq"]
+[ext_resource type="ArrayMesh" uid="uid://gtqpss8dvmgl" path="res://lil copper/lil copper.obj" id="9_yaehf"]
+[ext_resource type="Texture2D" uid="uid://m8x4lw2pb4tj" path="res://lil water/lil water.png" id="10_074og"]
+[ext_resource type="ArrayMesh" uid="uid://cic1oiu375s4w" path="res://lil lave/lil lava.obj" id="11_cegan"]
+[ext_resource type="Texture2D" uid="uid://b3cetsri8504t" path="res://lil sand/lil sand.png" id="12_82xsv"]
+[ext_resource type="ArrayMesh" uid="uid://bpx4h3efw4rj8" path="res://lil sand/lil sand.obj" id="13_getpj"]
+[ext_resource type="Texture2D" uid="uid://bm7o7w04yoy1k" path="res://lil stone/lil stone.png" id="14_ryguw"]
+[ext_resource type="ArrayMesh" uid="uid://cexhjjaylp6jw" path="res://lil stone/lil stone.obj" id="15_d13ii"]
+[ext_resource type="ArrayMesh" uid="uid://chfxcklfnj5cl" path="res://lil water/lil water.obj" id="16_1u8w0"]
+[ext_resource type="ArrayMesh" uid="uid://bxktwj4pklx8l" path="res://lil iron/lil iron.obj" id="17_yaehf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -29,6 +39,21 @@ albedo_texture = ExtResource("4_272bh")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg77c"]
 albedo_texture = ExtResource("6_kek77")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0odxb"]
+albedo_texture = ExtResource("8_2cqfq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lswn8"]
+albedo_texture = ExtResource("10_074og")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a6jrf"]
+albedo_texture = ExtResource("12_82xsv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xuqvo"]
+albedo_texture = ExtResource("14_ryguw")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qsp4k"]
+albedo_texture = ExtResource("10_074og")
 
 [node name="Main" type="Node3D"]
 
@@ -63,3 +88,32 @@ mesh = ExtResource("5_5vw27")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -6.5)
 material_override = SubResource("StandardMaterial3D_dg77c")
 mesh = ExtResource("7_4c57u")
+
+[node name="LilCopper" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.71699, 0.456449, 5.8397)
+material_override = SubResource("StandardMaterial3D_0odxb")
+mesh = ExtResource("9_yaehf")
+
+[node name="LilLava" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.74239, 0, 7.80376)
+material_override = SubResource("StandardMaterial3D_lswn8")
+mesh = ExtResource("11_cegan")
+
+[node name="LilSand" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.06339, 0, 5.85655)
+material_override = SubResource("StandardMaterial3D_a6jrf")
+mesh = ExtResource("13_getpj")
+
+[node name="LilStone" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.72524, 2.923, 8.28123)
+material_override = SubResource("StandardMaterial3D_xuqvo")
+mesh = ExtResource("15_d13ii")
+
+[node name="LilWater" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.04161, 0, 6.68286)
+material_override = SubResource("StandardMaterial3D_qsp4k")
+mesh = ExtResource("16_1u8w0")
+
+[node name="LilIron" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.133832, 0, 5.29669)
+mesh = ExtResource("17_yaehf")

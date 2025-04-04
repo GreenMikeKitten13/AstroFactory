@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vodw6dckoavs"
-path.s3tc="res://.godot/imported/lil man.png-54d15b75f63cb9a69070e867f1dd4199.s3tc.ctex"
+uid="uid://bkpo2e7maiild"
+path.s3tc="res://.godot/imported/lil iron.png-6ff0c1daad7a66c5049fed8d41c8e8ec.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://lil man.png"
-dest_files=["res://.godot/imported/lil man.png-54d15b75f63cb9a69070e867f1dd4199.s3tc.ctex"]
+source_file="res://lil lave/lil iron/lil iron.png"
+dest_files=["res://.godot/imported/lil iron.png-6ff0c1daad7a66c5049fed8d41c8e8ec.s3tc.ctex"]
 
 [params]
 
