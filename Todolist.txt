@@ -1,0 +1,20 @@
+Player:
+	.movement:
+		-fix w a s d
+	.inventory
+	.building
+	.shooting
+	.mech, car, drone implementation
+
+terrain generation:
+	- ore generation
+	- rivers, hills...
+
+enemy:
+	-enemy behavior AI
+
+
+buildings:
+	-sprites
+	-sentries
+	-base
