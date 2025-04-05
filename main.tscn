@@ -89,6 +89,7 @@ transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0
 shadow_enabled = true
 
 [node name="LilMan_camera_follower" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.831, 0)
 visible = false
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("ArrayMesh_0xm2m")
@@ -104,6 +105,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03, -0.15, -0.25)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="LilMan" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.3608, 0)
 material_override = SubResource("StandardMaterial3D_272bh")
 mesh = SubResource("ArrayMesh_0xm2m")
 
@@ -153,7 +155,7 @@ transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0
 occluder = SubResource("BoxOccluder3D_lquwl")
 
 [node name="GrassBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, -0.888983)
 
 [node name="GrassMesh" type="MeshInstance3D" parent="GrassBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)

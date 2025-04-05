@@ -20,9 +20,9 @@ func _ready():
 		
 		for zCoorindate in gridSize:
 			for xCoordinate in gridSize:
-				var height = noise.get_noise_2d(xCoordinate, zCoorindate) * 1  # Scale height
-				var newCopper = prefab.duplicate()
-				newCopper.position = Vector3(xCoordinate,-9 + height + yCoordinate,zCoorindate)
+				var height = noise.get_noise_2d(xCoordinate, zCoorindate) * 1.5  # Scale height
+				var newPrefab = prefab.duplicate()
+				newPrefab.position = Vector3(xCoordinate,-9 + height + yCoordinate,zCoorindate)
 				#var degree = angles[randi() % angles.size()]
 				#newCopper.rotation_degrees.y = degree
-				add_child(newCopper)
+				add_child(newPrefab)

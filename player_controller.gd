@@ -34,3 +34,12 @@ func _input(event):
 		rotation.x = max(min(rotation.x + event.relative.y * 0.005, deg_to_rad(90)), deg_to_rad(-90))
 		#print(rad_to_deg(rotation.x))
 		$"../LilMan".rotation.y += event.relative[0] * -0.01
+		
+	
+	#func _unhandled_input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			$Camera3D.position +=  Vector3.FORWARD
+			
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+				$Camera3D.position +=  Vector3.BACK
