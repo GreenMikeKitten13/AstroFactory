@@ -3,8 +3,8 @@ extends MeshInstance3D
 @export var speed: float = 10.0
 var velocity = Vector3.ZERO
 
-func _ready():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+#func _ready():
+	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _process(delta):
 	var direction = Vector3.ZERO

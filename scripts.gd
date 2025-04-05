@@ -5,14 +5,15 @@ var gridSize := 25
 var noise = FastNoiseLite.new()
 #var angles = [-90, 90, 180]
 
-#var degree:Vector3
 
 func _ready():
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.1
-	for yCooridnate in gridSize/2:
-		if yCooridnate == gridSize/2 - 1: prefab = $"../GrassBlock"
+
+	
+	for yCooridnate in gridSize / 2:
+		if yCooridnate == gridSize / 2 - 1: prefab = $"../GrassBlock"
 		for zCoorindate in gridSize:
 			for xCoordinate in gridSize:
 				var height = noise.get_noise_2d(xCoordinate, zCoorindate) * 1  # Scale height
