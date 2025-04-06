@@ -96,6 +96,7 @@ shadow_enabled = true
 
 [node name="LilMan_camera_follower" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.77035, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("ArrayMesh_0xm2m")
 script = ExtResource("3_h2yge")

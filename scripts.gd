@@ -13,7 +13,7 @@ func _ready():
 func makeNoise():
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.frequency = 0.1
+	noise.frequency = 0.005
 
 
 func decideAndMakeTerrain():
