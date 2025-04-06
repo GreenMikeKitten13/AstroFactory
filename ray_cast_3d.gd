@@ -6,7 +6,8 @@ extends RayCast3D
 var debug_counter = 0
 var no_collision_distance = -10
 
-func _process(delta):
+func _unhandled_input(event: InputEvent):
+	print("a")
 	if is_colliding():
 		var collider = $".".get_collider()
 		if "Character" in str(collider) :
