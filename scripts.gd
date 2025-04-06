@@ -1,16 +1,22 @@
 extends Node
 
 @onready var prefab = $"../DirtBody"
-var gridSize := 25
-var noise = FastNoiseLite.new()
-#var angles = [-90, 90, 180]
-
-#var degree:Vector3
+var gridSize := 40
+var noise := FastNoiseLite.new()
 
 func _ready():
+	makeNoise()
+	decideAndMakeTerrain()
+
+
+
+func makeNoise():
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.1
+
+
+func decideAndMakeTerrain():
 	for yCoordinate in gridSize/2:
 		
 		if yCoordinate <= gridSize/2 -7: prefab = $"../StoneBody" 
@@ -20,9 +26,20 @@ func _ready():
 		
 		for zCoorindate in gridSize:
 			for xCoordinate in gridSize:
-				var height = noise.get_noise_2d(xCoordinate, zCoorindate) * 1.5  # Scale height
+				var randomNumb = randf()
+				var height := noise.get_noise_2d(xCoordinate, zCoorindate) * 1.5  # Scale height
+				if height < 0.005 && yCoordinate == gridSize/2 - 1:
+					prefab = $"../WaterBody"
+				elif yCoordinate == gridSize/2 - 1:
+					prefab = $"../GrassBody"
+				
+				if prefab == $"../StoneBody" && randomNumb >= 0.9:
+					prefab = $"../CopperBody"
+				elif prefab == $"../StoneBody" && randomNumb >= 0.8 && randomNumb < 0.9:
+					prefab = $"../IronBody"
+				elif yCoordinate <= gridSize/2 -7:
+					prefab = $"../StoneBody"
+				
 				var newPrefab = prefab.duplicate()
-				newPrefab.position = Vector3(xCoordinate,-9 + height + yCoordinate,zCoorindate)
-				#var degree = angles[randi() % angles.size()]
-				#newCopper.rotation_degrees.y = degree
+				newPrefab.position = Vector3(xCoordinate -0.05,-9.05 + height + yCoordinate,zCoorindate- 0.05)
 				add_child(newPrefab)

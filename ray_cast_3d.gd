@@ -14,9 +14,9 @@ func _unhandled_input(event: InputEvent):
 			return
 		else:
 			$".".scale.y -= camera_zoom_speed #len
-			print(collider)
+			#print(collider)
 		
 	else:
 		no_collision_distance = $".".scale.y * -1
 		$".".scale.y = LilMan_follower_script.camera_distance * -1
-	print(LilMan_follower_script.camera_distance)
+	#print(LilMan_follower_script.camera_distance)

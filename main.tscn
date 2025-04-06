@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=30 format=4 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://lil man/lil man.png" id="2_1bvp3"]
 [ext_resource type="Script" uid="uid://0fhk31j5dd13" path="res://ray_cast_3d.gd" id="2_4c57u"]
@@ -8,8 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://c6nmxof135klt" path="res://lil copper/lil copper.png" id="6_272bh"]
 [ext_resource type="ArrayMesh" uid="uid://gtqpss8dvmgl" path="res://lil copper/lil copper.obj" id="7_5vw27"]
 [ext_resource type="ArrayMesh" uid="uid://df6n7ntd11r4h" path="res://lil grass/lil grass.obj" id="7_272bh"]
+[ext_resource type="ArrayMesh" uid="uid://bxktwj4pklx8l" path="res://lil iron/lil iron.obj" id="8_efxa6"]
 [ext_resource type="Texture2D" uid="uid://bm7o7w04yoy1k" path="res://lil stone/lil stone.png" id="8_kek77"]
+[ext_resource type="Texture2D" uid="uid://m8x4lw2pb4tj" path="res://lil water/lil water.png" id="8_ycdy4"]
 [ext_resource type="ArrayMesh" uid="uid://cexhjjaylp6jw" path="res://lil stone/lil stone.obj" id="9_4c57u"]
+[ext_resource type="ArrayMesh" uid="uid://chfxcklfnj5cl" path="res://lil water/lil water.obj" id="9_w48qg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -73,6 +76,9 @@ albedo_texture = ExtResource("6_272bh")
 
 [sub_resource type="BoxOccluder3D" id="BoxOccluder3D_lquwl"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycdy4"]
+albedo_texture = ExtResource("8_ycdy4")
+
 [sub_resource type="BoxOccluder3D" id="BoxOccluder3D_5vw27"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kek77"]
@@ -90,7 +96,7 @@ transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0
 shadow_enabled = true
 
 [node name="LilMan_camera_follower" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.831, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.77035, 0)
 visible = false
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("ArrayMesh_0xm2m")
@@ -111,7 +117,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03, -0.15, -0.25)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="LilMan" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.3608, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.95798, 0)
 material_override = SubResource("StandardMaterial3D_272bh")
 mesh = SubResource("ArrayMesh_0xm2m")
 
@@ -135,7 +141,7 @@ debug_fill = false
 [node name="CopperMesh" type="MeshInstance3D" parent="CopperBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_7mycd")
-visibility_range_end = 20.0
+visibility_range_end = 30.0
 mesh = ExtResource("7_5vw27")
 
 [node name="OccluderInstance3D" type="OccluderInstance3D" parent="CopperBody/CopperMesh"]
@@ -143,7 +149,6 @@ transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.055, 0.45, -0.06)
 occluder = SubResource("BoxOccluder3D_lquwl")
 
 [node name="DirtBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.25, 1.98258)
 
 [node name="DirtCollider" type="CollisionShape3D" parent="DirtBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -152,7 +157,7 @@ debug_fill = false
 
 [node name="DirtMesh" type="MeshInstance3D" parent="DirtBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-visibility_range_end = 40.0
+visibility_range_end = 30.0
 mesh = ExtResource("6_7mycd")
 skeleton = NodePath("../..")
 
@@ -160,12 +165,49 @@ skeleton = NodePath("../..")
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0.049048)
 occluder = SubResource("BoxOccluder3D_lquwl")
 
+[node name="WaterBody" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.918295)
+
+[node name="WaterCollider" type="CollisionShape3D" parent="WaterBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
+shape = SubResource("BoxShape3D_lquwl")
+debug_fill = false
+
+[node name="WaterBlock" type="MeshInstance3D" parent="WaterBody"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_ycdy4")
+visibility_range_end = 30.0
+mesh = ExtResource("9_w48qg")
+skeleton = NodePath("../..")
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="WaterBody/WaterBlock"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0.049048)
+occluder = SubResource("BoxOccluder3D_lquwl")
+
+[node name="IronBody" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.88189)
+
+[node name="IronCollider" type="CollisionShape3D" parent="IronBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
+shape = SubResource("BoxShape3D_lquwl")
+debug_fill = false
+
+[node name="IronMesh" type="MeshInstance3D" parent="IronBody"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+visibility_range_end = 30.0
+mesh = ExtResource("8_efxa6")
+skeleton = NodePath("../..")
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="IronBody/IronMesh"]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0.049048)
+occluder = SubResource("BoxOccluder3D_lquwl")
+
 [node name="GrassBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, -0.888983)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, -2.44955)
 
 [node name="GrassMesh" type="MeshInstance3D" parent="GrassBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-visibility_range_end = 40.0
+visibility_range_end = 30.0
 mesh = ExtResource("7_272bh")
 skeleton = NodePath("../..")
 
@@ -178,7 +220,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
 shape = SubResource("BoxShape3D_kek77")
 
 [node name="StoneBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0.551486)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 2.0827)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StoneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
@@ -187,6 +229,7 @@ shape = SubResource("BoxShape3D_kek77")
 [node name="LilStone" type="MeshInstance3D" parent="StoneBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 3.5, 0)
 material_override = SubResource("StandardMaterial3D_efxa6")
+visibility_range_end = 30.0
 mesh = ExtResource("9_4c57u")
 skeleton = NodePath("../..")
 
