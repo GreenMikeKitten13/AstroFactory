@@ -10,7 +10,7 @@ func _ready():
 #^^^^^^^ => lock the mouse (dissabled for testing)
 func _process(delta):
 	var direction = Vector3.ZERO
-	print(camera_distance)
+	#print(camera_distance)
 
 	if Input.is_action_pressed("Forward"): 
 		#$"../LilMan/CharacterBody3D".move_and_slide() 
@@ -53,7 +53,7 @@ func _unhandled_input(event):
 		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
 			camera_distance = max(camera_distance -1, -20)
 			$Camera3D.position.z = no_collision_distance
-			print("assumed; ", no_collision_distance)
+			#print("assumed; ", no_collision_distance)
 			
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			camera_distance = min(camera_distance +1, 0)

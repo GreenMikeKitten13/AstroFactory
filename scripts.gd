@@ -1,8 +1,8 @@
 extends Node
 
 @onready var prefab = $"../DirtBody"
-var gridSize := 25
-var noise = FastNoiseLite.new()
+var gridSize := 40
+var noise := FastNoiseLite.new()
 
 func _ready():
 	makeNoise()
@@ -27,12 +27,19 @@ func decideAndMakeTerrain():
 		for zCoorindate in gridSize:
 			for xCoordinate in gridSize:
 				var randomNumb = randf()
-				var height = noise.get_noise_2d(xCoordinate, zCoorindate) * 1.5  # Scale height
-				if prefab == $"../StoneBody" && randomNumb > 0.9:
+				var height := noise.get_noise_2d(xCoordinate, zCoorindate) * 1.5  # Scale height
+				if height < 0.005 && yCoordinate == gridSize/2 - 1:
+					prefab = $"../WaterBody"
+				elif yCoordinate == gridSize/2 - 1:
+					prefab = $"../GrassBody"
+				
+				if prefab == $"../StoneBody" && randomNumb >= 0.9:
 					prefab = $"../CopperBody"
+				elif prefab == $"../StoneBody" && randomNumb >= 0.8 && randomNumb < 0.9:
+					prefab = $"../IronBody"
 				elif yCoordinate <= gridSize/2 -7:
 					prefab = $"../StoneBody"
 				
 				var newPrefab = prefab.duplicate()
-				newPrefab.position = Vector3(xCoordinate,-9 + height + yCoordinate,zCoorindate)
+				newPrefab.position = Vector3(xCoordinate -0.05,-9.05 + height + yCoordinate,zCoorindate- 0.05)
 				add_child(newPrefab)
