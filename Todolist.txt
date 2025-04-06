@@ -5,9 +5,7 @@ Player:
 	.mech, car, drone implementation
 
 terrain generation:
-	- ore generation
-	- rivers, hills...
-	- fix small gaps between blocks
+	- hills,...
 
 enemy:
 	-enemy behavior AI

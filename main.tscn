@@ -125,7 +125,7 @@ shape = SubResource("BoxShape3D_7mycd")
 script = ExtResource("5_lquwl")
 
 [node name="CopperBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.25, -1.76552)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, -2.25, -1.76552)
 
 [node name="CopperCollider" type="CollisionShape3D" parent="CopperBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -143,6 +143,7 @@ transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.055, 0.45, -0.06)
 occluder = SubResource("BoxOccluder3D_lquwl")
 
 [node name="DirtBody" type="StaticBody3D" parent="."]
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0)
 
 [node name="DirtCollider" type="CollisionShape3D" parent="DirtBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -160,7 +161,7 @@ transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0
 occluder = SubResource("BoxOccluder3D_lquwl")
 
 [node name="WaterBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.918295)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0.918295)
 
 [node name="WaterCollider" type="CollisionShape3D" parent="WaterBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -179,7 +180,7 @@ transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0
 occluder = SubResource("BoxOccluder3D_lquwl")
 
 [node name="IronBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.88189)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 1.88189)
 
 [node name="IronCollider" type="CollisionShape3D" parent="IronBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -197,7 +198,7 @@ transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0
 occluder = SubResource("BoxOccluder3D_lquwl")
 
 [node name="GrassBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, -2.44955)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, -3.5, -2.44955)
 
 [node name="GrassMesh" type="MeshInstance3D" parent="GrassBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
@@ -214,7 +215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
 shape = SubResource("BoxShape3D_kek77")
 
 [node name="StoneBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 2.0827)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, -3.5, 2.0827)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StoneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
