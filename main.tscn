@@ -90,7 +90,7 @@ transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0
 shadow_enabled = true
 
 [node name="LilMan_camera_follower" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.831, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.77035, 0)
 visible = false
 material_override = SubResource("StandardMaterial3D_1bvp3")
 mesh = SubResource("ArrayMesh_0xm2m")
@@ -111,7 +111,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03, -0.15, -0.25)
 shape = SubResource("BoxShape3D_7mycd")
 
 [node name="LilMan" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.3608, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.95798, 0)
 material_override = SubResource("StandardMaterial3D_272bh")
 mesh = SubResource("ArrayMesh_0xm2m")
 
@@ -135,7 +135,7 @@ debug_fill = false
 [node name="CopperMesh" type="MeshInstance3D" parent="CopperBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_7mycd")
-visibility_range_end = 20.0
+visibility_range_end = 30.0
 mesh = ExtResource("7_5vw27")
 
 [node name="OccluderInstance3D" type="OccluderInstance3D" parent="CopperBody/CopperMesh"]
@@ -152,7 +152,7 @@ debug_fill = false
 
 [node name="DirtMesh" type="MeshInstance3D" parent="DirtBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-visibility_range_end = 40.0
+visibility_range_end = 30.0
 mesh = ExtResource("6_7mycd")
 skeleton = NodePath("../..")
 
@@ -165,7 +165,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, -0.888983)
 
 [node name="GrassMesh" type="MeshInstance3D" parent="GrassBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-visibility_range_end = 40.0
+visibility_range_end = 30.0
 mesh = ExtResource("7_272bh")
 skeleton = NodePath("../..")
 
@@ -187,6 +187,7 @@ shape = SubResource("BoxShape3D_kek77")
 [node name="LilStone" type="MeshInstance3D" parent="StoneBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 3.5, 0)
 material_override = SubResource("StandardMaterial3D_efxa6")
+visibility_range_end = 30.0
 mesh = ExtResource("9_4c57u")
 skeleton = NodePath("../..")
 

@@ -24,6 +24,10 @@ func _process(delta):
 	if Input.is_action_pressed("Escape"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		Input.set_mouse_mode(Input.MOUSE_MODE_MAX)
+	if Input.is_action_pressed("E"):
+		direction.y += 1
+	if Input.is_action_pressed("Q"):
+		direction.y -= 1
 	
 	
 	direction = direction.normalized()
@@ -54,5 +58,3 @@ func _unhandled_input(event):
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			camera_distance = min(camera_distance +1, 0)
 			$Camera3D.position.z = no_collision_distance
-
-		
