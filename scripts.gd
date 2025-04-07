@@ -13,7 +13,7 @@ func _ready():
 func makeNoise():
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.frequency = 0.005
+	noise.frequency = 0.1
 
 
 func decideAndMakeTerrain():
@@ -41,5 +41,11 @@ func decideAndMakeTerrain():
 					prefab = $"../StoneBody"
 				
 				var newPrefab = prefab.duplicate()
-				newPrefab.position = Vector3(xCoordinate -0.05,-9.05 + height + yCoordinate,zCoorindate- 0.05)
+				newPrefab.position = Vector3(xCoordinate, height - 9 + yCoordinate,zCoorindate)
+				if randf() < 0.5:
+					for child in newPrefab.get_children():
+						if child is OccluderInstance3D:
+							child.queue_free()
+							break 
+
 				add_child(newPrefab)
