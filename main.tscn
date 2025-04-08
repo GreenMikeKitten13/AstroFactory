@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=26 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://lil man/lil man.png" id="2_1bvp3"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts.gd" id="5_lquwl"]
@@ -33,12 +33,8 @@ margin = 0.0
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
 albedo_texture = ExtResource("6_272bh")
 
-[sub_resource type="BoxOccluder3D" id="BoxOccluder3D_lquwl"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycdy4"]
 albedo_texture = ExtResource("8_ycdy4")
-
-[sub_resource type="BoxOccluder3D" id="BoxOccluder3D_5vw27"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_w48qg"]
 
@@ -69,7 +65,7 @@ shadow_enabled = true
 script = ExtResource("5_lquwl")
 
 [node name="CopperBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, -2.25, -1.76552)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, -1.766)
 
 [node name="CopperCollider" type="CollisionShape3D" parent="CopperBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -77,17 +73,16 @@ shape = SubResource("BoxShape3D_lquwl")
 debug_fill = false
 
 [node name="CopperMesh" type="MeshInstance3D" parent="CopperBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0.001, 0)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_7mycd")
 visibility_range_end = 20.0
 mesh = ExtResource("7_5vw27")
 
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="CopperBody/CopperMesh"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.055, 0.45, -0.06)
-occluder = SubResource("BoxOccluder3D_lquwl")
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="CopperBody"]
+transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.0549999)
 
 [node name="DirtBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, -0.249376)
 
 [node name="DirtCollider" type="CollisionShape3D" parent="DirtBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -100,12 +95,11 @@ visibility_range_end = 20.0
 mesh = ExtResource("6_7mycd")
 skeleton = NodePath("../..")
 
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="DirtBody/DirtMesh"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0.049048)
-occluder = SubResource("BoxOccluder3D_lquwl")
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="DirtBody"]
+transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.055)
 
 [node name="WaterBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0.918295)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0.797241)
 
 [node name="WaterCollider" type="CollisionShape3D" parent="WaterBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
@@ -119,9 +113,8 @@ visibility_range_end = 20.0
 mesh = ExtResource("9_w48qg")
 skeleton = NodePath("../..")
 
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="WaterBody/WaterBlock"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0.049048)
-occluder = SubResource("BoxOccluder3D_lquwl")
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="WaterBody"]
+transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.055)
 
 [node name="IronBody" type="StaticBody3D" parent="."]
 transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 1.88189)
@@ -137,12 +130,11 @@ visibility_range_end = 20.0
 mesh = ExtResource("8_efxa6")
 skeleton = NodePath("../..")
 
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="IronBody/IronMesh"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.0691762, 0.444841, -0.049048)
-occluder = SubResource("BoxOccluder3D_lquwl")
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="IronBody"]
+transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.4949, -0.0549999)
 
 [node name="GrassBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, -3.5, -2.44955)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, -3.42843)
 
 [node name="GrassMesh" type="MeshInstance3D" parent="GrassBody"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
@@ -150,31 +142,29 @@ visibility_range_end = 20.0
 mesh = ExtResource("7_272bh")
 skeleton = NodePath("../..")
 
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="GrassBody/GrassMesh"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.05, 0.45, -0.05)
-occluder = SubResource("BoxOccluder3D_5vw27")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GrassBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
 shape = SubResource("SphereShape3D_w48qg")
 
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="GrassBody"]
+transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.0550001)
+
 [node name="StoneBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, -3.5, 2.0827)
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 2.98)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StoneBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
 shape = SubResource("BoxShape3D_kek77")
 
 [node name="LilStone" type="MeshInstance3D" parent="StoneBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 3.5, 0)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 3.525, 0)
 material_override = SubResource("StandardMaterial3D_efxa6")
 visibility_range_end = 20.0
 mesh = ExtResource("9_4c57u")
 skeleton = NodePath("../..")
 
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="StoneBody/LilStone"]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.05, -2.73182, -0.05)
-occluder = SubResource("BoxOccluder3D_5vw27")
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="StoneBody"]
+transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.4945, -0.0550001)
 
 [node name="PlayerBody" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
