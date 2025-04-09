@@ -1,5 +1,7 @@
 extends Node
 
+
+
 @onready var prefab := $"../DirtBody"
 var gridSize := 30
 var noise := FastNoiseLite.new()
@@ -8,17 +10,28 @@ var terrainBlocks := []
 var terrainBlocksNumber := 0
 var chunkSize := 10
 var chunks := 0
-var terrainChunks := []
 var chunksSavings := {}
-@export var renderDistance := 20
-@export var chunkConvertDistance := 60.0
+var renderdistance = 1000
+
+
+
+func set_renderdistance():
+	$"../CopperBody/CopperMesh".visibility_range_end = renderdistance
+	$"../DirtBody/DirtMesh".visibility_range_end = renderdistance
+	$"../WaterBody/WaterBlock".visibility_range_end = renderdistance
+	$"../IronBody/IronMesh".visibility_range_end = renderdistance
+	$"../GrassBody/GrassMesh".visibility_range_end = renderdistance
+	$"../StoneBody/LilStone".visibility_range_end = renderdistance
 
 func _ready():
 	makeNoise()
 	decideAndMakeTerrain()
+	set_renderdistance()
 
 
 
+	
+	
 func makeNoise():
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
@@ -34,7 +47,6 @@ func decideAndMakeTerrain():
 				var randomNumb = randf()
 
 				# Default prefab logic
-				var prefab: Node3D
 				if yCoordinate <= gridSize / 2 - 7:
 					prefab = $"../StoneBody"
 				else:
@@ -54,12 +66,6 @@ func decideAndMakeTerrain():
 
 				var new_block = prefab.duplicate()
 				new_block.position = Vector3(xCoordinate, height - 9 + yCoordinate, zCoordinate)
-				
-				for child in new_block.get_children():
-					if child is MeshInstance3D:
-						child.visibility_range_end = renderDistance
-				
-				#here ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 				# Get chunk position
 				var chunk_x = int(xCoordinate / chunkSize)
@@ -70,108 +76,31 @@ func decideAndMakeTerrain():
 				if not chunksSavings.has(chunk_key):
 					var chunk = Node3D.new()
 					chunk.name = "Chunk_" + chunk_key
-					chunk.position = Vector3.ZERO
+					chunk.position = Vector3.ZERO #(chunk_x * chunkSize, 0, chunk_z * chunkSize)
 					add_child(chunk)
-					terrainChunks.append({
-					
-						"node": chunk,
-						"position": chunk.position,
-						"is_multimesh": false,
-						"original_data": []
-					})
-
 					chunksSavings[chunk_key] = chunk
+					print(chunk) 
 
 				# Add block to chunk
 				chunksSavings[chunk_key].add_child(new_block)
 				terrainBlocks.append(new_block)
 				terrainBlocksNumber += 1
-
 	
 
 
 
 func _process(delta):
+	print($"../CopperBody/CopperMesh".visibility_range_end)
+	set_renderdistance()
 	timeSinceCheck += delta
 	if timeSinceCheck + randf() > 0.08:
 		timeSinceCheck = 0
-		for chunk_data in terrainChunks:
-			var chunk_node = chunk_data["node"]
-			var chunk_pos = chunk_data["position"]
-			var dist = $"../PlayerBody".global_position.distance_to(chunk_pos)
-
-			if dist > chunkConvertDistance and not chunk_data["is_multimesh"]:
-				var multimesh_instance = convert_chunk_to_multimesh(chunk_node)
-				if multimesh_instance:
-					chunk_data["original_data"] = capture_original_chunk_data(chunk_node)
-					get_parent().add_child(multimesh_instance)
-					chunk_data["node"] = multimesh_instance
-					chunk_data["is_multimesh"] = true
-
-			elif dist <= chunkConvertDistance and chunk_data["is_multimesh"]:
-				var restored = restore_chunk_from_multimesh(chunk_data["original_data"])
-				get_parent().add_child(restored)
-				chunk_data["node"].queue_free()
-				chunk_data["node"] = restored
-				chunk_data["is_multimesh"] = false
-
-			# Per-block visibility handling
-			if not chunk_data["is_multimesh"]:
-				for block in chunk_node.get_children():
-					if block.get_node_or_null("VisibleOnScreenNotifier3D") and block.get_node("VisibleOnScreenNotifier3D").is_on_screen():
-						for child in block.get_children():
-							if child is MeshInstance3D:
-								child.visible = true
-					else:
-						for child in block.get_children():
-							if child is MeshInstance3D:
-								child.visible = false
-
-
-func convert_chunk_to_multimesh(chunk_node: Node3D) -> MultiMeshInstance3D:
-	var multimesh := MultiMesh.new()
-	var mesh_instance := MultiMeshInstance3D.new()
-	var transforms := []
-
-	var meshes = []
-	
-	for child in chunk_node.get_children():
-		if child is MeshInstance3D:
-			meshes.append(child.mesh)
-			transforms.append(child.transform)
-
-	# Use the first mesh as base (optional: split multimeshes by mesh type)
-	if meshes.size() == 0:
-		return null
-	
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	multimesh.instance_count = transforms.size()
-
-	for i in transforms.size():
-		multimesh.set_instance_transform(i, transforms[i])
-
-	mesh_instance.multimesh = multimesh
-	mesh_instance.mesh = meshes[0]  # assumes all same mesh for now
-	chunk_node.queue_free()  # remove old node
-
-	return mesh_instance
-
-
-func capture_original_chunk_data(chunk_node: Node3D) -> Array:
-	var data := []
-	for block in chunk_node.get_children():
-		var entry = {
-			"scene": block, # Or prefab reference if instanced
-			"transform": block.transform
-		}
-		data.append(entry)
-	return data
-
-
-func restore_chunk_from_multimesh(data):
-	var chunk_node := Node3D.new()
-	for block_data in data:
-		var instance = block_data["scene"].instantiate()
-		instance.transform = block_data["transform"]
-		chunk_node.add_child(instance)
-	return chunk_node
+		for block in terrainBlocks:
+			if block.get_node("VisibleOnScreenNotifier3D").is_on_screen():
+				for child in block.get_children():
+					if child is MeshInstance3D:
+						child.visible = true
+			else:
+				for child in block.get_children():
+					if child is MeshInstance3D:
+						child.visible = false
