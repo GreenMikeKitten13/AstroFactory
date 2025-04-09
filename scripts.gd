@@ -1,5 +1,7 @@
 extends Node
 
+
+
 @onready var prefab := $"../DirtBody"
 var gridSize := 30
 var noise := FastNoiseLite.new()
@@ -9,13 +11,27 @@ var terrainBlocksNumber := 0
 var chunkSize := 10
 var chunks := 0
 var chunksSavings := {}
+var renderdistance = 1000
+
+
+
+func set_renderdistance():
+	$"../CopperBody/CopperMesh".visibility_range_end = renderdistance
+	$"../DirtBody/DirtMesh".visibility_range_end = renderdistance
+	$"../WaterBody/WaterBlock".visibility_range_end = renderdistance
+	$"../IronBody/IronMesh".visibility_range_end = renderdistance
+	$"../GrassBody/GrassMesh".visibility_range_end = renderdistance
+	$"../StoneBody/LilStone".visibility_range_end = renderdistance
 
 func _ready():
 	makeNoise()
 	decideAndMakeTerrain()
+	set_renderdistance()
 
 
 
+	
+	
 func makeNoise():
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
@@ -74,6 +90,8 @@ func decideAndMakeTerrain():
 
 
 func _process(delta):
+	print($"../CopperBody/CopperMesh".visibility_range_end)
+	set_renderdistance()
 	timeSinceCheck += delta
 	if timeSinceCheck + randf() > 0.08:
 		timeSinceCheck = 0
