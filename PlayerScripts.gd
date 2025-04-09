@@ -32,9 +32,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.is_pressed():
 			# zoom in
-			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP && $Node3D/SpringArm3D.spring_length > 0:
 				$Node3D/SpringArm3D.spring_length -= 0.1
-			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN && $Node3D/SpringArm3D.spring_length < 20:
 				$Node3D/SpringArm3D.spring_length += 0.1
 	
 	if isCameraMotion:
