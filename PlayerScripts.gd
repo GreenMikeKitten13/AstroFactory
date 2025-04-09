@@ -29,6 +29,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		event is InputEventMouseMotion and
 		Input.get_mouse_mode() == Input.MOUSE_MODE_CONFINED_HIDDEN
 	)
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			# zoom in
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				$Node3D/SpringArm3D.spring_length -= 0.1
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				$Node3D/SpringArm3D.spring_length += 0.1
 	
 	if isCameraMotion:
 		cameraInputDirection = event.screen_relative * mouseSensetivity
