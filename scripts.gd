@@ -1,6 +1,6 @@
 extends Node
 
-#------------------commentMeanings---------------
+#------------------comm^^---------------
 #   '#???' == have to think about it
 #   '~[]' == 'chunk'
 #   '<^>' == disabled debug
@@ -53,12 +53,11 @@ func _process(_delta) -> void:
 		buildChunk()
 
 
-
-
 func playerMoving() -> bool:
 	if playerBody.velocity.x != 0 || playerBody.velocity.z != 0:
 		return true
 	else: return false
+
 
 func checkChunkRange() -> void:
 	var xRange1Coordinate := playerBody.position.x - renderDistance
@@ -86,6 +85,8 @@ func generateChunkNodes() -> void:
 			newChunkNode.set_meta("hasDetails", false)
 			newChunkNode.set_meta("isInDetailRange", false)
 			chunkNodes.append(newChunkNode)
+			add_child(newChunkNode)
+var test = 0
 
 func buildChunk() -> void:
 	for chunk in chunkNodes:
@@ -97,3 +98,5 @@ func buildChunk() -> void:
 						var perlinNoise:float = noise.get_noise_2d(xCoordinate, zCoordinate) * 1.5
 						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
 						chunk.add_child(newBlock)
+						test+= 1
+						print(test)
