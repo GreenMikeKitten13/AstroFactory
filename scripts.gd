@@ -3,10 +3,8 @@ extends Node
 #------------------commentMeanings---------------
 #   '#???' == have to think about it
 #   '~[]' == 'chunk'
-#   '<^>' == disabled debug
-#   '<>' == enabled debug
 #------------------settings----------------------
-var renderDistance:int = 10 #know, when to build ~[]
+var renderDistance:int = 20 #know, when to build ~[]
 var detailRange:int                                        #???
 var worldSize:int = 30
 var chunkSize:int = 10
@@ -22,7 +20,7 @@ var isInDetailRange:bool #true if ~[] is in 'detailRange'
 @onready var copperBody: StaticBody3D = %CopperBody
 @onready var ironBody: StaticBody3D = %IronBody
 
-var blockTypes = {
+var blockTypes : Dictionary = {
 	"grass" : preload("res://Blocks/GrassBlock.tscn"),
 	"dirt" : preload("res://Blocks/DirtBlock.tscn"),
 	"stone" : preload("res://Blocks/StoneBlock.tscn"),
@@ -31,8 +29,8 @@ var blockTypes = {
 }
 #------------------other stuff-------------------
 @onready var playerBody: CharacterBody3D = %PlayerBody
-var chunkNodes := []
-var noise := FastNoiseLite.new()
+var chunkNodes : Array = []
+var noise :Noise = FastNoiseLite.new()
 
 
 #------------------functions---------------------
@@ -41,6 +39,8 @@ func _ready() -> void:
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.1
+	#noise.fractal_octaves = 4    -> for smoother biomes
+	#noise.fractal_gain = 0.5     -> for smoother biomes
 	
 	generateChunkNodes()
 	checkChunkRange()
@@ -61,13 +61,13 @@ func playerMoving() -> bool:
 	else: return false
 
 func checkChunkRange() -> void:
-	var xRange1Coordinate := playerBody.position.x - renderDistance
-	var zRange1Coordinate := playerBody.position.z - renderDistance
-	var xRange2Coordinate := playerBody.position.x + renderDistance
-	var zRange2Coordinate := playerBody.position.z + renderDistance
+	var xRange1Coordinate:float = playerBody.position.x - renderDistance
+	var zRange1Coordinate :float= playerBody.position.z - renderDistance
+	var xRange2Coordinate :float= playerBody.position.x + renderDistance
+	var zRange2Coordinate :float= playerBody.position.z + renderDistance
 	
-	var range1 := Vector3(xRange1Coordinate,0, zRange1Coordinate)
-	var range2 := Vector3(xRange2Coordinate,0, zRange2Coordinate)
+	var range1:Vector3 = Vector3(xRange1Coordinate,0, zRange1Coordinate)
+	var range2:Vector3 = Vector3(xRange2Coordinate,0, zRange2Coordinate)
 	
 	for chunk:Node3D in chunkNodes:
 		if chunk.position.x >= range1.x and chunk.position.x <= range2.x && chunk.position.z >= range1.z and chunk.position.z <= range2.z:
@@ -77,7 +77,7 @@ func checkChunkRange() -> void:
 func generateChunkNodes() -> void:
 	for xCoordinate in worldSize:
 		for zCoordinate in worldSize:
-			var newChunkNode = Node3D.new()
+			var newChunkNode :Node3D = Node3D.new()
 			
 			newChunkNode.position = Vector3(xCoordinate * 10,0,zCoordinate * 10)
 			newChunkNode.name = str(xCoordinate * 10) + "_" + str(zCoordinate * 10) + "_chunk"
@@ -89,13 +89,13 @@ func generateChunkNodes() -> void:
 			add_child(newChunkNode)
 
 func buildChunk() -> void:
-	for chunk in chunkNodes:
+	for chunk :Node3D in chunkNodes:
 		if chunk.get_meta("isInRange") && !chunk.get_meta("isLoaded"):
 			chunk.set_meta("isLoaded", true)
 			for yCoordinate in chunkSize/4:
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
 						var newBlock:StaticBody3D = blockTypes["grass"].instantiate()
-						var perlinNoise:float = noise.get_noise_2d(xCoordinate + playerBody.position.x * worldSize * chunkSize, zCoordinate + playerBody.position.z * worldSize * chunkSize) * 1.5
+						var perlinNoise:float = noise.get_noise_2d(xCoordinate + chunk.position.x    , zCoordinate  + chunk.position.z ) * 1.75
 						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
 						chunk.add_child(newBlock)
