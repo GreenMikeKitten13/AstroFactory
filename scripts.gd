@@ -79,21 +79,23 @@ func generateChunkNodes() -> void:
 		for zCoordinate in worldSize:
 			var newChunkNode = Node3D.new()
 			
-			newChunkNode.position = Vector3(xCoordinate,0,zCoordinate)
-			newChunkNode.name = str(xCoordinate) + "_" + str(zCoordinate) + "_chunk"
+			newChunkNode.position = Vector3(xCoordinate * 10,0,zCoordinate * 10)
+			newChunkNode.name = str(xCoordinate * 10) + "_" + str(zCoordinate * 10) + "_chunk"
 			newChunkNode.set_meta("isInRange", false)
 			newChunkNode.set_meta("isLoaded", false)
 			newChunkNode.set_meta("hasDetails", false)
 			newChunkNode.set_meta("isInDetailRange", false)
 			chunkNodes.append(newChunkNode)
+			add_child(newChunkNode)
 
 func buildChunk() -> void:
 	for chunk in chunkNodes:
-		if chunk.get_meta("isInRange"):
+		if chunk.get_meta("isInRange") && !chunk.get_meta("isLoaded"):
+			chunk.set_meta("isLoaded", true)
 			for yCoordinate in chunkSize/4:
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
 						var newBlock:StaticBody3D = blockTypes["grass"].instantiate()
-						var perlinNoise:float = noise.get_noise_2d(xCoordinate, zCoordinate) * 1.5
+						var perlinNoise:float = noise.get_noise_2d(xCoordinate + playerBody.position.x * worldSize * chunkSize, zCoordinate + playerBody.position.z * worldSize * chunkSize) * 1.5
 						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
 						chunk.add_child(newBlock)
