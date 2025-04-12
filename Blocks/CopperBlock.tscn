@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://duo0igy2s56jb"]
+
+[ext_resource type="Texture2D" uid="uid://c6nmxof135klt" path="res://Blocks/Textures+Objects/lil copper/lil copper.png" id="1_po4km"]
+[ext_resource type="ArrayMesh" uid="uid://gtqpss8dvmgl" path="res://Blocks/Textures+Objects/lil copper/lil copper.obj" id="2_xn00t"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ic4j3"]
+albedo_texture = ExtResource("1_po4km")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fskht"]
+radius = 0.55
+
+[node name="CopperBody" type="StaticBody3D"]
+
+[node name="CopperMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_ic4j3")
+mesh = ExtResource("2_xn00t")
+
+[node name="CopperCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0.05, 0.45, -0.05)
+shape = SubResource("SphereShape3D_fskht")

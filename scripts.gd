@@ -1,99 +1,99 @@
 extends Node
 
+#------------------commentMeanings---------------
+#   '#???' == have to think about it
+#   '~[]' == 'chunk'
+#   '<^>' == disabled debug
+#   '<>' == enabled debug
+#------------------settings----------------------
+var renderDistance:int = 10 #know, when to build ~[]
+var detailRange:int                                        #???
+var worldSize:int = 30
+var chunkSize:int = 10
+#------------------bools-------------------------
+var isInRange:bool #true if ~[] is in 'renderDistance'
+var isLoaded:bool #true if ~[] is built
+var hasDetails:bool #true if ~[] is not made out of 'MultiMeshInstance3D'
+var isInDetailRange:bool #true if ~[] is in 'detailRange'
+#------------------blocks------------------------
+@onready var grassBody: StaticBody3D = %GrassBody
+@onready var dirtBody: StaticBody3D = %DirtBody
+@onready var stoneBody: StaticBody3D = %StoneBody
+@onready var copperBody: StaticBody3D = %CopperBody
+@onready var ironBody: StaticBody3D = %IronBody
 
-
-@onready var prefab := $"../DirtBody"
-var gridSize := 30
+var blockTypes = {
+	"grass" : preload("res://Blocks/GrassBlock.tscn"),
+	"dirt" : preload("res://Blocks/DirtBlock.tscn"),
+	"stone" : preload("res://Blocks/StoneBlock.tscn"),
+	"copper" : preload("res://Blocks/CopperBlock.tscn"),
+	"iron" : preload("res://Blocks/IronBlock.tscn")
+}
+#------------------other stuff-------------------
+@onready var playerBody: CharacterBody3D = %PlayerBody
+var chunkNodes := []
 var noise := FastNoiseLite.new()
-var timeSinceCheck := 0.0
-var terrainBlocks := []
-var terrainBlocksNumber := 0
-var chunkSize := 10
-var chunks := 0
-var chunksSavings := {}
-var renderDistance = 20
-
-func _ready():
-	makeNoise()
-	decideAndMakeTerrain()
 
 
+#------------------functions---------------------
 
-	
-	
-func makeNoise():
+func _ready() -> void:
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.1
-
-
-func decideAndMakeTerrain():
-	for yCoordinate in range(int(gridSize / 2)):
-		for zCoordinate in range(int(gridSize)):
-			for xCoordinate in range(int(gridSize)):
-
-				var height := noise.get_noise_2d(xCoordinate, zCoordinate) * 1.5
-				var randomNumb = randf()
-
-				# Default prefab logic
-				if yCoordinate <= gridSize / 2 - 7:
-					prefab = $"../StoneBody"
-				else:
-					prefab = $"../DirtBody"
-				if yCoordinate == gridSize / 2 - 1:
-					prefab = $"../GrassBody"
-				if height < 0.005 and yCoordinate == gridSize / 2 - 1:
-					prefab = $"../WaterBody"
-				elif yCoordinate == gridSize / 2 - 1:
-					prefab = $"../GrassBody"
-				if prefab == $"../StoneBody" and randomNumb >= 0.9:
-					prefab = $"../CopperBody"
-				elif prefab == $"../StoneBody" and randomNumb >= 0.8:
-					prefab = $"../IronBody"
-				elif yCoordinate <= gridSize / 2 - 7:
-					prefab = $"../StoneBody"
-
-				var new_block = prefab.duplicate()
-				
-				for child in new_block.get_children():
-					if child is MeshInstance3D:
-						child.visibility_range_end = renderDistance
-				
-				new_block.position = Vector3(xCoordinate, height - 9 + yCoordinate, zCoordinate)
-
-				# Get chunk position
-				var chunk_x = int(xCoordinate / chunkSize)
-				var chunk_z = int(zCoordinate / chunkSize)
-				var chunk_key = str(chunk_x) + "_" + str(chunk_z)
-
-				# Create chunk if needed
-				if not chunksSavings.has(chunk_key):
-					var chunk = Node3D.new()
-					chunk.name = "Chunk_" + chunk_key
-					chunk.position = Vector3.ZERO #(chunk_x * chunkSize, 0, chunk_z * chunkSize)
-					add_child(chunk)
-					chunksSavings[chunk_key] = chunk
-					print(chunk) 
-
-				# Add block to chunk
-				chunksSavings[chunk_key].add_child(new_block)
-				terrainBlocks.append(new_block)
-				terrainBlocksNumber += 1
+	
+	generateChunkNodes()
+	checkChunkRange()
+	buildChunk()
 	
 
+func _process(_delta) -> void:
+	if playerMoving():
+		checkChunkRange()
+		buildChunk()
 
 
-func _process(delta):
-	print($"../CopperBody/CopperMesh".visibility_range_end)
-	timeSinceCheck += delta
-	if timeSinceCheck + randf() > 0.08:
-		timeSinceCheck = 0
-		for block in terrainBlocks:
-			if block.get_node("VisibleOnScreenNotifier3D").is_on_screen():
-				for child in block.get_children():
-					if child is MeshInstance3D:
-						child.visible = true
-			else:
-				for child in block.get_children():
-					if child is MeshInstance3D:
-						child.visible = false
+
+
+func playerMoving() -> bool:
+	if playerBody.velocity.x != 0 || playerBody.velocity.z != 0:
+		return true
+	else: return false
+
+func checkChunkRange() -> void:
+	var xRange1Coordinate := playerBody.position.x - renderDistance
+	var zRange1Coordinate := playerBody.position.z - renderDistance
+	var xRange2Coordinate := playerBody.position.x + renderDistance
+	var zRange2Coordinate := playerBody.position.z + renderDistance
+	
+	var range1 := Vector3(xRange1Coordinate,0, zRange1Coordinate)
+	var range2 := Vector3(xRange2Coordinate,0, zRange2Coordinate)
+	
+	for chunk:Node3D in chunkNodes:
+		if chunk.position.x >= range1.x and chunk.position.x <= range2.x && chunk.position.z >= range1.z and chunk.position.z <= range2.z:
+			chunk.set_meta("isInRange", true)
+
+
+func generateChunkNodes() -> void:
+	for xCoordinate in worldSize:
+		for zCoordinate in worldSize:
+			var newChunkNode = Node3D.new()
+			
+			newChunkNode.position = Vector3(xCoordinate,0,zCoordinate)
+			newChunkNode.name = str(xCoordinate) + "_" + str(zCoordinate) + "_chunk"
+			newChunkNode.set_meta("isInRange", false)
+			newChunkNode.set_meta("isLoaded", false)
+			newChunkNode.set_meta("hasDetails", false)
+			newChunkNode.set_meta("isInDetailRange", false)
+			chunkNodes.append(newChunkNode)
+
+func buildChunk() -> void:
+	for chunk in chunkNodes:
+		if chunk.get_meta("isInRange"):
+			for yCoordinate in chunkSize/4:
+				for xCoordinate in chunkSize:
+					for zCoordinate in chunkSize:
+						var newBlock:StaticBody3D = blockTypes["grass"].instantiate()
+						var perlinNoise:float = noise.get_noise_2d(xCoordinate, zCoordinate) * 1.5
+						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
+						chunk.add_child(newBlock)

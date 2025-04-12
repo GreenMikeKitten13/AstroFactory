@@ -23,6 +23,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if event.is_action_pressed("E"):
+		position = Vector3(0,30,0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	var isCameraMotion := (
@@ -31,7 +33,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	)
 	if event is InputEventMouseButton:
 		if event.is_pressed():
-			# zoom in
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP && $Node3D/SpringArm3D.spring_length > 0:
 				$Node3D/SpringArm3D.spring_length -= 0.1
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN && $Node3D/SpringArm3D.spring_length < 20:
@@ -40,12 +41,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if isCameraMotion:
 		cameraInputDirection = event.screen_relative * mouseSensetivity
 
+
 func _physics_process(delta: float) -> void:
 	cameraPivot.rotation.x += cameraInputDirection.y * delta
 	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/6, PI/3)
 	cameraPivot.rotation.y -= cameraInputDirection.x * delta
-	cameraInputDirection = Vector2.ZERO
+	#if Input.get_mouse_mode() == Input.MOUSE_MODE_CONFINED_HIDDEN:
+	#	get_viewport().warp_mouse(Vector2(255,255))
 	
+	cameraInputDirection = Vector2.ZERO
 	var rawInput := Input.get_vector("Left","Right","Forward","Backward")
 	var forward := camera.global_basis.z
 	var right := camera.global_basis.x

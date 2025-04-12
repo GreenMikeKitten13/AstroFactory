@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhgtnh045pd12"]
+
+[ext_resource type="ArrayMesh" uid="uid://bxktwj4pklx8l" path="res://Blocks/Textures+Objects/lil iron/lil iron.obj" id="1_yod03"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_schg7"]
+radius = 0.55
+
+[node name="IronBody" type="StaticBody3D"]
+
+[node name="IronCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0.05, 0.45, -0.05)
+shape = SubResource("SphereShape3D_schg7")
+
+[node name="IronMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+mesh = ExtResource("1_yod03")

@@ -1,18 +1,15 @@
-[gd_scene load_steps=26 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=14 format=3 uid="uid://qachlfwuf6f6"]
 
-[ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://lil man/lil man.png" id="2_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://duo0igy2s56jb" path="res://Blocks/CopperBlock.tscn" id="3_4c57u"]
+[ext_resource type="PackedScene" uid="uid://gkvjbc6sor3b" path="res://Blocks/DirtBlock.tscn" id="4_efxa6"]
+[ext_resource type="PackedScene" uid="uid://dgn4xfjhs4jy2" path="res://Blocks/GrassBlock.tscn" id="5_dg77c"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts.gd" id="5_lquwl"]
-[ext_resource type="ArrayMesh" uid="uid://bjotxw1i42t1n" path="res://lil dirt/lil dirt.obj" id="6_7mycd"]
-[ext_resource type="Texture2D" uid="uid://c6nmxof135klt" path="res://lil copper/lil copper.png" id="6_272bh"]
-[ext_resource type="ArrayMesh" uid="uid://gtqpss8dvmgl" path="res://lil copper/lil copper.obj" id="7_5vw27"]
-[ext_resource type="ArrayMesh" uid="uid://df6n7ntd11r4h" path="res://lil grass/lil grass.obj" id="7_272bh"]
-[ext_resource type="ArrayMesh" uid="uid://bxktwj4pklx8l" path="res://lil iron/lil iron.obj" id="8_efxa6"]
-[ext_resource type="Texture2D" uid="uid://bm7o7w04yoy1k" path="res://lil stone/lil stone.png" id="8_kek77"]
-[ext_resource type="Texture2D" uid="uid://m8x4lw2pb4tj" path="res://lil water/lil water.png" id="8_ycdy4"]
-[ext_resource type="ArrayMesh" uid="uid://cexhjjaylp6jw" path="res://lil stone/lil stone.obj" id="9_4c57u"]
-[ext_resource type="ArrayMesh" uid="uid://chfxcklfnj5cl" path="res://lil water/lil water.obj" id="9_w48qg"]
-[ext_resource type="Script" uid="uid://c0grtt7pav323" path="res://PlayerScripts.gd" id="11_ycdy4"]
-[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man/lil man.obj" id="13_w48qg"]
+[ext_resource type="PackedScene" uid="uid://dhgtnh045pd12" path="res://Blocks/IronBlock.tscn" id="6_ycdy4"]
+[ext_resource type="PackedScene" uid="uid://beehr8ho61l0j" path="res://Blocks/LavaBlock.tscn" id="7_w48qg"]
+[ext_resource type="PackedScene" uid="uid://h8v2et0881a1" path="res://Blocks/SandBlock.tscn" id="8_vivmo"]
+[ext_resource type="PackedScene" uid="uid://kxjxfm6xqmsk" path="res://Blocks/StoneBlock.tscn" id="9_2cqfq"]
+[ext_resource type="PackedScene" uid="uid://b3pvfak62m838" path="res://Blocks/WaterBlock.tscn" id="10_yaehf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -27,31 +24,6 @@ sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
-margin = 0.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
-albedo_texture = ExtResource("6_272bh")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycdy4"]
-albedo_texture = ExtResource("8_ycdy4")
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_w48qg"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_kek77"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efxa6"]
-albedo_texture = ExtResource("8_kek77")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vivmo"]
-albedo_texture = ExtResource("2_1bvp3")
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2cqfq"]
-radius = 0.55
-height = 2.2
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_ycdy4"]
-
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -64,135 +36,37 @@ shadow_enabled = true
 [node name="Scripts" type="Node" parent="."]
 script = ExtResource("5_lquwl")
 
-[node name="CopperBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, -1.766)
-
-[node name="CopperCollider" type="CollisionShape3D" parent="CopperBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
-shape = SubResource("BoxShape3D_lquwl")
-debug_fill = false
-
-[node name="CopperMesh" type="MeshInstance3D" parent="CopperBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_7mycd")
-visibility_range_end = 20.0
-mesh = ExtResource("7_5vw27")
-
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="CopperBody"]
-transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.0549999)
-
-[node name="DirtBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, -0.249376)
-
-[node name="DirtCollider" type="CollisionShape3D" parent="DirtBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
-shape = SubResource("BoxShape3D_lquwl")
-debug_fill = false
-
-[node name="DirtMesh" type="MeshInstance3D" parent="DirtBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-visibility_range_end = 20.0
-mesh = ExtResource("6_7mycd")
-skeleton = NodePath("../..")
-
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="DirtBody"]
-transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.055)
-
-[node name="WaterBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0.797241)
-
-[node name="WaterCollider" type="CollisionShape3D" parent="WaterBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
-shape = SubResource("BoxShape3D_lquwl")
-disabled = true
-debug_fill = false
-
-[node name="WaterBlock" type="MeshInstance3D" parent="WaterBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_ycdy4")
-visibility_range_end = 20.0
-mesh = ExtResource("9_w48qg")
-skeleton = NodePath("../..")
-
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="WaterBody"]
-transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.055)
-
-[node name="IronBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 1.88189)
-
-[node name="IronCollider" type="CollisionShape3D" parent="IronBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.49, -0.05)
-shape = SubResource("BoxShape3D_lquwl")
-debug_fill = false
-
-[node name="IronMesh" type="MeshInstance3D" parent="IronBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0.001, 0)
-visibility_range_end = 20.0
-mesh = ExtResource("8_efxa6")
-skeleton = NodePath("../..")
-
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="IronBody"]
-transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.4949, -0.0549999)
-
-[node name="GrassBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, -3.42843)
-
-[node name="GrassMesh" type="MeshInstance3D" parent="GrassBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-visibility_range_end = 20.0
-mesh = ExtResource("7_272bh")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="GrassBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
-shape = SubResource("SphereShape3D_w48qg")
-
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="GrassBody"]
-transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.495, -0.0550001)
-
-[node name="StoneBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 2.98)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StoneBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
-shape = SubResource("BoxShape3D_kek77")
-
-[node name="LilStone" type="MeshInstance3D" parent="StoneBody"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 3.525, 0)
-material_override = SubResource("StandardMaterial3D_efxa6")
-visibility_range_end = 20.0
-mesh = ExtResource("9_4c57u")
-skeleton = NodePath("../..")
-
-[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="StoneBody"]
-transform = Transform3D(0.495, 0, 0, 0, 0.495, 0, 0, 0, 0.495, 0.055, 0.4945, -0.0550001)
-
-[node name="PlayerBody" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
-script = ExtResource("11_ycdy4")
-
-[node name="LilMan" type="MeshInstance3D" parent="PlayerBody"]
-unique_name_in_owner = true
-material_override = SubResource("StandardMaterial3D_vivmo")
-mesh = ExtResource("13_w48qg")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.119038, -0.250446)
-shape = SubResource("CapsuleShape3D_2cqfq")
-
-[node name="Node3D" type="Node3D" parent="PlayerBody"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.25)
-
-[node name="SpringArm3D" type="SpringArm3D" parent="PlayerBody/Node3D"]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
-shape = SubResource("SphereShape3D_ycdy4")
-spring_length = 5.0
-
-[node name="Camera3D" type="Camera3D" parent="PlayerBody/Node3D/SpringArm3D"]
+[node name="PlayerBody" parent="." instance=ExtResource("2_0xm2m")]
 unique_name_in_owner = true
 
-[node name="RayCast3D" type="RayCast3D" parent="PlayerBody/Node3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-target_position = Vector3(0, 0, -5)
+[node name="CopperBody" parent="." instance=ExtResource("3_4c57u")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25994, 0, -0.166506)
+
+[node name="DirtBody" parent="." instance=ExtResource("4_efxa6")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.70021, 2.38419e-07, 0.0307703)
+
+[node name="GrassBody" parent="." instance=ExtResource("5_dg77c")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.25, 0)
+
+[node name="IronBody" parent="." instance=ExtResource("6_ycdy4")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.23251, 0, 1.26171)
+
+[node name="LavaBody" parent="." instance=ExtResource("7_w48qg")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88813, 0, -2.22237)
+
+[node name="SandBody" parent="." instance=ExtResource("8_vivmo")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.79601, 0, -2.21688)
+
+[node name="StoneBody" parent="." instance=ExtResource("9_2cqfq")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.89509, 0, -2.14969)
+
+[node name="WaterBody" parent="." instance=ExtResource("10_yaehf")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.37057, 2.38419e-07, -0.134499)
