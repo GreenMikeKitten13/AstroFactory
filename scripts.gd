@@ -3,18 +3,16 @@ extends Node
 #------------------commentMeanings---------------
 #   '#???' == have to think about it
 #   '~[]' == 'chunk'
-#   '<^>' == disabled debug
-#   '<>' == enabled debug
 #------------------settings----------------------
-var renderDistance:int = 10 # know when to build ~[]
-var detailRange:int                                        # ???
+var renderDistance:int = 20 #know, when to build ~[]
+var detailRange:int                                        #???
 var worldSize:int = 30
 var chunkSize:int = 10
 #------------------bools-------------------------
-var isInRange:bool        # true if ~[] is in 'renderDistance'
-var isLoaded:bool         # true if ~[] is built
-var hasDetails:bool       # true if ~[] is not made out of MultiMeshInstance3D
-var isInDetailRange:bool  # true if ~[] is in 'detailRange'
+var isInRange:bool #true if ~[] is in 'renderDistance'
+var isLoaded:bool #true if ~[] is built
+var hasDetails:bool #true if ~[] is not made out of 'MultiMeshInstance3D'
+var isInDetailRange:bool #true if ~[] is in 'detailRange'
 #------------------blocks------------------------
 @onready var grassBody: StaticBody3D = %GrassBody
 @onready var dirtBody: StaticBody3D = %DirtBody
@@ -22,17 +20,18 @@ var isInDetailRange:bool  # true if ~[] is in 'detailRange'
 @onready var copperBody: StaticBody3D = %CopperBody
 @onready var ironBody: StaticBody3D = %IronBody
 
-var blockTypes = {
-	"grass": preload("res://Blocks/GrassBlock.tscn"),
-	"dirt": preload("res://Blocks/DirtBlock.tscn"),
-	"stone": preload("res://Blocks/StoneBlock.tscn"),
-	"copper": preload("res://Blocks/CopperBlock.tscn"),
-	"iron": preload("res://Blocks/IronBlock.tscn")
+var blockTypes : Dictionary = {
+	"grass" : preload("res://Blocks/GrassBlock.tscn"),
+	"dirt" : preload("res://Blocks/DirtBlock.tscn"),
+	"stone" : preload("res://Blocks/StoneBlock.tscn"),
+	"copper" : preload("res://Blocks/CopperBlock.tscn"),
+	"iron" : preload("res://Blocks/IronBlock.tscn")
 }
 #------------------other stuff-------------------
 @onready var playerBody: CharacterBody3D = %PlayerBody
-var chunkNodes := []
-var noise := FastNoiseLite.new()
+var chunkNodes : Array = []
+var noise :Noise = FastNoiseLite.new()
+
 
 #------------------functions---------------------
 
@@ -40,36 +39,48 @@ func _ready() -> void:
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.1
+	#noise.fractal_octaves = 4    -> for smoother biomes
+	#noise.fractal_gain = 0.5     -> for smoother biomes
 	
 	generateChunkNodes()
 	checkChunkRange()
 	buildChunk()
+	
 
-func _process(_delta: float) -> void:
+func _process(_delta) -> void:
 	if playerMoving():
 		checkChunkRange()
 		buildChunk()
 
+
+
+
 func playerMoving() -> bool:
-	return playerBody.velocity.x != 0 or playerBody.velocity.z != 0
+	if playerBody.velocity.x != 0 || playerBody.velocity.z != 0:
+		return true
+	else: return false
 
 func checkChunkRange() -> void:
-	var x1 := playerBody.position.x - renderDistance
-	var z1 := playerBody.position.z - renderDistance
-	var x2 := playerBody.position.x + renderDistance
-	var z2 := playerBody.position.z + renderDistance
+	var xRange1Coordinate:float = playerBody.position.x - renderDistance
+	var zRange1Coordinate :float= playerBody.position.z - renderDistance
+	var xRange2Coordinate :float= playerBody.position.x + renderDistance
+	var zRange2Coordinate :float= playerBody.position.z + renderDistance
+	
+	var range1:Vector3 = Vector3(xRange1Coordinate,0, zRange1Coordinate)
+	var range2:Vector3 = Vector3(xRange2Coordinate,0, zRange2Coordinate)
+	
+	for chunk:Node3D in chunkNodes:
+		if chunk.position.x >= range1.x and chunk.position.x <= range2.x && chunk.position.z >= range1.z and chunk.position.z <= range2.z:
+			chunk.set_meta("isInRange", true)
 
-	for chunk: Node3D in chunkNodes:
-		var chunkPos := chunk.position
-		var inRange := chunkPos.x >= x1 and chunkPos.x <= x2 and chunkPos.z >= z1 and chunkPos.z <= z2
-		chunk.set_meta("isInRange", inRange)
 
 func generateChunkNodes() -> void:
-	for x in range(worldSize):
-		for z in range(worldSize):
-			var newChunkNode = Node3D.new()
-			newChunkNode.position = Vector3(x * chunkSize, 0, z * chunkSize)
-			newChunkNode.name = str(x * chunkSize) + "_" + str(z * chunkSize) + "_chunk"
+	for xCoordinate in worldSize:
+		for zCoordinate in worldSize:
+			var newChunkNode :Node3D = Node3D.new()
+			
+			newChunkNode.position = Vector3(xCoordinate * 10,0,zCoordinate * 10)
+			newChunkNode.name = str(xCoordinate * 10) + "_" + str(zCoordinate * 10) + "_chunk"
 			newChunkNode.set_meta("isInRange", false)
 			newChunkNode.set_meta("isLoaded", false)
 			newChunkNode.set_meta("hasDetails", false)
@@ -78,15 +89,13 @@ func generateChunkNodes() -> void:
 			add_child(newChunkNode)
 
 func buildChunk() -> void:
-	for chunk in chunkNodes:
-		if chunk.get_meta("isInRange") and not chunk.get_meta("isLoaded"):
+	for chunk :Node3D in chunkNodes:
+		if chunk.get_meta("isInRange") && !chunk.get_meta("isLoaded"):
 			chunk.set_meta("isLoaded", true)
-			for y in range(chunkSize / 4):
-				for x in range(chunkSize):
-					for z in range(chunkSize):
-						var newBlock: StaticBody3D = blockTypes["grass"].instantiate()
-						var worldX: int = int(chunk.position.x) + x
-						var worldZ: int = int(chunk.position.z) + z
-						var height: float = noise.get_noise_2d(worldX, worldZ) * 1.5
-						newBlock.position = Vector3(x, y + height, z)
+			for yCoordinate in chunkSize/4:
+				for xCoordinate in chunkSize:
+					for zCoordinate in chunkSize:
+						var newBlock:StaticBody3D = blockTypes["grass"].instantiate()
+						var perlinNoise:float = noise.get_noise_2d(xCoordinate + chunk.position.x    , zCoordinate  + chunk.position.z ) * 1.75
+						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
 						chunk.add_child(newBlock)
