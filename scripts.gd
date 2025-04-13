@@ -39,8 +39,8 @@ func _ready() -> void:
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.1
-	#noise.fractal_octaves = 4    -> for smoother biomes
-	#noise.fractal_gain = 0.5     -> for smoother biomes
+	noise.fractal_octaves = 4    #-> for smoother biomes
+	noise.fractal_gain = 0.5     #-> for smoother biomes
 	
 	generateChunkNodes()
 	checkChunkRange()
@@ -99,3 +99,7 @@ func buildChunk() -> void:
 						var perlinNoise:float = noise.get_noise_2d(xCoordinate + chunk.position.x    , zCoordinate  + chunk.position.z ) * 1.75
 						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
 						chunk.add_child(newBlock)
+
+
+func _on_timer_timeout() -> void:
+	pass # Replace with function body.
