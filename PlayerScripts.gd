@@ -9,6 +9,9 @@ extends CharacterBody3D
 @export var rotationSpeed :=12.0
 @export var jumpImpulse :=12.0
 
+@export_group("HP")
+@export var player_hp : int = 100
+
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=15 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://duo0igy2s56jb" path="res://Blocks/CopperBlock.tscn" id="3_4c57u"]
@@ -23,6 +23,8 @@ background_mode = 2
 sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4c57u"]
 
 [node name="Main" type="Node3D"]
 
@@ -70,3 +72,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.89509, 0, -2.14969)
 [node name="WaterBody" parent="." instance=ExtResource("10_yaehf")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.37057, 2.38419e-07, -0.134499)
+
+[node name="SentryBody" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3479, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.34226, -1.82262, -2.20276)
+shape = SubResource("BoxShape3D_4c57u")
+debug_color = Color(0.264, 0.594, 0.66, 1)
