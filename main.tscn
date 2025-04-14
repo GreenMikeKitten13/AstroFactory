@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=20 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://duo0igy2s56jb" path="res://Blocks/CopperBlock.tscn" id="3_4c57u"]
@@ -30,6 +30,11 @@ glow_enabled = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_ycdy4"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_efxa6"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_efxa6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dg77c"]
+size = Vector3(1, 0.492798, 0.505371)
 
 [node name="Main" type="Node3D"]
 
@@ -97,6 +102,17 @@ shape = SubResource("BoxShape3D_ycdy4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Area3D"]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
 shape = SubResource("SphereShape3D_efxa6")
+
+[node name="BulletBody" type="StaticBody3D" parent="SentryBody"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 1.68614, 0, 0)
+
+[node name="Bullet_placeholder_mesh" type="MeshInstance3D" parent="SentryBody/BulletBody"]
+transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("BoxMesh_efxa6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/BulletBody"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+shape = SubResource("BoxShape3D_dg77c")
 
 [connection signal="timeout" from="SentryBody/Timer" to="SentryBody" method="_on_timer_timeout"]
 [connection signal="body_entered" from="SentryBody/Area3D" to="SentryBody" method="_on_area_3d_body_entered"]
