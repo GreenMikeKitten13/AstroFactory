@@ -1,1 +1,1 @@
-extends StaticBody3D
+#delete

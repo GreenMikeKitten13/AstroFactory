@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=18 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://duo0igy2s56jb" path="res://Blocks/CopperBlock.tscn" id="3_4c57u"]
@@ -29,6 +29,8 @@ glow_enabled = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ycdy4"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_efxa6"]
+
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -41,7 +43,7 @@ shadow_enabled = true
 [node name="Scripts" type="Node" parent="."]
 script = ExtResource("5_lquwl")
 
-[node name="PlayerBody" parent="." instance=ExtResource("2_0xm2m")]
+[node name="PlayerBody" parent="." groups=["target"] instance=ExtResource("2_0xm2m")]
 unique_name_in_owner = true
 
 [node name="CopperBody" parent="." instance=ExtResource("3_4c57u")]
@@ -74,20 +76,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.89509, 0, -2.14969)
 
 [node name="WaterBody" parent="." instance=ExtResource("10_yaehf")]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.37057, 2.38419e-07, -0.134499)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.342, 0, 0)
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.06402, 2.10647, 0)
 script = ExtResource("11_efxa6")
 
 [node name="Timer" type="Timer" parent="SentryBody"]
+one_shot = true
 
 [node name="sentry_placeholder_mesh" type="MeshInstance3D" parent="SentryBody"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("BoxMesh_dg77c")
 skeleton = NodePath("../..")
 
 [node name="sentry_collision_box" type="CollisionShape3D" parent="SentryBody"]
 shape = SubResource("BoxShape3D_ycdy4")
 
+[node name="Area3D" type="Area3D" parent="SentryBody"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Area3D"]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("SphereShape3D_efxa6")
+
 [connection signal="timeout" from="SentryBody/Timer" to="SentryBody" method="_on_timer_timeout"]
+[connection signal="body_entered" from="SentryBody/Area3D" to="SentryBody" method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="SentryBody/Area3D" to="SentryBody" method="_on_area_3d_body_exited"]
