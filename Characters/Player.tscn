@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://vwhdh3633lgp"]
 
 [ext_resource type="Script" uid="uid://c0grtt7pav323" path="res://PlayerScripts.gd" id="1_kne1u"]
-[ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://lil man/lil man.png" id="2_e80uo"]
-[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://lil man/lil man.obj" id="3_cxr5p"]
+[ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://Characters/lil man/lil man.png" id="2_e80uo"]
+[ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://Characters/lil man/lil man.obj" id="3_cxr5p"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kne1u"]
 albedo_texture = ExtResource("2_e80uo")
@@ -19,6 +19,7 @@ script = ExtResource("1_kne1u")
 [node name="LilMan" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
 material_override = SubResource("StandardMaterial3D_kne1u")
+visibility_range_begin = 2.0
 mesh = ExtResource("3_cxr5p")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -38,5 +39,6 @@ spring_length = 5.0
 unique_name_in_owner = true
 
 [node name="RayCast3D" type="RayCast3D" parent="Node3D"]
+unique_name_in_owner = true
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 target_position = Vector3(0, 0, -5)

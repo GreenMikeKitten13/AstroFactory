@@ -3,19 +3,19 @@
 [ext_resource type="Texture2D" uid="uid://m8x4lw2pb4tj" path="res://Blocks/Textures+Objects/lil water/lil water.png" id="1_atmvl"]
 [ext_resource type="ArrayMesh" uid="uid://chfxcklfnj5cl" path="res://Blocks/Textures+Objects/lil water/lil water.obj" id="2_k2d38"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_schg7"]
-radius = 0.55
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8tjis"]
 albedo_texture = ExtResource("1_atmvl")
 
-[node name="WaterBody" type="StaticBody3D"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_schg7"]
+radius = 0.55
 
-[node name="WaterCollider" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.05, 0.45, -0.05)
-shape = SubResource("SphereShape3D_schg7")
+[node name="WaterBody" type="StaticBody3D"]
 
 [node name="WaterMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_8tjis")
 mesh = ExtResource("2_k2d38")
+
+[node name="WaterCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.05, 0.45, -0.05)
+shape = SubResource("SphereShape3D_schg7")

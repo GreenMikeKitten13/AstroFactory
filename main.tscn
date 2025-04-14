@@ -1,15 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=6 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://duo0igy2s56jb" path="res://Blocks/CopperBlock.tscn" id="3_4c57u"]
-[ext_resource type="PackedScene" uid="uid://gkvjbc6sor3b" path="res://Blocks/DirtBlock.tscn" id="4_efxa6"]
-[ext_resource type="PackedScene" uid="uid://dgn4xfjhs4jy2" path="res://Blocks/GrassBlock.tscn" id="5_dg77c"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts.gd" id="5_lquwl"]
-[ext_resource type="PackedScene" uid="uid://dhgtnh045pd12" path="res://Blocks/IronBlock.tscn" id="6_ycdy4"]
-[ext_resource type="PackedScene" uid="uid://beehr8ho61l0j" path="res://Blocks/LavaBlock.tscn" id="7_w48qg"]
-[ext_resource type="PackedScene" uid="uid://h8v2et0881a1" path="res://Blocks/SandBlock.tscn" id="8_vivmo"]
-[ext_resource type="PackedScene" uid="uid://kxjxfm6xqmsk" path="res://Blocks/StoneBlock.tscn" id="9_2cqfq"]
-[ext_resource type="PackedScene" uid="uid://b3pvfak62m838" path="res://Blocks/WaterBlock.tscn" id="10_yaehf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -38,35 +30,3 @@ script = ExtResource("5_lquwl")
 
 [node name="PlayerBody" parent="." instance=ExtResource("2_0xm2m")]
 unique_name_in_owner = true
-
-[node name="CopperBody" parent="." instance=ExtResource("3_4c57u")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25994, 0, -0.166506)
-
-[node name="DirtBody" parent="." instance=ExtResource("4_efxa6")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.70021, 2.38419e-07, 0.0307703)
-
-[node name="GrassBody" parent="." instance=ExtResource("5_dg77c")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.25, 0)
-
-[node name="IronBody" parent="." instance=ExtResource("6_ycdy4")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.23251, 0, 1.26171)
-
-[node name="LavaBody" parent="." instance=ExtResource("7_w48qg")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88813, 0, -2.22237)
-
-[node name="SandBody" parent="." instance=ExtResource("8_vivmo")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.79601, 0, -2.21688)
-
-[node name="StoneBody" parent="." instance=ExtResource("9_2cqfq")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.89509, 0, -2.14969)
-
-[node name="WaterBody" parent="." instance=ExtResource("10_yaehf")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.37057, 2.38419e-07, -0.134499)
