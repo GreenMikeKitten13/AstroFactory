@@ -17,14 +17,16 @@ func shoot():
 func _on_timer_timeout():
 	can_shoot = true
 
-func _on_area_3d_body_entered(body: Node3D) -> void:
+func _on_sentry_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("target"):
 		bodies_in_range.append(body)
 
-func _on_area_3d_body_exited(body: Node3D) -> void:
+
+func _on_sentry_area_body_exited(body: Node3D) -> void:
 	if body in bodies_in_range:
 		bodies_in_range.erase(body)
 		print("bye")
+
 
 func _process(delta):
 	if bodies_in_range.size() > 0:
@@ -36,6 +38,5 @@ func _process(delta):
 		if can_shoot:
 			shoot()		
 			
-		
-
+	
 		

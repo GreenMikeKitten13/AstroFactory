@@ -9,6 +9,7 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
+
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan
@@ -20,6 +21,8 @@ var Gravity :int= -30
 func _ready() -> void:
 	#Input.mouse_mode = Input.MOUSE_MODE_CONFINED_HIDDEN
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	add_to_group("target")
+	%PlayerBody.set_meta("health", 100)
 
 
 func _input(event: InputEvent) -> void:
