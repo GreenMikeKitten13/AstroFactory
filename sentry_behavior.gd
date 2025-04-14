@@ -7,15 +7,13 @@ var can_shoot : bool = true
 func _ready():
 	$Timer.wait_time = 1.0 # in sec
 	$Timer.start()
-	
 
 func shoot():
 	if can_shoot:
 		print("shoot")
 		can_shoot = false
 	$Timer.start()
-
-
+	
 func _on_timer_timeout():
 	can_shoot = true
 
@@ -32,13 +30,12 @@ func _process(delta):
 	if bodies_in_range.size() > 0:
 		var self_pos = global_transform.origin
 		var target_pos = bodies_in_range[0].global_transform.origin
-		var direction = target_pos - self_pos
 		
-		direction.y = 0
-		direction = direction.normalized()
-		
-		var target_angle = atan2(direction.x, direction.z)
-		rotation.y = target_angle
+		look_at(target_pos) # x,y,z rotation
+		$".".rotation.z = 0 # lock z axis
 		if can_shoot:
-			shoot()
+			shoot()		
+			
+		
+
 		
