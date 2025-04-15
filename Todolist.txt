@@ -1,17 +1,17 @@
-Player:
-	.inventory
-	.building
-	.shooting
-	.mech, car, drone implementation
+.sentry shooting functionality 
+.UHD
+	>inventory 
+	>hp
+	>materiales 
 
-terrain generation:
-	- hills,...
+.building
+.enemy
+	>behavior (AI)
+		*movement
+		*building
+		*mining
+		*attack
+		*repair
 
-enemy:
-	-enemy behavior AI
-
-
-buildings:
-	-sprites
-	-sentries
-	-base
+.Player
+	>drone, mech car implementation
