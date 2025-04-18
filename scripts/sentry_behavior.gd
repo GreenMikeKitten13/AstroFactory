@@ -36,6 +36,7 @@ func _process(_delta):
 		looking_pos = looking_pos.lerp(target_pos, 0.2)
 		
 		look_at(looking_pos) # x,y,z rotation
+		$"../TurretTower".rotation.y = $".".rotation.y
 		if can_shoot:
 			shoot()
 			
