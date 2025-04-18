@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="3_85g3d"]
 [ext_resource type="PackedScene" uid="uid://dj0lgxjvr58ut" path="res://placables/turretBody.tscn" id="4_jyhfs"]
+[ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -17,8 +18,6 @@ background_mode = 2
 sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
-
-[sub_resource type="BoxMesh" id="BoxMesh_jyhfs"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
 
@@ -44,10 +43,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 18.537, 0)
 script = ExtResource("3_85g3d")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SentryBody"]
-transform = Transform3D(0.265, 0, 0, 0, 0.23, 0, 0, 0, 1.08, 0, 0, 0)
-mesh = SubResource("BoxMesh_jyhfs")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody"]
 shape = SubResource("BoxShape3D_lquwl")
 
@@ -59,6 +54,9 @@ shape = SubResource("SphereShape3D_7mycd")
 
 [node name="Timer" type="Timer" parent="SentryBody"]
 one_shot = true
+
+[node name="TurretBarrel" type="MeshInstance3D" parent="SentryBody"]
+mesh = ExtResource("4_tbgi4")
 
 [node name="turretBody" parent="." instance=ExtResource("4_jyhfs")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 20, 0)

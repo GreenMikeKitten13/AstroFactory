@@ -34,9 +34,9 @@ one_shot = true
 mesh = ExtResource("1_o0c80")
 
 [node name="TurretTower" type="MeshInstance3D" parent="TurretBase"]
+transform = Transform3D(0.857166, 0, -0.51504, 0, 1, 0, 0.51504, 0, 0.857166, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_lrcd7")
 mesh = ExtResource("3_6upxj")
 
 [node name="TurretBarrel" type="MeshInstance3D" parent="TurretBase/TurretTower"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0, 0)
 mesh = ExtResource("4_mnvv2")
