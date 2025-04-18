@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dj0lgxjvr58ut"]
+[gd_scene load_steps=9 format=3 uid="uid://dj0lgxjvr58ut"]
 
+[ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="1_n3ntx"]
 [ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="1_o0c80"]
 [ext_resource type="Texture2D" uid="uid://cxudiaxg01i4r" path="res://placables/obj + textures/turret base.png" id="2_n3ntx"]
 [ext_resource type="ArrayMesh" uid="uid://w1vta1cpeb8j" path="res://placables/obj + textures/turret tower.obj" id="3_6upxj"]
@@ -14,6 +15,7 @@ size = Vector3(0.69, 0.6, 0.69)
 albedo_texture = ExtResource("2_n3ntx")
 
 [node name="turretBody" type="StaticBody3D"]
+script = ExtResource("1_n3ntx")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.289014, -0.05)
@@ -31,12 +33,10 @@ one_shot = true
 [node name="TurretBase" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_o0c80")
 
-[node name="TurretTower" type="MeshInstance3D" parent="."]
+[node name="TurretTower" type="MeshInstance3D" parent="TurretBase"]
 material_override = SubResource("StandardMaterial3D_lrcd7")
 mesh = ExtResource("3_6upxj")
-skeleton = NodePath("../TurretBase")
 
-[node name="TurretBarrel" type="MeshInstance3D" parent="."]
+[node name="TurretBarrel" type="MeshInstance3D" parent="TurretBase/TurretTower"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0, 0)
 mesh = ExtResource("4_mnvv2")
-skeleton = NodePath("../TurretTower")
