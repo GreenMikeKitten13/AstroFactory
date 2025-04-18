@@ -23,6 +23,7 @@ var blockTypes : Dictionary = {
 @onready var playerBody: CharacterBody3D = %PlayerBody
 var chunkNodes : Array = []
 var timeBetweenBlockCreation:float = 0.000000000000000001
+@onready var destroyedBlocks: Node3D = %DestroyedBlocks
 #------------------noise-------------------------
 var humidityNoise = FastNoiseLite.new()
 var tempetureNoise = FastNoiseLite.new()
@@ -31,8 +32,6 @@ var terrainNoise = FastNoiseLite.new()
 #------------------functions---------------------
 
 func _ready() -> void:
-	#extremeNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
-	#extremeNoise.seed = randi()
 	humidityNoise.noise_type =  FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	humidityNoise.seed = randi()
 	humidityNoise.frequency = 0.01
@@ -108,19 +107,49 @@ func buildChunk() -> void:
 				for xCoordinate:int in chunkSize:
 					for zCoordinate:int in chunkSize:
 						if randf() <= 0.01: await get_tree().create_timer(timeBetweenBlockCreation).timeout
-						
 						var xPos :float = xCoordinate + chunk.position.x
 						var zPos :float = zCoordinate + chunk.position.z
 						
 						var humidityFloat:float = humidityNoise.get_noise_2d(zPos*0.5, zPos * 0.5) * 5  # <-0.5 = dry; <0 = normal; < 0.5 = rain; <1 = snow
 						var tempertureFloat:float = tempetureNoise.get_noise_2d(xPos*0.5, zPos*0.5)*5# <-0.66 = cold; <0.32 = normal; <1 = hot  
-						var extremeFloat = extremeNoise.get_noise_2d(xPos, zPos) * 15
-						var terrainFloat = terrainNoise.get_noise_2d(xPos, zPos)
+						var extremeFloat:float = extremeNoise.get_noise_2d(xPos, zPos) * 15
+						var terrainFloat:float = terrainNoise.get_noise_2d(xPos, zPos)
 						var dominantBiome :String = getDominantBiome(humidityFloat, tempertureFloat,extremeFloat)
-						var newBlock :StaticBody3D = blockTypes[chooseBlockType(dominantBiome, yCoordinate)].instantiate()
-						newBlock.position = Vector3(xCoordinate, yCoordinate + clamp(terrainFloat * amplifier(dominantBiome), terrainFloat*26,33), zCoordinate)
-						newBlock.get_child(0).visibility_range_end = renderDistance
-						chunk.add_child(newBlock)
+						var neededBlock = blockTypes[chooseBlockType(dominantBiome, yCoordinate)]
+						var newBlock:StaticBody3D
+						var madeThrough:bool = false
+						var neededPosition = Vector3(xCoordinate, yCoordinate + clamp(terrainFloat * amplifier(dominantBiome), terrainFloat*26,33), zCoordinate)
+						
+						if destroyedBlocks.get_child_count() !=  0:
+							for block:StaticBody3D in destroyedBlocks.get_children():
+								if block.name.begins_with(str(neededBlock)) && !madeThrough:
+									print("found in destroyedBlcoks")
+									block.set_process(true)
+									block.show()
+									block.get_child(0).disabled = false
+									block.reparent($"..")
+									block.position = neededPosition
+								
+									if destroyedBlocks.get_child(-1) == block:
+										madeThrough = true
+
+									break
+								
+								elif madeThrough:
+									print("checked everything, should create")
+									newBlock =  neededBlock.instantiate()
+								
+									newBlock.position = neededPosition
+									newBlock.get_child(0).visibility_range_end = renderDistance
+									chunk.add_child(newBlock)
+
+									break
+						else:
+							newBlock =  neededBlock.instantiate()
+								
+							newBlock.position = neededPosition
+							newBlock.get_child(0).visibility_range_end = renderDistance
+							chunk.add_child(newBlock)
 
 
 func getDominantBiome(humidity:float, temperature:float,extreme:float) -> String:
@@ -143,9 +172,9 @@ func getDominantBiome(humidity:float, temperature:float,extreme:float) -> String
 	elif temperature <= 1:
 		temperatureFix = "hot"
 	
-	if extreme <= -2:  # Flat areas
+	if extreme <= -2: 
 		biomeFix = "flat"
-	elif extreme <= 15:  # Hills
+	elif extreme <= 15: 
 		biomeFix = "hills"
 	return humidityFix + " " + temperatureFix + " " + biomeFix
 
@@ -154,23 +183,6 @@ func chooseBlockType(biome: String, yPos: int) -> String:
 	var humidity = biomeParts[0]
 	var temperature = biomeParts[1]
 	var isSurface = chunkSize == yPos + 1
-	
-	#if extreme == "hills" && extremeNoise.frequency == 20:
-	#	extremeNoise.frequency = 10
-		#extremeNoise.fractal_octaves = 4
-		#extremeNoise.fractal_lacunarity = 2
-		#extremeNoise.fractal_gain = 1.25
-	#elif extreme == "flat" && extremeNoise.fractal_gain != 20:
-	#	extremeNoise.frequency = 20
-	#	extremeNoise.fractal_octaves = 0.05
-	#	extremeNoise.fractal_lacunarity = 0.001
-	#	extremeNoise.fractal_gain = 0.05
-	
-		#only for mountains
-		#frequenzy: lower = better
-		#fractal_octaves : bigger = better
-		#fractal_lacunarity : bigger = ultimate spikes (making each thingy tiny)
-		#fractal_gain : bigger = McLoving it (better mountains, less "transition")
 	
 	if isSurface and humidity == "dry" and temperature == "hot":
 		return "sand" # desert

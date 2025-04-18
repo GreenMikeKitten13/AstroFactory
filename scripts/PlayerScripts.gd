@@ -13,13 +13,14 @@ extends CharacterBody3D
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan
+@onready var destroyedBlocks: Node3D = %DestroyedBlocks
+
 
 var lastMovementDirection:Vector3 = Vector3.BACK
 var cameraInputDirection :Vector2= Vector2.ZERO
 var Gravity :int= -30
 
 func _ready() -> void:
-	#Input.mouse_mode = Input.MOUSE_MODE_CONFINED_HIDDEN
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("target")
 	%PlayerBody.set_meta("health", 100)
@@ -29,17 +30,16 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if event.is_action_pressed("E"):
-		position = Vector3(0,30,0)
+		position += Vector3(0,15,0)
 	if event.is_action_pressed("left mouse click"):
 		var collider = %RayCast3D.get_collider()
 		if collider is StaticBody3D:
-			collider.queue_free()
+			collider.get_child(-1).disabled = true
+			collider.hide()
+			collider.set_process(false)
+			collider.reparent(destroyedBlocks, false)
 
 func _unhandled_input(event: InputEvent) -> void:
-	#var isCameraMotion :bool= (
-	#	event is InputEventMouseMotion and
-	#	Input.get_mouse_mode() == Input.MOUSE_MODE_CONFINED_HIDDEN
-	#)
 	var isCameraMotion :bool = event is InputEventMouseMotion
 	if event is InputEventMouseButton:
 		if event.is_pressed():
@@ -54,7 +54,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	cameraPivot.rotation.x += cameraInputDirection.y * delta
-	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/6, PI/3)
+	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/2, PI/2)
 	cameraPivot.rotation.y -= cameraInputDirection.x * delta
 	
 	cameraInputDirection = Vector2.ZERO
