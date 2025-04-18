@@ -3,7 +3,7 @@ extends Node
 #   '#???' == have to think about it
 #   '~[]' == 'chunk'
 #------------------settings----------------------
-var renderDistance:int = 15 #know, when to build ~[]
+var renderDistance:int = 20 #know, when to build ~[]
 var detailRange:int                                        #???
 var worldSize:int = 30
 var chunkSize:int = 10
