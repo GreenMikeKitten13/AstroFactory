@@ -18,7 +18,7 @@ sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="BoxMesh" id="BoxMesh_1bvp3"]
+[sub_resource type="BoxMesh" id="BoxMesh_jyhfs"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
 
@@ -41,10 +41,12 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 18.537, 0)
 script = ExtResource("3_85g3d")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SentryBody"]
-mesh = SubResource("BoxMesh_1bvp3")
+transform = Transform3D(0.265, 0, 0, 0, 0.23, 0, 0, 0, 1.08, 0, 0, 0)
+mesh = SubResource("BoxMesh_jyhfs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody"]
 shape = SubResource("BoxShape3D_lquwl")
@@ -60,7 +62,6 @@ one_shot = true
 
 [node name="turretBody" parent="." instance=ExtResource("4_jyhfs")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 20, 0)
-script = ExtResource("3_85g3d")
 
 [connection signal="body_entered" from="SentryBody/SentryArea" to="SentryBody" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/SentryArea" to="SentryBody" method="_on_sentry_area_body_exited"]
