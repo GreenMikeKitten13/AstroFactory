@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://vwhdh3633lgp"]
 
-[ext_resource type="Script" uid="uid://c0grtt7pav323" path="res://PlayerScripts.gd" id="1_kne1u"]
+[ext_resource type="Script" uid="uid://c0grtt7pav323" path="res://scripts/PlayerScripts.gd" id="1_kne1u"]
 [ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://Characters/lil man/lil man.png" id="2_e80uo"]
 [ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://Characters/lil man/lil man.obj" id="3_cxr5p"]
 

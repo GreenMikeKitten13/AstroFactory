@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3 uid="uid://dj0lgxjvr58ut"]
+
+[ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="1_o0c80"]
+[ext_resource type="Texture2D" uid="uid://cxudiaxg01i4r" path="res://placables/obj + textures/turret base.png" id="2_n3ntx"]
+[ext_resource type="ArrayMesh" uid="uid://w1vta1cpeb8j" path="res://placables/obj + textures/turret tower.obj" id="3_6upxj"]
+[ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_mnvv2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1ca2c"]
+size = Vector3(0.69, 0.6, 0.69)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rqng8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lrcd7"]
+albedo_texture = ExtResource("2_n3ntx")
+
+[node name="turretBody" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.289014, -0.05)
+shape = SubResource("BoxShape3D_1ca2c")
+
+[node name="SentryArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryArea"]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("SphereShape3D_rqng8")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="TurretBase" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_o0c80")
+
+[node name="TurretTower" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_lrcd7")
+mesh = ExtResource("3_6upxj")
+skeleton = NodePath("../TurretBase")
+
+[node name="TurretBarrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0, 0)
+mesh = ExtResource("4_mnvv2")
+skeleton = NodePath("../TurretTower")
