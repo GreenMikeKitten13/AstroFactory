@@ -3,17 +3,11 @@ extends Node
 #   '#???' == have to think about it
 #   '~[]' == 'chunk'
 #------------------settings----------------------
-var renderDistance:int = 30 #know, when to build ~[]
+var renderDistance:int = 15 #know, when to build ~[]
 var detailRange:int                                        #???
 var worldSize:int = 30
 var chunkSize:int = 10
 #------------------blocks------------------------
-@onready var grassBody: StaticBody3D = %GrassBody
-@onready var dirtBody: StaticBody3D = %DirtBody
-@onready var stoneBody: StaticBody3D = %StoneBody
-@onready var copperBody: StaticBody3D = %CopperBody
-@onready var ironBody: StaticBody3D = %IronBody
-
 var blockTypes : Dictionary = {
 	"grass" : preload("res://Blocks/GrassBlock.tscn"),
 	"dirt" : preload("res://Blocks/DirtBlock.tscn"),
@@ -21,50 +15,49 @@ var blockTypes : Dictionary = {
 	"copper" : preload("res://Blocks/CopperBlock.tscn"),
 	"iron" : preload("res://Blocks/IronBlock.tscn"),
 	"water" : preload("res://Blocks/WaterBlock.tscn"),
-	"sand" : preload("res://Blocks/SandBlock.tscn")
+	"sand" : preload("res://Blocks/SandBlock.tscn"),
+	"snow" : preload("res://Blocks/snowBlock.tscn"),
+	"lava" : preload("res://Blocks/LavaBlock.tscn")
 }
 #------------------other stuff-------------------
 @onready var playerBody: CharacterBody3D = %PlayerBody
 var chunkNodes : Array = []
-const BIOMES :Array = ["desert", "plains", "forest", "mountains"]
-var timeBetweenBlockCreation:float = 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001
+var timeBetweenBlockCreation:float = 0.000000000000000001
 #------------------noise-------------------------
-var noise :Noise = FastNoiseLite.new()
-var baseTerrainNoise: Noise = FastNoiseLite.new()
-var desertNoise: Noise = FastNoiseLite.new()
-var plainsNoise: Noise = FastNoiseLite.new()
-var mountainNoise: Noise = FastNoiseLite.new()
-var biomeBlendNoise: Noise = FastNoiseLite.new()
+var humidityNoise = FastNoiseLite.new()
+var tempetureNoise = FastNoiseLite.new()
+var extremeNoise = FastNoiseLite.new()
+var terrainNoise = FastNoiseLite.new()
 #------------------functions---------------------
 
 func _ready() -> void:
-	noise.seed = randi()
-	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.frequency = 0.1
+	#extremeNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	#extremeNoise.seed = randi()
+	humidityNoise.noise_type =  FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	humidityNoise.seed = randi()
+	humidityNoise.frequency = 0.01
+	humidityNoise.fractal_lacunarity = 0.01
+	humidityNoise.fractal_octaves = 5
+	humidityNoise.fractal_gain = 0.001
 	
-	# Biome selection noise
-	biomeBlendNoise.seed = randi()
-	biomeBlendNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-	biomeBlendNoise.frequency = 0.01  # Bigger areas for biomes
+	terrainNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	terrainNoise.seed = randi()
+	terrainNoise.fractal_gain = 0.4
 
-	# Base terrain variation
-	baseTerrainNoise.seed = randi()
-	baseTerrainNoise.noise_type = FastNoiseLite.TYPE_PERLIN
-	baseTerrainNoise.frequency = 0.1
 
-	# Biome-specific shape
-	desertNoise.seed = randi()
-	desertNoise.noise_type = FastNoiseLite.TYPE_PERLIN
-	desertNoise.frequency = 0.08
+	extremeNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	extremeNoise.seed = randi()
+	extremeNoise.frequency = 0.002
+	extremeNoise.fractal_octaves = 2
 
-	plainsNoise.seed = randi()
-	plainsNoise.noise_type = FastNoiseLite.TYPE_PERLIN
-	plainsNoise.frequency = 0.1
 	
-	mountainNoise.seed = randi()
-	mountainNoise.noise_type = FastNoiseLite.TYPE_PERLIN
-	mountainNoise.frequency = 0.03  # Mountains = larger features
-	
+	tempetureNoise.noise_type =  FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	tempetureNoise.seed = randi()
+	tempetureNoise.fractal_octaves = 5
+	tempetureNoise.frequency = 0.01
+	tempetureNoise.fractal_lacunarity = 0.01
+	tempetureNoise.fractal_gain = 0.001
+
 	generateChunkNodes()
 	checkChunkRange()
 	buildChunk()
@@ -80,10 +73,10 @@ func playerMoving() -> bool:
 	else: return false
 
 func checkChunkRange() -> void:
-	var xRange1Coordinate:float = playerBody.position.x - renderDistance
-	var zRange1Coordinate :float= playerBody.position.z - renderDistance
-	var xRange2Coordinate :float= playerBody.position.x + renderDistance
-	var zRange2Coordinate :float= playerBody.position.z + renderDistance
+	var xRange1Coordinate:float = playerBody.position.x - renderDistance*3
+	var zRange1Coordinate :float= playerBody.position.z - renderDistance*3
+	var xRange2Coordinate :float= playerBody.position.x + renderDistance*3
+	var zRange2Coordinate :float= playerBody.position.z + renderDistance*3
 	
 	var range1:Vector3 = Vector3(xRange1Coordinate,0, zRange1Coordinate)
 	var range2:Vector3 = Vector3(xRange2Coordinate,0, zRange2Coordinate)
@@ -97,7 +90,7 @@ func generateChunkNodes() -> void:
 		for zCoordinate:int in worldSize:
 			var newChunkNode :Node3D = Node3D.new()
 			
-			newChunkNode.position = Vector3(xCoordinate * 10,0,zCoordinate * 10)
+			newChunkNode.position = Vector3(xCoordinate * 10 ,0, zCoordinate * 10)
 			newChunkNode.name = str(xCoordinate * 10) + "_" + str(zCoordinate * 10) + "_chunk"
 			newChunkNode.set_meta("isInRange", false)
 			newChunkNode.set_meta("isLoaded", false)
@@ -119,91 +112,93 @@ func buildChunk() -> void:
 						var xPos :float = xCoordinate + chunk.position.x
 						var zPos :float = zCoordinate + chunk.position.z
 						
-						var perlinNoise:float = noise.get_noise_2d(xPos, zPos) * 1.75
-						var weights :Dictionary = get_biome_weights(xPos, zPos)
-						
-						var desertPossibility :float = desertNoise.get_noise_2d(xPos, zPos) * 1.2
-						var plainsPossibility :float = plainsNoise.get_noise_2d(xPos, zPos) * 1.75
-						var mountainPossibility :float = mountainNoise.get_noise_2d(xPos, zPos) * 3.0
-						
-						var height :float = (
-									desertPossibility * weights["desert"] +
-									plainsPossibility * weights["plains"] +
-									mountainPossibility * weights["mountains"]
-									 )
-						var dominantBiome : String = ""
-						var highestWeight :float = -INF
-
-						for biome :String in weights.keys():
-							if weights[biome] > highestWeight:
-									highestWeight = weights[biome]
-									dominantBiome = biome
-
-																				
-						var newBlock:StaticBody3D = blockTypes[chooseBlockType(height, yCoordinate,dominantBiome)].instantiate()
-						var blockMesh : MeshInstance3D = newBlock.get_child(0)
-						newBlock.position = Vector3(xCoordinate,yCoordinate + perlinNoise, zCoordinate)
-						blockMesh.visibility_range_end = renderDistance/2.0
+						var humidityFloat:float = humidityNoise.get_noise_2d(zPos*0.5, zPos * 0.5) * 5  # <-0.5 = dry; <0 = normal; < 0.5 = rain; <1 = snow
+						var tempertureFloat:float = tempetureNoise.get_noise_2d(xPos*0.5, zPos*0.5)*5# <-0.66 = cold; <0.32 = normal; <1 = hot  
+						var extremeFloat = extremeNoise.get_noise_2d(xPos, zPos) * 15
+						var terrainFloat = terrainNoise.get_noise_2d(xPos, zPos)
+						var dominantBiome :String = getDominantBiome(humidityFloat, tempertureFloat,extremeFloat)
+						var newBlock :StaticBody3D = blockTypes[chooseBlockType(dominantBiome, yCoordinate)].instantiate()
+						newBlock.position = Vector3(xCoordinate, yCoordinate + clamp(terrainFloat * amplifier(dominantBiome), terrainFloat*26,33), zCoordinate)
+						newBlock.get_child(0).visibility_range_end = renderDistance
 						chunk.add_child(newBlock)
 
-func chooseBlockType(noiseNumb:float, yCoordinate:int, biomeType: String) -> String:
-	if biomeType == "desert":
-		if yCoordinate > chunkSize - 5:
-			return "sand"
-		elif randf() < 0.185:
-			return "copper"
-		else:
-			return "stone"
 
-	elif biomeType == "plains":
-		if yCoordinate == chunkSize - 1 && noiseNumb > 0.45:
-			return "water"
-		elif yCoordinate == chunkSize - 1 && noiseNumb > 0.375 && noiseNumb < 0.45:
-			return "sand"
-		elif yCoordinate == chunkSize -1:
-			return "grass"
-		elif yCoordinate > chunkSize - 4:
-			return "dirt"
-		else:
-			return "stone"
+func getDominantBiome(humidity:float, temperature:float,extreme:float) -> String:
+	var humidityFix = ""
+	var temperatureFix = ""
+	var biomeFix = ""
+	if humidity <= -0.5:
+		humidityFix = "dry"
+	elif humidity <= 0.0:
+		humidityFix = "normally"
+	elif humidity <= 0.5:
+		humidityFix  = "rainy"
+	elif humidity <= 1:
+		humidityFix = "snowy"
+	
+	if temperature <=-0.66:
+		temperatureFix = "cold"
+	elif temperature <= 0.32:
+		temperatureFix = "normal"
+	elif temperature <= 1:
+		temperatureFix = "hot"
+	
+	if extreme <= -2:  # Flat areas
+		biomeFix = "flat"
+	elif extreme <= 15:  # Hills
+		biomeFix = "hills"
+	return humidityFix + " " + temperatureFix + " " + biomeFix
 
-	elif biomeType == "mountains":
-		if yCoordinate == chunkSize - 1:
-			return "stone"
-		elif yCoordinate > chunkSize - 7 && yCoordinate < chunkSize - 3 && randf() < 0.125:
-			return "copper"
-		elif yCoordinate < chunkSize - 5 && randf() < 0.25:
-			return "iron"
-		else:
-			return "stone"
+func chooseBlockType(biome: String, yPos: int) -> String:
+	var biomeParts = biome.split(" ")
+	var humidity = biomeParts[0]
+	var temperature = biomeParts[1]
+	var isSurface = chunkSize == yPos + 1
+	
+	#if extreme == "hills" && extremeNoise.frequency == 20:
+	#	extremeNoise.frequency = 10
+		#extremeNoise.fractal_octaves = 4
+		#extremeNoise.fractal_lacunarity = 2
+		#extremeNoise.fractal_gain = 1.25
+	#elif extreme == "flat" && extremeNoise.fractal_gain != 20:
+	#	extremeNoise.frequency = 20
+	#	extremeNoise.fractal_octaves = 0.05
+	#	extremeNoise.fractal_lacunarity = 0.001
+	#	extremeNoise.fractal_gain = 0.05
+	
+		#only for mountains
+		#frequenzy: lower = better
+		#fractal_octaves : bigger = better
+		#fractal_lacunarity : bigger = ultimate spikes (making each thingy tiny)
+		#fractal_gain : bigger = McLoving it (better mountains, less "transition")
+	
+	if isSurface and humidity == "dry" and temperature == "hot":
+		return "sand" # desert
+	elif isSurface and humidity == "dry" and temperature == "normal":
+		return "dirt" # steppe
+	elif isSurface and humidity == "dry" and temperature == "cold":
+		return "snow" # antarctica
+	elif isSurface and humidity == "normally" and (temperature == "hot" or temperature == "normal"):
+		return "grass" # jungle/plains
+	elif isSurface and humidity == "normally" and temperature == "cold":
+		return "stone" # mountains
+	elif isSurface and humidity == "rainy" and (temperature == "hot" or temperature == "normal"):
+		return "grass" # BIG jungle/plains
+	elif isSurface and humidity == "rainy" and temperature == "cold":
+		return "stone"
+	elif isSurface and humidity == "snowy" and temperature == "hot":
+		return "lava" # volcanic
+	elif isSurface and humidity == "snowy" and temperature == "normal":
+		return "stone" #mountains
+	elif isSurface and humidity == "snowy" and temperature == "cold":
+		return "snow" # snowy
+	else:
+		return "stone"
 
-	return "stone"
-
-
-
-
-func get_biome_weights(x: float, z: float) -> Dictionary:
-	var blend :float = (biomeBlendNoise.get_noise_2d(x, z) + 1.0) / 2.0  # Normalize -1..1 to 0..1
-	var weights : Dictionary= {}
-
-	var biome_count :int = BIOMES.size()
-	var step :float = 1.0 / (biome_count - 1)
-
-	for i:int in BIOMES.size():
-		var biome_name :String= BIOMES[i]
-		var center :float = i * step
-		var distance :float = abs(blend - center)
-		
-		# Smooth falloff, tweak 0.25 for wider/narrower blending
-		var weight :float = clamp(1.0 - (distance / step), 0, 1)
-		weights[biome_name] = weight
-
-	# Normalize weights so total = 1
-	var total :float = 0.0
-	for w : float in weights.values():
-		total += w
-	if total > 0.0:
-		for key :String in weights:
-			weights[key] /= total
-
-	return weights
+func amplifier(biome:String) -> float:
+	var prefixes = biome.split(" ")
+	var extremity = prefixes[2]
+	if extremity == "flat":
+		return 20.0
+	else:
+		return 66.0

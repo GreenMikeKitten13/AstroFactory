@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://876eagylj5ap"]
+
+[ext_resource type="Texture2D" uid="uid://vymrndbu8kyt" path="res://Blocks/Textures+Objects/lil snow/lil snow.png" id="1_e6ace"]
+[ext_resource type="ArrayMesh" uid="uid://m56sqfldul7c" path="res://Blocks/Textures+Objects/lil snow/lil snow.obj" id="2_ql4mv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8veo7"]
+albedo_texture = ExtResource("1_e6ace")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8n30b"]
+radius = 0.55
+
+[node name="SnowBody" type="StaticBody3D"]
+
+[node name="SnowMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_8veo7")
+mesh = ExtResource("2_ql4mv")
+
+[node name="SnowCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0.05, 0.5, -0.05)
+shape = SubResource("SphereShape3D_8n30b")

@@ -3,19 +3,19 @@
 [ext_resource type="Texture2D" uid="uid://2apxa5euhdgc" path="res://Blocks/Textures+Objects/lil lava/lil lava.png" id="1_rn2vq"]
 [ext_resource type="ArrayMesh" uid="uid://cic1oiu375s4w" path="res://Blocks/Textures+Objects/lil lava/lil lava.obj" id="2_hcpot"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_schg7"]
-radius = 0.55
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xngq3"]
 albedo_texture = ExtResource("1_rn2vq")
 
-[node name="LavaBody" type="StaticBody3D"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_schg7"]
+radius = 0.55
 
-[node name="LavaCollider" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.05, 0.45, -0.05)
-shape = SubResource("SphereShape3D_schg7")
+[node name="LavaBody" type="StaticBody3D"]
 
 [node name="LilLava" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_xngq3")
 mesh = ExtResource("2_hcpot")
+
+[node name="LavaCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.05, 0.45, -0.05)
+shape = SubResource("SphereShape3D_schg7")

@@ -28,9 +28,9 @@ func _on_sentry_area_body_exited(body: Node3D) -> void:
 		print("bye")
 
 
-func _process(delta):
+func _process(_delta):
 	if bodies_in_range.size() > 0:
-		var self_pos = global_transform.origin
+		#var self_pos = global_transform.origin
 		var target_pos = bodies_in_range[0].global_transform.origin
 		
 		look_at(target_pos) # x,y,z rotation
