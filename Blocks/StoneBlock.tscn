@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bm7o7w04yoy1k" path="res://Blocks/Textures+Objects/lil stone/lil stone.png" id="1_4cwkf"]
 [ext_resource type="ArrayMesh" uid="uid://cexhjjaylp6jw" path="res://Blocks/Textures+Objects/lil stone/lil stone.obj" id="2_1lqu4"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_50tqs"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3o7ew"]
 albedo_texture = ExtResource("1_4cwkf")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_schg7"]
@@ -12,8 +12,8 @@ radius = 0.55
 [node name="StoneBody" type="StaticBody3D"]
 
 [node name="StoneMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 3.6, 0)
-material_override = SubResource("StandardMaterial3D_50tqs")
+transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_3o7ew")
 mesh = ExtResource("2_1lqu4")
 
 [node name="StoneCollider" type="CollisionShape3D" parent="."]

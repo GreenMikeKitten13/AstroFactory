@@ -24,6 +24,7 @@ var blockTypes : Dictionary = {
 var chunkNodes : Array = []
 var timeBetweenBlockCreation:float = 0.000000000000000001
 @onready var destroyedBlocks: Node3D = %DestroyedBlocks
+var foundBlock:bool = false
 #------------------noise-------------------------
 var humidityNoise = FastNoiseLite.new()
 var tempetureNoise = FastNoiseLite.new()
@@ -107,6 +108,8 @@ func buildChunk() -> void:
 				for xCoordinate:int in chunkSize:
 					for zCoordinate:int in chunkSize:
 						if randf() <= 0.01: await get_tree().create_timer(timeBetweenBlockCreation).timeout
+						
+						foundBlock = false
 						var xPos :float = xCoordinate + chunk.position.x
 						var zPos :float = zCoordinate + chunk.position.z
 						
@@ -117,39 +120,12 @@ func buildChunk() -> void:
 						var dominantBiome :String = getDominantBiome(humidityFloat, tempertureFloat,extremeFloat)
 						var neededBlock = blockTypes[chooseBlockType(dominantBiome, yCoordinate)]
 						var newBlock:StaticBody3D
-						var madeThrough:bool = false
-						var neededPosition = Vector3(xCoordinate, yCoordinate + clamp(terrainFloat * amplifier(dominantBiome), terrainFloat*26,33), zCoordinate)
-						
-						if destroyedBlocks.get_child_count() !=  0:
-							for block:StaticBody3D in destroyedBlocks.get_children():
-								if block.name.begins_with(str(neededBlock)) && !madeThrough:
-									print("found in destroyedBlcoks")
-									block.set_process(true)
-									block.show()
-									block.get_child(0).disabled = false
-									block.reparent($"..")
-									block.position = neededPosition
-								
-									if destroyedBlocks.get_child(-1) == block:
-										madeThrough = true
-
-									break
-								
-								elif madeThrough:
-									print("checked everything, should create")
-									newBlock =  neededBlock.instantiate()
-								
-									newBlock.position = neededPosition
-									newBlock.get_child(0).visibility_range_end = renderDistance
-									chunk.add_child(newBlock)
-
-									break
-						else:
-							newBlock =  neededBlock.instantiate()
-								
-							newBlock.position = neededPosition
-							newBlock.get_child(0).visibility_range_end = renderDistance
-							chunk.add_child(newBlock)
+		
+						newBlock =  neededBlock.instantiate()
+						newBlock.position = Vector3(xCoordinate, yCoordinate + clamp(terrainFloat * amplifier(dominantBiome), terrainFloat*26,33), zCoordinate)
+						newBlock.get_child(0).visibility_range_end = renderDistance
+						chunk.add_child(newBlock)
+						newBlock.name = chooseBlockType(dominantBiome, yCoordinate)
 
 
 func getDominantBiome(humidity:float, temperature:float,extreme:float) -> String:

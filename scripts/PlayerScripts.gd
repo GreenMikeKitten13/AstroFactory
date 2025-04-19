@@ -4,8 +4,8 @@ extends CharacterBody3D
 @export_range(0.1, 1) var mouseSensetivity:float = 0.25
 
 @export_group("Movement")
-@export var speed :float= 8.0
-@export var acceleration :float= 20.0
+@export var speed :float= 8.8
+@export var acceleration :float= 22.0
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
@@ -20,6 +20,30 @@ var lastMovementDirection:Vector3 = Vector3.BACK
 var cameraInputDirection :Vector2= Vector2.ZERO
 var Gravity :int= -30
 
+var types:Dictionary = {
+	"RigidBody3D" : RigidBody3D
+}
+
+var blocks:Dictionary = {
+	"stone" : "Stone",
+	"grass": "Grass",
+	"snow": "Snow",
+	"dirt": "Dirt",
+	"copper": "Copper",
+	"iront":"Iront",
+	"sand":"Sand"
+}
+
+var inventory:Dictionary = {
+	"Stone" : 0,
+	"Grass" : 0,
+	"Snow" : 0,
+	"Dirt" : 0,
+	"Copper" : 0,
+	"Iron" : 0,
+	"Sand" : 0
+}
+
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("target")
@@ -30,14 +54,19 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if event.is_action_pressed("E"):
-		position += Vector3(0,15,0)
+		position = Vector3(0,30,0)
 	if event.is_action_pressed("left mouse click"):
 		var collider = %RayCast3D.get_collider()
 		if collider is StaticBody3D:
-			collider.get_child(-1).disabled = true
-			collider.hide()
-			collider.set_process(false)
-			collider.reparent(destroyedBlocks, false)
+			changeNodeType(collider, "RigidBody3D")
+		elif collider is RigidBody3D:
+			for item:String in blocks:
+				if collider.name.begins_with(item):
+					var itemName = blocks[item]
+					print (itemName)
+					inventory.set(itemName, inventory.get(itemName) +1)  # inventory[itemName]
+					print(inventory)
+			collider.queue_free()
 
 func _unhandled_input(event: InputEvent) -> void:
 	var isCameraMotion :bool = event is InputEventMouseMotion
@@ -82,3 +111,15 @@ func _physics_process(delta: float) -> void:
 
 	var targetAngle :float= Vector3.BACK.signed_angle_to(lastMovementDirection, Vector3.UP)
 	lilMan.global_rotation.y = lerp_angle(lilMan.rotation.y, targetAngle, rotationSpeed * delta)
+
+func changeNodeType(oldType:Node3D, newType:String) -> void:
+	var newThingy:Node3D = types[newType].new()
+	$"..".add_child(newThingy)
+	
+	newThingy.position = oldType.position
+	newThingy.rotation = oldType.rotation
+	newThingy.name = oldType.name
+	for child:Node3D in oldType.get_children():
+		child.reparent(newThingy)
+		child.scale /=2
+	oldType.queue_free()

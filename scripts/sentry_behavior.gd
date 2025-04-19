@@ -11,7 +11,6 @@ func _ready():
 
 func shoot():
 	if can_shoot:
-		print("shoot")
 		can_shoot = false
 	$Timer.start()
 	
@@ -26,7 +25,6 @@ func _on_sentry_area_body_entered(body: Node3D) -> void:
 func _on_sentry_area_body_exited(body: Node3D) -> void:
 	if body in bodies_in_range:
 		bodies_in_range.erase(body)
-		print("bye")
 
 
 func _process(_delta):
