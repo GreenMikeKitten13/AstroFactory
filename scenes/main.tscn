@@ -1,9 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=21 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="3_85g3d"]
-[ext_resource type="PackedScene" uid="uid://dj0lgxjvr58ut" path="res://placables/turretBody.tscn" id="4_jyhfs"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
 [ext_resource type="Texture2D" uid="uid://cxudiaxg01i4r" path="res://placables/obj + textures/turret base.png" id="6_o6xl0"]
 [ext_resource type="ArrayMesh" uid="uid://w1vta1cpeb8j" path="res://placables/obj + textures/turret tower.obj" id="7_tipki"]
@@ -30,6 +29,24 @@ size = Vector3(0.108521, 0.0979004, 0.601685)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7mycd"]
 
+[sub_resource type="Curve" id="Curve_o6xl0"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tipki"]
+curve = SubResource("Curve_o6xl0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_85g3d"]
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_max = 0.15
+scale_curve = SubResource("CurveTexture_tipki")
+
+[sub_resource type="BoxMesh" id="BoxMesh_choun"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
 size = Vector3(0.697496, 0.680176, 0.697449)
 
@@ -54,7 +71,7 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4.80638, 14.7734, 8.89345)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4.80638, 1.03363, 8.89345)
 
 [node name="TurretTower" type="MeshInstance3D" parent="SentryBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0524742, -0.453472, -0.0649668)
@@ -63,7 +80,7 @@ mesh = ExtResource("7_tipki")
 skeleton = NodePath("../..")
 
 [node name="TurretBase" type="MeshInstance3D" parent="SentryBody"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.85085e-09, -0.453505, -0.0652198)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.0343227, -0.453505, -0.0652199)
 mesh = ExtResource("8_tipki")
 skeleton = NodePath("../..")
 
@@ -76,7 +93,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0477905, 0.00256348, -0.199
 shape = SubResource("BoxShape3D_tipki")
 
 [node name="TurretBarrel" type="MeshInstance3D" parent="SentryBody/TurretBarrelBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0544443, -0.446512, -0.245556)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0544443, -0.514414, -0.245556)
 mesh = ExtResource("4_tbgi4")
 skeleton = NodePath("../..")
 
@@ -90,12 +107,21 @@ shape = SubResource("SphereShape3D_7mycd")
 [node name="Timer" type="Timer" parent="SentryBody/TurretBarrelBody3D"]
 one_shot = true
 
+[node name="GPUParticles3D" type="GPUParticles3D" parent="SentryBody/TurretBarrelBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.790851)
+gi_mode = 0
+visibility_range_end = 40.0
+emitting = false
+amount = 20
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_85g3d")
+draw_pass_1 = SubResource("BoxMesh_choun")
+
 [node name="Sentry_body_collision_shape" type="CollisionShape3D" parent="SentryBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0458784, -0.159912, -0.114044)
 shape = SubResource("BoxShape3D_lquwl")
-
-[node name="turretBody" parent="." instance=ExtResource("4_jyhfs")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -28.2602, 0)
 
 [node name="DestroyedBlocks" type="Node3D" parent="."]
 unique_name_in_owner = true
