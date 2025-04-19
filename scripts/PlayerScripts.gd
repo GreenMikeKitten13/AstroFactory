@@ -9,11 +9,9 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan
-@onready var destroyedBlocks: Node3D = %DestroyedBlocks
 
 
 var lastMovementDirection:Vector3 = Vector3.BACK
@@ -45,9 +43,9 @@ var inventory:Dictionary = {
 }
 
 func _ready() -> void:
+	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("target")
-	%PlayerBody.set_meta("health", 100)
 
 
 func _input(event: InputEvent) -> void:
