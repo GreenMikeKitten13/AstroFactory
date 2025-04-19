@@ -29,6 +29,7 @@ func shoot():
 		await $Timer.timeout
 		bullet.reparent(bullets)
 		bullet.set_process(false)
+		$GPUParticles3D.emitting = true
 	
 	$Timer.start()
 
