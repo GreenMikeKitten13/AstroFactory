@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=29 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="3_85g3d"]
@@ -46,8 +46,32 @@ gravity = Vector3(0, 0, 0)
 scale_min = 0.1
 scale_max = 0.15
 scale_curve = SubResource("CurveTexture_tipki")
+color = Color(0.98, 0.98, 0.1372, 1)
+hue_variation_min = 0.54
+hue_variation_max = 0.54
 
 [sub_resource type="BoxMesh" id="BoxMesh_choun"]
+
+[sub_resource type="Curve" id="Curve_85g3d"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_choun"]
+curve = SubResource("Curve_85g3d")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ya4ey"]
+angle_min = 80.0
+angle_max = 100.0
+angle_curve = SubResource("CurveTexture_choun")
+velocity_pivot = Vector3(11.165, 0, 0)
+direction = Vector3(11.425, 5.1, 0)
+spread = 10.0
+initial_velocity_min = 2.0
+initial_velocity_max = 2.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_eb6dy"]
+size = Vector3(0.1, 0.1, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
 size = Vector3(0.697496, 0.680176, 0.697449)
@@ -112,7 +136,7 @@ shape = SubResource("SphereShape3D_7mycd")
 [node name="Timer" type="Timer" parent="SentryBody/TurretBarrelBody3D"]
 one_shot = true
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="SentryBody/TurretBarrelBody3D"]
+[node name="smoke_particle" type="GPUParticles3D" parent="SentryBody/TurretBarrelBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.790851)
 gi_mode = 0
 visibility_range_end = 40.0
@@ -123,6 +147,15 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_85g3d")
 draw_pass_1 = SubResource("BoxMesh_choun")
+
+[node name="Shell_particle" type="GPUParticles3D" parent="SentryBody/TurretBarrelBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.104244, 0.0119661, -0.0741224)
+emitting = false
+amount = 1
+lifetime = 0.4
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_ya4ey")
+draw_pass_1 = SubResource("BoxMesh_eb6dy")
 
 [node name="Sentry_body_collision_shape" type="CollisionShape3D" parent="SentryBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0458784, -0.159912, -0.114044)
