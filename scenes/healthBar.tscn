@@ -25,7 +25,7 @@ offset_right = 300.0
 offset_bottom = 27.0
 theme_override_styles/background = SubResource("StyleBoxEmpty_xpa3b")
 theme_override_styles/fill = SubResource("StyleBoxFlat_spvli")
-value = 60.0
+value = 100.0
 script = ExtResource("1_0ucuy")
 
 [node name="DamageBar" type="ProgressBar" parent="."]
@@ -39,12 +39,5 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_0vr2f")
 theme_override_styles/fill = SubResource("StyleBoxFlat_r72rs")
-value = 70.0
+value = 100.0
 show_percentage = false
-
-[node name="Timer" type="Timer" parent="."]
-unique_name_in_owner = true
-wait_time = 0.55
-one_shot = true
-
-[connection signal="timeout" from="Timer" to="." method="onTimerTimeout"]
