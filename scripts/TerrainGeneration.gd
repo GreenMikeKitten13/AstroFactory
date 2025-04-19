@@ -22,9 +22,30 @@ var blockTypes : Dictionary = {
 #------------------other stuff-------------------
 @onready var playerBody: CharacterBody3D = %PlayerBody
 var chunkNodes : Array = []
-var timeBetweenBlockCreation:float = 0.000000000000000001
-@onready var destroyedBlocks: Node3D = %DestroyedBlocks
+#var timeBetweenBlockCreation:float = 0.000000000000000001
 var foundBlock:bool = false
+var terrain_lookup = {
+	"dry": {
+		"hot": "sand",         # desert
+		"normal": "dirt",      # steppe
+		"cold": "snow",        # antarctica
+	},
+	"normally": {
+		"hot": "grass",        # jungle
+		"normal": "grass",     # plains
+		"cold": "stone",       # mountains
+	},
+	"rainy": {
+		"hot": "grass",        # BIG jungle
+		"normal": "grass",     # BIG plains
+		"cold": "stone",       # mountains
+	},
+	"snowy": {
+		"hot": "lava",         # volcanic
+		"normal": "stone",     # mountains
+		"cold": "snow",        # snowy biome
+	}
+}
 #------------------noise-------------------------
 var humidityNoise = FastNoiseLite.new()
 var tempetureNoise = FastNoiseLite.new()
@@ -36,9 +57,9 @@ func _ready() -> void:
 	humidityNoise.noise_type =  FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	humidityNoise.seed = randi()
 	humidityNoise.frequency = 0.01
-	humidityNoise.fractal_lacunarity = 0.01
-	humidityNoise.fractal_octaves = 5
-	humidityNoise.fractal_gain = 0.001
+	#humidityNoise.fractal_lacunarity = 0.01
+	#humidityNoise.fractal_octaves = 5
+	#humidityNoise.fractal_gain = 0.001
 	
 	terrainNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	terrainNoise.seed = randi()
@@ -53,10 +74,10 @@ func _ready() -> void:
 	
 	tempetureNoise.noise_type =  FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	tempetureNoise.seed = randi()
-	tempetureNoise.fractal_octaves = 5
+	#tempetureNoise.fractal_octaves = 5
 	tempetureNoise.frequency = 0.01
-	tempetureNoise.fractal_lacunarity = 0.01
-	tempetureNoise.fractal_gain = 0.001
+	#tempetureNoise.fractal_lacunarity = 0.01
+	#tempetureNoise.fractal_gain = 0.001
 
 	generateChunkNodes()
 	checkChunkRange()
@@ -107,21 +128,20 @@ func buildChunk() -> void:
 			for yCoordinate:int in chunkSize:
 				for xCoordinate:int in chunkSize:
 					for zCoordinate:int in chunkSize:
-						if randf() <= 0.01: await get_tree().create_timer(timeBetweenBlockCreation).timeout
+						#if randf() <= 0.01: await get_tree().create_timer(timeBetweenBlockCreation).timeout
 						
 						foundBlock = false
 						var xPos :float = xCoordinate + chunk.position.x
 						var zPos :float = zCoordinate + chunk.position.z
 						
 						var humidityFloat:float = humidityNoise.get_noise_2d(zPos*0.5, zPos * 0.5) * 5  # <-0.5 = dry; <0 = normal; < 0.5 = rain; <1 = snow
-						var tempertureFloat:float = tempetureNoise.get_noise_2d(xPos*0.5, zPos*0.5)*5# <-0.66 = cold; <0.32 = normal; <1 = hot  
+						var tempertureFloat:float = tempetureNoise.get_noise_2d(xPos*0.3, zPos*0.3)*5# <-0.66 = cold; <0.32 = normal; <1 = hot  
 						var extremeFloat:float = extremeNoise.get_noise_2d(xPos, zPos) * 15
 						var terrainFloat:float = terrainNoise.get_noise_2d(xPos, zPos)
 						var dominantBiome :String = getDominantBiome(humidityFloat, tempertureFloat,extremeFloat)
 						var neededBlock = blockTypes[chooseBlockType(dominantBiome, yCoordinate)]
-						var newBlock:StaticBody3D
 		
-						newBlock =  neededBlock.instantiate()
+						var newBlock =  neededBlock.instantiate()
 						newBlock.position = Vector3(xCoordinate, yCoordinate + clamp(terrainFloat * amplifier(dominantBiome), terrainFloat*26,33), zCoordinate)
 						newBlock.get_child(0).visibility_range_end = renderDistance
 						chunk.add_child(newBlock)
@@ -154,34 +174,32 @@ func getDominantBiome(humidity:float, temperature:float,extreme:float) -> String
 		biomeFix = "hills"
 	return humidityFix + " " + temperatureFix + " " + biomeFix
 
+
+
 func chooseBlockType(biome: String, yPos: int) -> String:
 	var biomeParts = biome.split(" ")
 	var humidity = biomeParts[0]
 	var temperature = biomeParts[1]
 	var isSurface = chunkSize == yPos + 1
+	var underGround = !isSurface && chunkSize < yPos + 5
 	
-	if isSurface and humidity == "dry" and temperature == "hot":
-		return "sand" # desert
-	elif isSurface and humidity == "dry" and temperature == "normal":
-		return "dirt" # steppe
-	elif isSurface and humidity == "dry" and temperature == "cold":
-		return "snow" # antarctica
-	elif isSurface and humidity == "normally" and (temperature == "hot" or temperature == "normal"):
-		return "grass" # jungle/plains
-	elif isSurface and humidity == "normally" and temperature == "cold":
-		return "stone" # mountains
-	elif isSurface and humidity == "rainy" and (temperature == "hot" or temperature == "normal"):
-		return "grass" # BIG jungle/plains
-	elif isSurface and humidity == "rainy" and temperature == "cold":
-		return "stone"
-	elif isSurface and humidity == "snowy" and temperature == "hot":
-		return "lava" # volcanic
-	elif isSurface and humidity == "snowy" and temperature == "normal":
-		return "stone" #mountains
-	elif isSurface and humidity == "snowy" and temperature == "cold":
-		return "snow" # snowy
+	if isSurface:
+		if humidity in terrain_lookup and temperature in terrain_lookup[humidity]:
+			return terrain_lookup[humidity][temperature]
+	elif underGround:
+		if humidity in terrain_lookup and temperature in terrain_lookup[humidity]:
+			if  terrain_lookup[humidity][temperature] == "sand":
+				return "sand"
+			elif   terrain_lookup[humidity][temperature] == "snow":
+				return "snow"
+			elif terrain_lookup[humidity][temperature] == "stone":
+				return "stone"
+			else:
+				return "dirt"
 	else:
 		return "stone"
+	return "stone"
+
 
 func amplifier(biome:String) -> float:
 	var prefixes = biome.split(" ")

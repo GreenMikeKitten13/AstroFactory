@@ -1,5 +1,6 @@
 [gd_scene load_steps=28 format=3 uid="uid://qachlfwuf6f6"]
 
+[ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="3_85g3d"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -97,6 +98,7 @@ shadow_enabled = true
 [node name="PlayerBody" parent="." instance=ExtResource("2_tipki")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+floor_max_angle = 1.56207
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.5, 0)
@@ -199,6 +201,9 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05,
 shape = SubResource("BoxShape3D_choun")
 
 [node name="badGameEngineDesigna" type="Node3D" parent="."]
+
+[node name="TerrainGeneration" type="Node" parent="."]
+script = ExtResource("1_o6xl0")
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody" method="_on_sentry_area_body_entered"]
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
