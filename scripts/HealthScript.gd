@@ -18,6 +18,7 @@ func _process(_delta:float) -> void:
 		health = target_health
 
 		value = health
+		
 
 		if tween.is_running():
 			tween.kill()

@@ -52,20 +52,18 @@ func _process(_delta):
 		var target_pos = bodies_in_range[0].global_transform.origin
 		looking_pos = looking_pos.lerp(target_pos, 0.2)
 		
-		look_at(looking_pos) # x,y,z rotation
+		look_at(looking_pos)
 		$"../TurretTower".rotation.y = $".".rotation.y
 		if can_shoot:
 			shoot()
-			
-	
-		
-
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body.name == "PlayerBody":
+		body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
+		
 		bullet.linear_velocity = Vector3.ZERO
 		bullet.set_process(false)
-		body.set_meta("health", body.get_meta("health") - 5)
+		
 		bullet.hide()
 		await get_tree().create_timer(0.5).timeout
 		bullet.reparent(bullets)
