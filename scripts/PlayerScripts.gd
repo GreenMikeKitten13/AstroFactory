@@ -61,7 +61,6 @@ func _input(event: InputEvent) -> void:
 			for item:String in blocks:
 				if collider.name.begins_with(item):
 					var itemName = blocks[item]
-					print (itemName)
 					inventory.set(itemName, inventory.get(itemName) +1)  # inventory[itemName]
 					print(inventory)
 			collider.queue_free()

@@ -1,0 +1,157 @@
+[gd_scene load_steps=2 format=3 uid="uid://b51xfmdhmwr30"]
+
+[ext_resource type="Texture2D" uid="uid://bmbs2ctb6j1t3" path="res://some stuff/inventorySlot.png" id="1_qw0r6"]
+
+[node name="GridContainer" type="GridContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.5
+offset_top = -24.0
+offset_right = 30.5
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 5
+
+[node name="TextureButton" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton2" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton3" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton4" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton5" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton6" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton7" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton8" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton9" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton10" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton11" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton12" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton13" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton14" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton15" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton16" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton17" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton18" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton19" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
+
+[node name="TextureButton20" type="TextureButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_qw0r6")
+stretch_mode = 0
