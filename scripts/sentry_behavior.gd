@@ -29,8 +29,8 @@ func shoot():
 		await $Timer.timeout
 		bullet.reparent(bullets)
 		bullet.set_process(false)
-		$GPUParticles3D.emitting = true
-	
+		$smoke_particle.emitting = true
+		$Shell_particle.emitting = true
 	$Timer.start()
 
 func _on_timer_timeout():
