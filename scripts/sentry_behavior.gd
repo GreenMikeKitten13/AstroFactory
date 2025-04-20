@@ -22,20 +22,20 @@ func shoot():
 	if can_shoot:
 		can_shoot = false
 		bullet = bullets.get_child(0)
-		if bullet == null: pass
-		bullet.set_process(true)
-		bullet.freeze = false
-		bullet.sleeping = false
-		bullet.show()
-		bullet.global_transform = global_transform
-		bullet.reparent($"../../badGameEngineDesigna")
-		bullet.linear_velocity = bullet.global_transform.basis.z.normalized() * -50 
-		$Timer.start()
-		await $Timer.timeout
-		bullet.reparent(bullets)
-		bullet.set_process(false)
-		$smoke_particle.emitting = true
-		$Shell_particle.emitting = true
+		if bullet != null: 
+			bullet.set_process(true)
+			bullet.freeze = false
+			bullet.sleeping = false
+			bullet.show()
+			bullet.global_transform = global_transform
+			bullet.reparent($"../../badGameEngineDesigna")
+			bullet.linear_velocity = bullet.global_transform.basis.z.normalized() * -50 
+			$Timer.start()
+			await $Timer.timeout
+			bullet.reparent(bullets)
+			bullet.set_process(false)
+			$smoke_particle.emitting = true
+			$Shell_particle.emitting = true
 	$Timer.start()
 
 func _on_timer_timeout():
@@ -67,7 +67,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body.name == "PlayerBody":
 		body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
 		
-		bullet.linear_velocity = -bullet.linear_velocity* 9999
+		bullet.linear_velocity = Vector3.ZERO
 		#bullet.linear_velocity = Vector3.ZERO
 		bullet.sleeping = true
 		#bullet.linear_velocity = Vector3.ZERO
