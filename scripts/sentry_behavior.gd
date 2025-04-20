@@ -5,22 +5,27 @@ var last_shot_time : float = 0
 var can_shoot : bool = true
 var looking_pos : Vector3 = Vector3(0, 0, 0)
 @onready var bullets: Node3D = %Bullets
-@onready var bullet:RigidBody3D = bullets.get_child(0)
+@onready var bullet:RigidBody3D 
 
 func _ready():
-	
-	bullet.physics_material_override = PhysicsMaterial.new()
-	bullet.physics_material_override.bounce = 0
-	bullet.physics_material_override.friction = 0
-	bullet.collision_layer = 1
-	bullet.collision_mask = 1
 	$Timer.wait_time = 1.0
 	$Timer.start()
+	if bullet != null:
+		bullet.physics_material_override = PhysicsMaterial.new()
+		bullet.physics_material_override.bounce = 0
+		bullet.physics_material_override.friction = 0
+		bullet.collision_layer = 1
+		bullet.collision_mask = 1
+
 
 func shoot():
 	if can_shoot:
 		can_shoot = false
+		bullet = bullets.get_child(0)
+		if bullet == null: pass
 		bullet.set_process(true)
+		bullet.freeze = false
+		bullet.sleeping = false
 		bullet.show()
 		bullet.global_transform = global_transform
 		bullet.reparent($"../../badGameEngineDesigna")
@@ -34,7 +39,8 @@ func shoot():
 	$Timer.start()
 
 func _on_timer_timeout():
-	can_shoot = true
+	if scale == Vector3.ONE:
+		can_shoot = true
 
 func _on_sentry_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("target"):
@@ -47,7 +53,7 @@ func _on_sentry_area_body_exited(body: Node3D) -> void:
 
 
 func _process(_delta):
-	if bodies_in_range.size() > 0:
+	if bodies_in_range.size() > 0 && scale == Vector3.ONE:
 		
 		var target_pos = bodies_in_range[0].global_transform.origin
 		looking_pos = looking_pos.lerp(target_pos, 0.2)
@@ -61,12 +67,13 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body.name == "PlayerBody":
 		body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
 		
-		bullet.linear_velocity = Vector3.ZERO
+		bullet.linear_velocity = -bullet.linear_velocity* 9999
+		#bullet.linear_velocity = Vector3.ZERO
+		bullet.sleeping = true
+		#bullet.linear_velocity = Vector3.ZERO
+		bullet.freeze = true
+		#bullet.linear_velocity = Vector3.ZERO
 		bullet.set_process(false)
-		
-		bullet.hide()
-		await get_tree().create_timer(0.5).timeout
-		bullet.reparent(bullets)
-
-func reparentBullet():
-	bullet.reparent(bullets)
+		#bullet.linear_velocity = Vector3.ZERO
+		print("hit")
+		#bullet.linear_velocity = Vector3.ZERO
