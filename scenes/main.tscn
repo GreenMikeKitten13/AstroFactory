@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=29 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
