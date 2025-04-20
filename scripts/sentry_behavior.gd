@@ -67,7 +67,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body.name == "PlayerBody":
 		body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
 		
-		bullet.linear_velocity = -bullet.linear_velocity* 9999
+		bullet.linear_velocity = Vector3.ZERO
 		#bullet.linear_velocity = Vector3.ZERO
 		bullet.sleeping = true
 		#bullet.linear_velocity = Vector3.ZERO
