@@ -959,6 +959,31 @@ shape = SubResource("BoxShape3D_choun")
 transform = Transform3D(-4.37114e-07, 0, 10, 0, 10, 0, -10, 0, -4.37114e-07, -0.05, 0.05, 0)
 shape = SubResource("BoxShape3D_choun")
 
+[node name="Bullet10" type="RigidBody3D" parent="Bullets"]
+mass = 0.001
+inertia = Vector3(1000, 1000, 1000)
+lock_rotation = true
+
+[node name="LilBullet" type="MeshInstance3D" parent="Bullets/Bullet10"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_eb6dy")
+mesh = ExtResource("10_ya4ey")
+skeleton = NodePath("../../../Debug")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Bullets/Bullet10"]
+light_color = Color(0.796078, 0.784314, 0.345098, 1)
+light_energy = 2.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bullets/Bullet10"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
+shape = SubResource("BoxShape3D_choun")
+
+[node name="Area3D" type="Area3D" parent="Bullets/Bullet10"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bullets/Bullet10/Area3D"]
+transform = Transform3D(-4.37114e-07, 0, 10, 0, 10, 0, -10, 0, -4.37114e-07, -0.05, 0.05, 0)
+shape = SubResource("BoxShape3D_choun")
+
 [node name="badGameEngineDesigna" type="Node3D" parent="."]
 
 [node name="TerrainGeneration" type="Node" parent="."]
@@ -1032,3 +1057,4 @@ shape = SubResource("BoxShape3D_choun")
 [connection signal="body_entered" from="Bullets/Bullet7/Area3D" to="SentryBody/TurretBarrelBody3D" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="Bullets/Bullet8/Area3D" to="SentryBody/TurretBarrelBody3D" method="_on_area_3d_body_entered"]
 [connection signal="body_entered" from="Bullets/Bullet9/Area3D" to="SentryBody/TurretBarrelBody3D" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Bullets/Bullet10/Area3D" to="SentryBody/TurretBarrelBody3D" method="_on_area_3d_body_entered"]

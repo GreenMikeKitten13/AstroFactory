@@ -22,20 +22,20 @@ func shoot():
 	if can_shoot:
 		can_shoot = false
 		bullet = bullets.get_child(0)
-		if bullet == null: pass
-		bullet.set_process(true)
-		bullet.freeze = false
-		bullet.sleeping = false
-		bullet.show()
-		bullet.global_transform = global_transform
-		bullet.reparent($"../../badGameEngineDesigna")
-		bullet.linear_velocity = bullet.global_transform.basis.z.normalized() * -50 
-		$Timer.start()
-		await $Timer.timeout
-		bullet.reparent(bullets)
-		bullet.set_process(false)
-		$smoke_particle.emitting = true
-		$Shell_particle.emitting = true
+		if bullet != null: 
+			bullet.set_process(true)
+			bullet.freeze = false
+			bullet.sleeping = false
+			bullet.show()
+			bullet.global_transform = global_transform
+			bullet.reparent($"../../badGameEngineDesigna")
+			bullet.linear_velocity = bullet.global_transform.basis.z.normalized() * -50 
+			$Timer.start()
+			await $Timer.timeout
+			bullet.reparent(bullets)
+			bullet.set_process(false)
+			$smoke_particle.emitting = true
+			$Shell_particle.emitting = true
 	$Timer.start()
 
 func _on_timer_timeout():
