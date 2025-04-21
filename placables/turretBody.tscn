@@ -1,42 +1,123 @@
-[gd_scene load_steps=9 format=3 uid="uid://dj0lgxjvr58ut"]
+[gd_scene load_steps=18 format=3 uid="uid://dj0lgxjvr58ut"]
 
-[ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="1_n3ntx"]
-[ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="1_o0c80"]
-[ext_resource type="Texture2D" uid="uid://cxudiaxg01i4r" path="res://placables/obj + textures/turret base.png" id="2_n3ntx"]
-[ext_resource type="ArrayMesh" uid="uid://w1vta1cpeb8j" path="res://placables/obj + textures/turret tower.obj" id="3_6upxj"]
-[ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_mnvv2"]
+[ext_resource type="Texture2D" uid="uid://cxudiaxg01i4r" path="res://placables/obj + textures/turret base.png" id="1_n3ntx"]
+[ext_resource type="ArrayMesh" uid="uid://w1vta1cpeb8j" path="res://placables/obj + textures/turret tower.obj" id="2_6upxj"]
+[ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="3_mnvv2"]
+[ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="4_a2phb"]
+[ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="5_8i7ai"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1ca2c"]
-size = Vector3(0.69, 0.6, 0.69)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w5mrm"]
+albedo_texture = ExtResource("1_n3ntx")
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_rqng8"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_rlvih"]
+size = Vector3(0.108521, 0.0979004, 0.601685)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lrcd7"]
-albedo_texture = ExtResource("2_n3ntx")
+[sub_resource type="SphereShape3D" id="SphereShape3D_k82ub"]
 
-[node name="turretBody" type="StaticBody3D"]
-script = ExtResource("1_n3ntx")
+[sub_resource type="Curve" id="Curve_3iadb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.289014, -0.05)
-shape = SubResource("BoxShape3D_1ca2c")
+[sub_resource type="CurveTexture" id="CurveTexture_tipki"]
+curve = SubResource("Curve_3iadb")
 
-[node name="SentryArea" type="Area3D" parent="."]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y41by"]
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_max = 0.15
+scale_curve = SubResource("CurveTexture_tipki")
+color = Color(0.98, 0.98, 0.1372, 1)
+hue_variation_min = 0.54
+hue_variation_max = 0.54
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryArea"]
-transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
-shape = SubResource("SphereShape3D_rqng8")
+[sub_resource type="BoxMesh" id="BoxMesh_xljgv"]
 
-[node name="Timer" type="Timer" parent="."]
-one_shot = true
+[sub_resource type="Curve" id="Curve_yrcjm"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_choun"]
+curve = SubResource("Curve_yrcjm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pwxn7"]
+angle_min = 80.0
+angle_max = 100.0
+angle_curve = SubResource("CurveTexture_choun")
+velocity_pivot = Vector3(11.165, 0, 0)
+direction = Vector3(11.425, 5.1, 0)
+spread = 10.0
+initial_velocity_min = 2.0
+initial_velocity_max = 2.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_ogr5q"]
+size = Vector3(0.1, 0.1, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mf331"]
+size = Vector3(0.697496, 0.680176, 0.697449)
+
+[node name="SentryBody" type="StaticBody3D"]
+
+[node name="TurretTower" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.0649668, 0.546528, -0.0524742)
+material_override = SubResource("StandardMaterial3D_w5mrm")
+mesh = ExtResource("2_6upxj")
 
 [node name="TurretBase" type="MeshInstance3D" parent="."]
-mesh = ExtResource("1_o0c80")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0652198, 0.546495, -1.33227e-15)
+mesh = ExtResource("3_mnvv2")
 
-[node name="TurretTower" type="MeshInstance3D" parent="TurretBase"]
-transform = Transform3D(0.857166, 0, -0.51504, 0, 1, 0, 0.51504, 0, 0.857166, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_lrcd7")
-mesh = ExtResource("3_6upxj")
+[node name="TurretBarrelBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.962719, 0)
+script = ExtResource("4_a2phb")
 
-[node name="TurretBarrel" type="MeshInstance3D" parent="TurretBase/TurretTower"]
-mesh = ExtResource("4_mnvv2")
+[node name="Barel_collision_shape" type="CollisionShape3D" parent="TurretBarrelBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0477905, 0.00256348, -0.199158)
+shape = SubResource("BoxShape3D_rlvih")
+
+[node name="TurretBarrel" type="MeshInstance3D" parent="TurretBarrelBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0544443, -0.446512, -0.245556)
+mesh = ExtResource("5_8i7ai")
+skeleton = NodePath("")
+
+[node name="SentryArea" type="Area3D" parent="TurretBarrelBody3D/TurretBarrel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.446512, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TurretBarrelBody3D/TurretBarrel/SentryArea"]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("SphereShape3D_k82ub")
+
+[node name="Timer" type="Timer" parent="TurretBarrelBody3D"]
+one_shot = true
+
+[node name="smoke_particle" type="GPUParticles3D" parent="TurretBarrelBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.790851)
+gi_mode = 0
+visibility_range_end = 40.0
+emitting = false
+amount = 20
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_y41by")
+draw_pass_1 = SubResource("BoxMesh_xljgv")
+
+[node name="Shell_particle" type="GPUParticles3D" parent="TurretBarrelBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.104244, 0.0119661, -0.0741224)
+emitting = false
+amount = 1
+lifetime = 0.4
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_pwxn7")
+draw_pass_1 = SubResource("BoxMesh_ogr5q")
+
+[node name="Sentry_body_collision_shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.114044, 0.840088, -0.0458784)
+shape = SubResource("BoxShape3D_mf331")
+
+[connection signal="body_entered" from="TurretBarrelBody3D/TurretBarrel/SentryArea" to="TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
+[connection signal="body_exited" from="TurretBarrelBody3D/TurretBarrel/SentryArea" to="TurretBarrelBody3D" method="_on_sentry_area_body_exited"]
+[connection signal="timeout" from="TurretBarrelBody3D/Timer" to="TurretBarrelBody3D" method="_on_timer_timeout"]

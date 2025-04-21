@@ -4,8 +4,8 @@ var bodies_in_range := []
 var last_shot_time : float = 0
 var can_shoot : bool = true
 var looking_pos : Vector3 = Vector3(0, 0, 0)
-@onready var bullets: Node3D = %Bullets
-@onready var bullet:RigidBody3D 
+@onready var bullets: Node3D = $"../..".get_node("%prefabBullets")
+var bullet :Node
 
 func _ready():
 	$Timer.wait_time = 1.0
@@ -64,14 +64,20 @@ func _process(_delta):
 			shoot()
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
-	if body.name == "PlayerBody":
-		body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
+	if body.has_meta("health"):
+		for child in $"../..".get_children(true):
+			if child.name.begins_with("Bullet"):
+				bullet = child
 		
-		bullet.linear_velocity = Vector3.ZERO
-		bullet.linear_velocity = Vector3.ZERO
-		bullet.sleeping = true
-		bullet.linear_velocity = Vector3.ZERO
-		bullet.freeze = true
-		bullet.linear_velocity = Vector3.ZERO
-		bullet.set_process(false)
-		bullet.linear_velocity = Vector3.ZERO
+		if bullet != null:
+			body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
+		
+			bullet.linear_velocity = Vector3.ZERO
+			bullet.linear_velocity = Vector3.ZERO
+			bullet.sleeping = true
+			bullet.linear_velocity = Vector3.ZERO
+			bullet.freeze = true
+			bullet.linear_velocity = Vector3.ZERO
+			bullet.set_process(false)
+			bullet.hide()
+			bullet.linear_velocity = Vector3.ZERO
