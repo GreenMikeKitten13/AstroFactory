@@ -22,6 +22,8 @@ func shoot():
 		can_shoot = false
 		bullet = bullets.get_child(0)
 		if bullet != null: 
+			$smoke_particle.emitting = true
+			$Shell_particle.emitting = true
 			bullet.set_process(true)
 			bullet.freeze = false
 			bullet.sleeping = false
@@ -33,8 +35,7 @@ func shoot():
 			await $Timer.timeout
 			bullet.reparent(bullets)
 			bullet.set_process(false)
-			$smoke_particle.emitting = true
-			$Shell_particle.emitting = true
+
 	$Timer.start()
 
 
