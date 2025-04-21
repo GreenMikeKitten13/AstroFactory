@@ -17,7 +17,6 @@ func _ready():
 		bullet.collision_layer = 1
 		bullet.collision_mask = 1
 
-
 func shoot():
 	if can_shoot:
 		can_shoot = false
@@ -37,6 +36,8 @@ func shoot():
 			$smoke_particle.emitting = true
 			$Shell_particle.emitting = true
 	$Timer.start()
+
+
 
 func _on_timer_timeout():
 	if scale == Vector3.ONE:
