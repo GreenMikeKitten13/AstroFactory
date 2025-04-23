@@ -41,3 +41,9 @@ theme_override_styles/background = SubResource("StyleBoxFlat_0vr2f")
 theme_override_styles/fill = SubResource("StyleBoxFlat_r72rs")
 value = 100.0
 show_percentage = false
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 5.0
+
+[connection signal="timeout" from="Timer" to="." method="onHealTimeOut"]

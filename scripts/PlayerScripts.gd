@@ -116,7 +116,16 @@ func changeNodeType(oldType:Node3D, newType:String) -> void:
 	newThingy.position = oldType.position
 	newThingy.rotation = oldType.rotation
 	newThingy.name = oldType.name
-	for child:Node3D in oldType.get_children():
+	for child:Node in oldType.get_children():
 		child.reparent(newThingy)
 		child.scale /=2
 	oldType.queue_free()
+
+
+func onBulletEntered(body: Node3D) -> void:
+	if body.name.begins_with("bullet") || body.name.begins_with("Bullet"):
+		var bullet:RigidBody3D = body
+		set_meta("health", get_meta("health") - (abs(bullet.linear_velocity.x) +abs(bullet.linear_velocity.z) + abs(bullet.linear_velocity.y)))
+		await get_tree().create_timer(0.005).timeout
+		bullet.linear_velocity = Vector3i.ZERO
+		bullet.set_process(false)

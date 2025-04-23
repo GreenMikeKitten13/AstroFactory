@@ -1,43 +1,28 @@
 extends StaticBody3D
 
-var bodies_in_range := []
-var last_shot_time : float = 0
+var bodies_in_range :Array= []
 var can_shoot : bool = true
 var looking_pos : Vector3 = Vector3(0, 0, 0)
-@onready var bullets: Node3D = $"../..".get_node("%prefabBullets")
-var bullet :Node
+@onready var chamber: Node = %Chamber
 
 func _ready():
 	$Timer.wait_time = 1.0
 	$Timer.start()
-	if bullet != null:
-		bullet.physics_material_override = PhysicsMaterial.new()
-		bullet.physics_material_override.bounce = 0
-		bullet.physics_material_override.friction = 0
-		bullet.collision_layer = 1
-		bullet.collision_mask = 1
 
 func shoot():
-	if can_shoot:
+	if can_shoot && chamber.get_child_count() != 0:
+		var bullet:RigidBody3D = chamber.get_child(0)
+		if bullet == null: bullet = chamber.get_child(0)
 		can_shoot = false
-		bullet = bullets.get_child(0)
-		if bullet != null: 
-			bullet.set_process(true)
-			bullet.freeze = false
-			bullet.sleeping = false
-			bullet.show()
-			bullet.global_transform = global_transform
-			bullet.reparent($"../../badGameEngineDesigna")
-			bullet.linear_velocity = bullet.global_transform.basis.z.normalized() * -50 
-			$Timer.start()
-			await $Timer.timeout
-			bullet.reparent(bullets)
-			bullet.set_process(false)
-			$smoke_particle.emitting = true
-			$Shell_particle.emitting = true
-	$Timer.start()
-
-
+		$smoke_particle.emitting = true
+		$Shell_particle.emitting = true 
+		$Timer.start()
+		bullet.set_process(true)
+		bullet.sleeping = false
+		bullet.reparent($"../..")
+		bullet.global_transform = global_transform
+		bullet.show()
+		bullet.linear_velocity = -bullet.global_transform.basis.z * 50
 
 func _on_timer_timeout():
 	if scale == Vector3.ONE:
@@ -47,11 +32,9 @@ func _on_sentry_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("target"):
 		bodies_in_range.append(body)
 
-
 func _on_sentry_area_body_exited(body: Node3D) -> void:
 	if body in bodies_in_range:
 		bodies_in_range.erase(body)
-
 
 func _process(_delta):
 	if bodies_in_range.size() > 0 && scale == Vector3.ONE:
@@ -64,21 +47,11 @@ func _process(_delta):
 		if can_shoot:
 			shoot()
 
-func _on_area_3d_body_entered(body: Node3D) -> void:
-	if body.has_meta("health"):
-		for child in $"../..".get_children(true):
-			if child.name.begins_with("Bullet"):
-				bullet = child
-		
-		if bullet != null:
-			body.set_meta("health", body.get_meta("health") - (abs(bullet.linear_velocity.x)+ abs(bullet.linear_velocity.y) + abs(bullet.linear_velocity.z))/10.0)
-		
-			bullet.linear_velocity = Vector3.ZERO
-			bullet.linear_velocity = Vector3.ZERO
-			bullet.sleeping = true
-			bullet.linear_velocity = Vector3.ZERO
-			bullet.freeze = true
-			bullet.linear_velocity = Vector3.ZERO
-			bullet.set_process(false)
-			bullet.hide()
-			bullet.linear_velocity = Vector3.ZERO
+func onBulletEntered(body: Node3D) -> void:
+	if body.name.begins_with("bullet"):
+		body.reparent(chamber)
+		body.hide()
+		body.sleeping = true
+		body.set_process(false)
+		#body.get_child(0).mesh.material.albedo = "ffff00"
+		body.linear_velocity = Vector3i.ZERO
