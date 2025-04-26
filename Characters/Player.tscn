@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://vwhdh3633lgp"]
+[gd_scene load_steps=14 format=3 uid="uid://vwhdh3633lgp"]
 
 [ext_resource type="Script" uid="uid://c0grtt7pav323" path="res://scripts/PlayerScripts.gd" id="1_kne1u"]
 [ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://Characters/lil man/lil man.png" id="2_e80uo"]
@@ -17,6 +17,37 @@ height = 2.1
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_55lj8"]
 radius = 0.66
 height = 2.4
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v6d5b"]
+emission_shape_scale = Vector3(10, 10, 10)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+direction = Vector3(0, -1, 0)
+spread = 5.0
+initial_velocity_min = 25.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, -11, 0)
+color = Color(0.438935, 0.528529, 0.583418, 1)
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
+
+[sub_resource type="Curve" id="Curve_55lj8"]
+_limits = [0.0, 0.8, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 2.36873, 0, 1, Vector2(0.0283333, 0.0671141), 0.37571, 0.37571, 0, 0, Vector2(1, 0), -0.0690711, 0.0, 1, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qhb0e"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+use_particle_trails = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_7pihf"]
+material = SubResource("StandardMaterial3D_qhb0e")
+size = 0.2
+curve = SubResource("Curve_55lj8")
 
 [node name="PlayerBody" type="CharacterBody3D"]
 script = ExtResource("1_kne1u")
@@ -61,5 +92,16 @@ unique_name_in_owner = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 shape = SubResource("CapsuleShape3D_55lj8")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.3063, 0)
+amount = 1000
+lifetime = 3.0
+randomness = 0.56
+visibility_aabb = AABB(-10, -10, -10, 20, 20, 20)
+trail_enabled = true
+trail_lifetime = 0.07
+process_material = SubResource("ParticleProcessMaterial_v6d5b")
+draw_pass_1 = SubResource("RibbonTrailMesh_7pihf")
 
 [connection signal="body_entered" from="Area3D" to="." method="onBulletEntered"]
