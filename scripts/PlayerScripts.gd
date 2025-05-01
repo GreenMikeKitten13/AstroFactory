@@ -9,6 +9,8 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
+@export var renderDistance:int = 15
+
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan
@@ -17,6 +19,7 @@ extends CharacterBody3D
 var lastMovementDirection:Vector3 = Vector3.BACK
 var cameraInputDirection :Vector2= Vector2.ZERO
 var Gravity :int= -30
+var chunks:Array = []
 
 var types:Dictionary = {
 	"RigidBody3D" : RigidBody3D
@@ -46,6 +49,11 @@ func _ready() -> void:
 	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("target")
+	
+	await  get_tree().create_timer(0.1).timeout
+	for chunk in %TerrainGeneration.get_children():
+		chunks.append(chunk)
+
 
 
 func _input(event: InputEvent) -> void:
@@ -103,6 +111,8 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	
+	checkChunkRange(chunks, velocity)
+	
 	if moveDirection.length() > 0.2:
 		lastMovementDirection = moveDirection
 
@@ -121,11 +131,28 @@ func changeNodeType(oldType:Node3D, newType:String) -> void:
 		child.scale /=2
 	oldType.queue_free()
 
+var hitItems = []
 
 func onBulletEntered(body: Node3D) -> void:
-	if body.name.begins_with("bullet") || body.name.begins_with("Bullet"):
+	if body.name.begins_with("bullet") || body.name.begins_with("Bullet") && body.linear_velocity != Vector3.ZERO:
+		hitItems.append(body.linear_velocity)
 		var bullet:RigidBody3D = body
 		set_meta("health", get_meta("health") - (abs(bullet.linear_velocity.x) +abs(bullet.linear_velocity.z) + abs(bullet.linear_velocity.y)))
 		await get_tree().create_timer(0.005).timeout
 		bullet.linear_velocity = Vector3i.ZERO
 		bullet.set_process(false)
+
+func checkChunkRange(chunksToCheck:Array, playerVelocity:Vector3):
+	if playerVelocity.x == 0 and playerVelocity.z == 0:
+		return
+	
+	for chunk:Node3D in chunksToCheck:
+		var chunkXPos = chunk.position.x
+		var chunkZPos = chunk.position.z
+		var inXRange = position.x + renderDistance
+		var inZRange = position.z + renderDistance
+		
+		if chunkXPos <= inXRange and chunkZPos <= inZRange:
+			chunk.set_meta("isInRange", true)
+		else:
+			chunk.set_meta("isInRange", false)

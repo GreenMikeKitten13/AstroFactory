@@ -3,7 +3,7 @@ extends StaticBody3D
 var bodies_in_range :Array= []
 var can_shoot : bool = true
 var looking_pos : Vector3 = Vector3(0, 0, 0)
-@onready var chamber: Node = %Chamber
+@onready var chamber: Node = get_parent().get_child(4)
 
 func _ready():
 	$Timer.wait_time = 1.0
@@ -53,5 +53,4 @@ func onBulletEntered(body: Node3D) -> void:
 		body.hide()
 		body.sleeping = true
 		body.set_process(false)
-		#body.get_child(0).mesh.material.albedo = "ffff00"
 		body.linear_velocity = Vector3i.ZERO

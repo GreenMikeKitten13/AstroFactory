@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=34 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -8,6 +8,7 @@
 [ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="8_tipki"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="9_85g3d"]
 [ext_resource type="Texture2D" uid="uid://bqtigs0nphq3h" path="res://scenes/lil bullet.png" id="9_choun"]
+[ext_resource type="Script" uid="uid://y25rbx652lm6" path="res://scenes/test.gd" id="10_choun"]
 [ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
@@ -22,6 +23,12 @@ background_mode = 2
 sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
 glow_enabled = true
+fog_sun_scatter = 1.0
+fog_density = 1.0
+fog_aerial_perspective = 0.25
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+volumetric_fog_length = 1024.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
 albedo_texture = ExtResource("6_o6xl0")
@@ -115,10 +122,10 @@ shadow_enabled = true
 [node name="PlayerBody" parent="." instance=ExtResource("2_tipki")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
-floor_max_angle = 1.56207
+floor_max_angle = 1.54985
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.1324, 1, -15.5624)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 8.46448, 1, -14.7852)
 
 [node name="TurretTower" type="MeshInstance3D" parent="SentryBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0524742, -0.453472, -0.0649668)
@@ -400,6 +407,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0458784, -0.159912, -0.114
 shape = SubResource("BoxShape3D_lquwl")
 
 [node name="Debug" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -20)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Debug"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.230759, -0.187103, 0.274048)
@@ -419,8 +427,18 @@ skeleton = NodePath("../..")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="bullet"]
 shape = SubResource("BoxShape3D_eb6dy")
 
-[node name="terrainGeneration" type="Node3D" parent="."]
+[node name="TerrainGeneration" type="Node3D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("9_85g3d")
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, -4)
+visible = false
+script = ExtResource("10_choun")
+
+[node name="NotUsedBlocks" type="Node3D" parent="."]
+unique_name_in_owner = true
+visible = false
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]
