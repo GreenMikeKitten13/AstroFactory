@@ -128,8 +128,8 @@ func _physics_process(delta: float) -> void:
 		if thread.is_alive():
 			return
 		else:
-			thread.start(checkChunkRange.bind(chunks, velocity))
-	
+			checkChunkRange(chunks, velocity)
+			
 	if moveDirection.length() > 0.2:
 		lastMovementDirection = moveDirection
 
