@@ -11,6 +11,7 @@ albedo_texture = ExtResource("2_e80uo")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_v6d5b"]
 height = 2.1
+radius = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cxr5p"]
 
@@ -73,6 +74,7 @@ spring_length = 5.0
 
 [node name="Camera3D" type="Camera3D" parent="Node3D/SpringArm3D"]
 unique_name_in_owner = true
+far = 999.0
 
 [node name="AudioListener3D" type="AudioListener3D" parent="Node3D/SpringArm3D/Camera3D"]
 transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, 0, 0, 0)
@@ -88,13 +90,15 @@ unique_name_in_owner = true
 [node name="HBoxContainer" parent="." instance=ExtResource("5_v6d5b")]
 
 [node name="Area3D" type="Area3D" parent="."]
+unique_name_in_owner = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, -0.25)
 shape = SubResource("CapsuleShape3D_55lj8")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.3063, 0)
+emitting = false
 amount = 1000
 lifetime = 3.0
 randomness = 0.56

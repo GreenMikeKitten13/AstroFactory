@@ -48,6 +48,7 @@ var inventory:Dictionary = {
 func _ready() -> void:
 	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	camera.far = renderDistance * 2
 	add_to_group("target")
 	
 	await  get_tree().create_timer(0.1).timeout
@@ -67,11 +68,21 @@ func _input(event: InputEvent) -> void:
 			changeNodeType(collider, "RigidBody3D")
 		elif collider is RigidBody3D:
 			for item:String in blocks:
-				if collider.name.begins_with(item):
+				if item.begins_with(collider.name):
 					var itemName = blocks[item]
 					inventory.set(itemName, inventory.get(itemName) +1)  # inventory[itemName]
-					print(inventory)
-			collider.queue_free()
+					collider.queue_free()
+	if event.is_action_pressed("F"):
+		for item in %Area3D.get_overlapping_bodies():
+			print(item, " item")
+			if item is RigidBody3D:
+				for lookUpItem:String in blocks:
+					#print(lookUpItem, item, " working")
+					if lookUpItem.begins_with(item.name):
+						var itemName = blocks[lookUpItem]
+						inventory.set(itemName, inventory.get(itemName) + 1)
+						print(inventory)
+						item.queue_free()
 
 func _unhandled_input(event: InputEvent) -> void:
 	var isCameraMotion :bool = event is InputEventMouseMotion

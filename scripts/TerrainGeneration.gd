@@ -3,7 +3,7 @@ extends  Node3D
 #-------------settings-----------------
 var worldSize:int = 30
 var chunkSize:int = 10
-var renderDistance:int = 10
+var renderDistance:int = 15
 var LLODR:int = renderDistance * 2 #Low Level Of Detail Range
 #-------------neededThings-------------
 var existingChunks:Array = []
@@ -14,7 +14,7 @@ var humidityNoise:Noise = FastNoiseLite.new()
 var temperatureNoise:Noise = FastNoiseLite.new() #for biomes
 
 @onready var playerBody: CharacterBody3D = %PlayerBody
-@onready var notUsedBlocks: Node3D = %NotUsedBlocks
+#@onready var notUsedBlocks: Node3D = %NotUsedBlocks
 
 const blockPrefab = preload("res://Blocks/DirtBlock.tscn")
 
@@ -52,5 +52,7 @@ func buildChunks(chunksToBuild:Array) -> void:
 						var block:StaticBody3D = blockPrefab.instantiate()
 						block.position = Vector3(xCoordinate, -yCoordinate, zCoordinate)
 						block.get_child(0).visibility_range_end = LLODR
+						
+						print(block.name)
 						chunk.add_child(block)
 			chunk.set_meta("isBuilt", true)
