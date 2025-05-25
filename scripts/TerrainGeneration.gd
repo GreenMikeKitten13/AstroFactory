@@ -3,7 +3,7 @@ extends  Node3D
 #-------------settings-----------------
 var worldSize:int = 30
 var chunkSize:int = 10
-var renderDistance:int = 15
+var renderDistance:int = 30
 var LLODR:int = renderDistance * 2 #Low Level Of Detail Range
 #-------------neededThings-------------
 var existingChunks:Array = []
