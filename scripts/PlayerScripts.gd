@@ -21,6 +21,8 @@ var cameraInputDirection :Vector2= Vector2.ZERO
 var Gravity :int= -30
 var chunks:Array = []
 
+var thread:Thread = Thread.new()
+
 var types:Dictionary = {
 	"RigidBody3D" : RigidBody3D
 }
@@ -122,7 +124,11 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	
-	checkChunkRange(chunks, velocity)
+	if not thread.is_alive():
+		if thread.is_alive():
+			return
+		else:
+			thread.start(checkChunkRange.bind(chunks, velocity))
 	
 	if moveDirection.length() > 0.2:
 		lastMovementDirection = moveDirection

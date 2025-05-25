@@ -13,12 +13,15 @@ var extremeNoise:Noise = FastNoiseLite.new() #how extreme the mountains are or s
 var humidityNoise:Noise = FastNoiseLite.new()
 var temperatureNoise:Noise = FastNoiseLite.new() #for biomes
 
+var thread:Thread = Thread.new()
+
 @onready var playerBody: CharacterBody3D = %PlayerBody
 #@onready var notUsedBlocks: Node3D = %NotUsedBlocks
 
 const blockPrefab = preload("res://Blocks/DirtBlock.tscn")
 
 func _ready() -> void:
+	makeNoise()
 	makeChunkNodes()
 	await get_tree().create_timer(0.05).timeout
 	buildChunks(existingChunks)
@@ -44,15 +47,32 @@ func makeChunkNodes() -> void:
 			existingChunks.append(chunk)
 
 func buildChunks(chunksToBuild:Array) -> void:
-	for chunk in chunksToBuild:
+	for chunk:Node3D in chunksToBuild:
 		if chunk.get_meta("isInRange") && !chunk.get_meta("isBuilt"):
 			for yCoordinate in chunkSize:
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
+						
+						#var xPos = x + chunk_pos.x
+						#var zPos = z + chunk_pos.z
+						
 						var block:StaticBody3D = blockPrefab.instantiate()
-						block.position = Vector3(xCoordinate, -yCoordinate, zCoordinate)
+						var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
+						
+						block.position = Vector3(xCoordinate, -yCoordinate + flatNoise, zCoordinate)
 						block.get_child(0).visibility_range_end = LLODR
+						
 						
 						print(block.name)
 						chunk.add_child(block)
 			chunk.set_meta("isBuilt", true)
+
+func decideBlock():
+	pass
+
+func makeNoise():
+	terrainNoise.seed = randi()
+	terrainNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	terrainNoise.fractal_octaves = 4
+	terrainNoise.fractal_gain = 0.4
+	terrainNoise.frequency = 0.005
