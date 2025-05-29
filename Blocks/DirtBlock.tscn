@@ -1,16 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://gkvjbc6sor3b"]
+[gd_scene load_steps=5 format=3 uid="uid://gkvjbc6sor3b"]
 
-[ext_resource type="ArrayMesh" uid="uid://bjotxw1i42t1n" path="res://Blocks/Textures+Objects/lil dirt/lil dirt.obj" id="1_5lol0"]
+[ext_resource type="Texture2D" uid="uid://ci5b3mic6kawi" path="res://some stuff/dirt.png" id="1_8n30b"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ylp1f"]
+albedo_texture = ExtResource("1_8n30b")
+
+[sub_resource type="BoxMesh" id="BoxMesh_n1lxb"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_8n30b"]
 radius = 0.55
 
 [node name="DirtBody" type="StaticBody3D"]
 
-[node name="DirtMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 0, 0)
-mesh = ExtResource("1_5lol0")
-skeleton = NodePath("")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.5, -0.05)
+material_override = SubResource("StandardMaterial3D_ylp1f")
+mesh = SubResource("BoxMesh_n1lxb")
 
 [node name="DirtCollider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0.05, 0.5, -0.05)
