@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dqijd8jw0nwwe"
-path.s3tc="res://.godot/imported/lil grass.png-e7be384fcce253249c662f3221bfbf9e.s3tc.ctex"
+uid="uid://cq7knxow052u3"
+path.s3tc="res://.godot/imported/BackupAtlas.png-581de2fbaa1cd3415f98f86574944a18.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Blocks/Textures+Objects/lil grass/lil grass.png"
-dest_files=["res://.godot/imported/lil grass.png-e7be384fcce253249c662f3221bfbf9e.s3tc.ctex"]
+source_file="res://AtlasTextures/BackupAtlas.png"
+dest_files=["res://.godot/imported/BackupAtlas.png-581de2fbaa1cd3415f98f86574944a18.s3tc.ctex"]
 
 [params]
 

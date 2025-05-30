@@ -35,14 +35,14 @@ var IndexToBlock = {
 
 var materialsForMesh:Dictionary = {}
 
-var atlasTexture = preload("res://testAtlas.tres")
+var atlasTexture = preload("res://AtlasTextures/betterAtlasTexture.tres")
 
 var thread:Thread = Thread.new()
 
 @onready var playerBody: CharacterBody3D = %PlayerBody
 #@onready var notUsedBlocks: Node3D = %NotUsedBlocks
 
-const blockPrefab = preload("res://Blocks/DirtBlock.tscn")
+const blockPrefab = preload("res://scenes/Block.tscn")
 
 func _ready() -> void:
 	
@@ -53,6 +53,7 @@ func _ready() -> void:
 		var material = ShaderMaterial.new()
 		material.shader = shader
 		material.set_shader_parameter("atlas_tex", atlasTexture)
+		material.set_shader_parameter("use_instance_data", false)
 		material.set_shader_parameter("tile_index", block)
 		#material.resource_name = 
 		#print(IndexToBlock[str(int(block))])
@@ -100,23 +101,30 @@ func buildChunks(chunksToBuild:Array) -> void:
 						var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
 						
 						block.position = Vector3(xCoordinate, -yCoordinate + flatNoise, zCoordinate)
-						block.get_child(0).visibility_range_end = LLODR
-						
-						block.get_child(0).material_override = materialsForMesh[5] #chooseMaterial(yCoordinate) #Color(chooseMaterial(yCoordinate) / 255.0, 0, 0, 1)
+						var blockMesh:MeshInstance3D = block.get_child(0)
+						blockMesh.visibility_range_end = LLODR
+						var material = materialsForMesh[chooseMaterial(yCoordinate)]
+						blockMesh.set_surface_override_material(0, material)
+
+					
+						print(blockMesh.get_surface_override_material(0))
 						
 						chunk.add_child(block)
 			chunk.set_meta("isBuilt", true)
 
 func chooseMaterial(yCoordinate) ->int:
-	if yCoordinate <= chunkSize-6:
+	if  yCoordinate == 0:
+		print("0")
+		return 0
+	elif yCoordinate >= chunkSize-6:
 		print("2")
 		return 2
-	elif yCoordinate >= chunkSize-6 and not yCoordinate == chunkSize-1:
+	elif yCoordinate <= chunkSize-6:
 		print("1")
 		return 1
 	else:
-		print("0")
 		return 0
+
 
 func makeNoise():
 	terrainNoise.seed = randi()

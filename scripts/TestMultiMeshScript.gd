@@ -14,22 +14,26 @@ func _ready():
 	# Create the mesh and MultiMesh
 	var mesh := BoxMesh.new()
 	var mm := MultiMesh.new()
+
 	
 	var instance_count := chunk_size * chunk_size * chunk_size
 	mm.mesh = mesh
 	var shader := Shader.new()
 	shader.code =  preload("res://shaders/shaderScript.gdshader").code
+	#mm.custom_data_format = MultiMesh.CUSTOM_DATA_FLOAT  # Required!
 
 	var material := ShaderMaterial.new()
 	material.shader = shader
-	var atlas_texture = load("res://testAtlas.tres")  # Replace with real path
+	var atlas_texture = preload("res://AtlasTextures/betterAtlasTexture.tres")  # Replace with real path
 	material.set_shader_parameter("atlas_tex", atlas_texture)
+	material.set_shader_parameter("use_instance_data", true)
 	mesh.material = material  # Assign to the mesh
 
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.use_custom_data = true
 	mm.instance_count = instance_count
 	mm.visible_instance_count = instance_count
+
 
 	
 	self.multimesh = mm
