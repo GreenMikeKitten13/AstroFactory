@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=35 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -108,6 +108,8 @@ size = Vector3(0.1, 0.1, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_eb6dy"]
 size = Vector3(0.1, 0.1, 0.2)
+
+[sub_resource type="MultiMesh" id="MultiMesh_choun"]
 
 [node name="Main" type="Node3D"]
 
@@ -437,6 +439,7 @@ script = ExtResource("9_85g3d")
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8838, 3.39343, -13.9224)
+multimesh = SubResource("MultiMesh_choun")
 script = ExtResource("10_choun")
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]

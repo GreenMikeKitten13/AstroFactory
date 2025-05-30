@@ -9,7 +9,7 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-@export var renderDistance:int = 15
+@export var renderDistance:int = 40
 
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
