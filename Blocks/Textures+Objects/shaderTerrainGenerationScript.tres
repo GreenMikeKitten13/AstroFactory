@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://doiop7dq7bq8u"]
 
-[ext_resource type="Shader" uid="uid://c6m6c5w2uhh8v" path="res://Blocks/Textures+Objects/shaderScript.gdshader" id="1_uktvo"]
+[ext_resource type="Shader" uid="uid://c6m6c5w2uhh8v" path="res://shaders/shaderScript.gdshader" id="1_uktvo"]
 [ext_resource type="Texture2D" uid="uid://batt5ucifmngw" path="res://Blocks/Textures+Objects/textureAtlas.png" id="2_fclna"]
 
 [resource]
@@ -8,4 +8,3 @@ render_priority = 0
 shader = ExtResource("1_uktvo")
 shader_parameter/atlas_tex = ExtResource("2_fclna")
 shader_parameter/atlas_size = Vector2(4, 4)
-shader_parameter/index = 0
