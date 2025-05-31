@@ -33,16 +33,15 @@ var IndexToBlock = {
 	2 : "stone",
 }
 
-var Blocks = {}
+var notNeededBlocks = {}
 
 var materialsForMesh:Dictionary = {}
 
-var atlasTexture = preload("res://AtlasTextures/betterAtlasTexture.tres")
+var atlasTexture = preload("res://AtlasTextures/betterAtlasTexture.tres")    #betterAtlasTexture / OldAtlasTextures
 
 var thread:Thread = Thread.new()
 
 @onready var playerBody: CharacterBody3D = %PlayerBody
-#@onready var notUsedBlocks: Node3D = %NotUsedBlocks
 
 const blockPrefab = preload("res://scenes/Block.tscn")
 
@@ -61,6 +60,10 @@ func _ready() -> void:
 		materialsForMesh.set(block, material)
 	print(materialsForMesh)
 	
+	
+	#for notNeededBlockID:int in range(2500):
+	#	var notNeededBlock = blockPrefab.instantiate()
+		
 	
 	makeNoise()
 	makeChunkNodes()
@@ -109,7 +112,7 @@ func buildChunks(chunksToBuild:Array) -> void:
 						
 						chunk.add_child(block)
 			chunk.set_meta("isBuilt", true)
-		#elif chunk.get_meta("isBuilt"):
+		#elif chunk.get_meta("isBuilt") and not chunk.get_meta("isInRange"):
 		#	pass
 
 func chooseMaterial(yCoordinate) ->int:
@@ -122,20 +125,10 @@ func chooseMaterial(yCoordinate) ->int:
 	else:
 		return 0
 
-func chooseMaterialForMultiMesh(yCoordinate) ->int:
-	if yCoordinate <= chunkSize-6:
-		return 2
-	elif yCoordinate >= chunkSize-6 and not yCoordinate == chunkSize-1:
-		return 1
-	else:
-		return 0
-
-
-
 
 func makeNoise() -> void:
 	terrainNoise.seed = randi()
-	terrainNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	terrainNoise.noise_type = FastNoiseLite.TYPE_PERLIN #TYPE_SIMPLEX_SMOOTH
 	terrainNoise.fractal_octaves = 4 #4
 	terrainNoise.fractal_gain = 0.45 # 0.4
 	terrainNoise.frequency = 0.025 #0.005
@@ -148,11 +141,8 @@ func useMultiMesh() -> void:
 		MultiMeshGenerator = MultiMeshInstance3D.new()
 		chunk.add_child(MultiMeshGenerator)
 		MultiMeshGenerator.reparent(chunk)
-		#print(MultiMeshGenerator.get_parent())
 		MultiMeshGenerator.position = Vector3(0, 0.5,0)
-		#print("not updated MultiMesh")
 
-		# Create the mesh and MultiMesh
 		var mesh := BoxMesh.new()
 		var mm := MultiMesh.new()
 
@@ -177,7 +167,6 @@ func useMultiMesh() -> void:
 	
 		MultiMeshGenerator.multimesh = mm
 	
-		# Fill the MultiMesh
 		var i := 0
 		for x in range(chunkSize):
 			for y in range(chunkSize):
