@@ -9,7 +9,7 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-@export var renderDistance:int = 20
+@export var renderDistance:int = 50
 
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
@@ -106,7 +106,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	cameraPivot.rotation.x += cameraInputDirection.y * delta
-	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/2, PI/2)
+	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/2.2, PI/2.2)
 	cameraPivot.rotation.y -= cameraInputDirection.x * delta
 	
 	cameraInputDirection = Vector2.ZERO
@@ -169,17 +169,15 @@ func onBulletEntered(body: Node3D) -> void:
 		bullet.linear_velocity = Vector3i.ZERO
 		bullet.set_process(false)
 
-func checkChunkRange(chunksToCheck:Array, playerVelocity:Vector3):
+func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 	if playerVelocity.x == 0 and playerVelocity.z == 0:
 		return
-	
-	for chunk:Node3D in chunksToCheck:
-		var chunkXPos = chunk.position.x
-		var chunkZPos = chunk.position.z
-		var inXRange = position.x + renderDistance
-		var inZRange = position.z + renderDistance
-		
-		if chunkXPos <= inXRange and chunkZPos <= inZRange:
-			chunk.set_meta("isInRange", true)
-		else:
-			chunk.set_meta("isInRange", false)
+
+	var radius = renderDistance / 2.0
+	var playerXZ = Vector2(position.x, position.z)
+
+	for chunk: Node3D in chunksToCheck:
+		var chunkXZ = Vector2(chunk.position.x, chunk.position.z)
+		var distance = playerXZ.distance_to(chunkXZ)
+
+		chunk.set_meta("isInRange", distance <= radius)

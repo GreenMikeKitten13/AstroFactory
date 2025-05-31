@@ -33,7 +33,9 @@ var IndexToBlock = {
 	2 : "stone",
 }
 
-var notNeededBlocks = {}
+var click = 0
+
+var notNeededBlocks = []
 
 var materialsForMesh:Dictionary = {}
 
@@ -61,9 +63,11 @@ func _ready() -> void:
 	print(materialsForMesh)
 	
 	
-	#for notNeededBlockID:int in range(2500):
-	#	var notNeededBlock = blockPrefab.instantiate()
-		
+	for notNeededBlockID:int in range(25000):
+		var notNeededBlock:StaticBody3D = blockPrefab.instantiate()
+		notNeededBlock.set_physics_process(false)
+		notNeededBlocks.append(notNeededBlock)
+
 	
 	makeNoise()
 	makeChunkNodes()
@@ -73,6 +77,11 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
+	click += 1
+	if click == 10:
+		var notNeededBlock2:StaticBody3D = blockPrefab.instantiate()
+		notNeededBlock2.set_physics_process(false)
+		notNeededBlocks.append(notNeededBlock2)
 
 
 func makeChunkNodes() -> void:
@@ -94,26 +103,37 @@ func makeChunkNodes() -> void:
 func buildChunks(chunksToBuild:Array) -> void:
 	for chunk:Node3D in chunksToBuild:
 		if chunk.get_meta("isInRange") && !chunk.get_meta("isBuilt"):
-			for yCoordinate in int(chunkSize/2.0):
+			for yCoordinate in int(chunkSize/5.0):
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
 						
-						var block:StaticBody3D = blockPrefab.instantiate()
+						var block:StaticBody3D = notNeededBlocks.get(0) #blockPrefab.instantiate()
+						notNeededBlocks.erase(block)
+						chunk.add_child(block)
+						block.set_process(true)
+						block.set_physics_process(true)
+						block.disable_mode = CollisionObject3D.DISABLE_MODE_KEEP_ACTIVE
+						block.collision_layer = 1
+						block.collision_mask = 1
 						var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
 						
 						block.position = Vector3(xCoordinate, -yCoordinate + flatNoise, zCoordinate)
-						var blockMesh:MeshInstance3D = block.get_child(0)
-						blockMesh.visibility_range_end = 0
-						var material = materialsForMesh[chooseMaterial(yCoordinate)]
 						var Meta = IndexToBlock[chooseMaterial(yCoordinate)]
 						
 						block.set_meta("Material", Meta)
-						blockMesh.set_surface_override_material(0, material)
-						
-						chunk.add_child(block)
+
 			chunk.set_meta("isBuilt", true)
-		#elif chunk.get_meta("isBuilt") and not chunk.get_meta("isInRange"):
-		#	pass
+		elif chunk.get_meta("isBuilt") and not chunk.get_meta("isInRange"):
+			for child:Node3D in chunk.get_children():
+				if child is StaticBody3D:
+					child.set_process(false)
+					child.set_physics_process(false)
+					child.disable_mode = CollisionObject3D.DISABLE_MODE_REMOVE
+					child.collision_layer = 0
+					child.collision_mask = 0
+					chunk.remove_child(child)
+					notNeededBlocks.append(child)
+			chunk.set_meta("isBuilt", false)
 
 func chooseMaterial(yCoordinate) ->int:
 	if  yCoordinate == 0:
