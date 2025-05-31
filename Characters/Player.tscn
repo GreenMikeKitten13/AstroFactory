@@ -55,6 +55,7 @@ radius = 0.66
 height = 2.4
 
 [node name="PlayerBody" type="CharacterBody3D"]
+floor_max_angle = 0.872665
 script = ExtResource("1_kne1u")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]

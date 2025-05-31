@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cq7knxow052u3"
-path.s3tc="res://.godot/imported/BackupAtlas.png-581de2fbaa1cd3415f98f86574944a18.s3tc.ctex"
+path.s3tc="res://.godot/imported/oldAtlasTexture.png-71a6b220370e51bed0be0cf9f4667775.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://AtlasTextures/BackupAtlas.png"
-dest_files=["res://.godot/imported/BackupAtlas.png-581de2fbaa1cd3415f98f86574944a18.s3tc.ctex"]
+source_file="res://AtlasTextures/oldAtlasTexture.png"
+dest_files=["res://.godot/imported/oldAtlasTexture.png-71a6b220370e51bed0be0cf9f4667775.s3tc.ctex"]
 
 [params]
 

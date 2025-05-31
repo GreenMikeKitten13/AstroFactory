@@ -9,7 +9,7 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-@export var renderDistance:int = 40
+@export var renderDistance:int = 20
 
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
@@ -69,18 +69,23 @@ func _input(event: InputEvent) -> void:
 		if collider is StaticBody3D:
 			changeNodeType(collider, "RigidBody3D")
 		elif collider is RigidBody3D:
-			for item:String in blocks:
-				if item.begins_with(collider.name):
+			for item:String in blocks.keys():
+				print(item)
+				if not collider.has_meta("Material"):
+					return
+				if item.begins_with(collider.get_meta("Material")):
 					var itemName = blocks[item]
 					inventory.set(itemName, inventory.get(itemName) +1)  # inventory[itemName]
 					collider.queue_free()
 	if event.is_action_pressed("F"):
 		for item in %Area3D.get_overlapping_bodies():
-			print(item, " item")
 			if item is RigidBody3D:
 				for lookUpItem:String in blocks:
 					#print(lookUpItem, item, " working")
-					if lookUpItem.begins_with(item.name):
+					if not item.has_meta("Material"):
+						return
+						
+					if lookUpItem.begins_with(item.get_meta("Material")):
 						var itemName = blocks[lookUpItem]
 						inventory.set(itemName, inventory.get(itemName) + 1)
 						print(inventory)
@@ -143,6 +148,11 @@ func changeNodeType(oldType:Node3D, newType:String) -> void:
 	newThingy.position = oldType.position
 	newThingy.rotation = oldType.rotation
 	newThingy.name = oldType.name
+	for metaData:String in oldType.get_meta_list():
+		newThingy.set_meta(metaData, oldType.get_meta(metaData))
+		
+		
+		
 	for child:Node in oldType.get_children():
 		child.reparent(newThingy)
 		child.scale /=2
