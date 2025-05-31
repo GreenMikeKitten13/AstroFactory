@@ -11,12 +11,16 @@ var existingChunks:Array = []
 var terrainNoise:Noise = FastNoiseLite.new()
 var extremeNoise:Noise = FastNoiseLite.new() #how extreme the mountains are or smt
 var humidityNoise:Noise = FastNoiseLite.new()
-var temperatureNoise:Noise = FastNoiseLite.new() #for biomes
+var temperatureNoise:Noise = FastNoiseLite.new()
 #-------------Dictionarys--------------
 var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold" : "snow"},
- "normally" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
- "rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
- "snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
+ 								"normally" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
+ 								"rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
+ 								"snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
+
+@onready var characters: Node3D = %Characters
+
+@onready var blockMesh = preload("res://scenes/blockMesh.tres")
 
 var BlockeToShaderIndex = {
 	"grass" : 0,
@@ -24,13 +28,18 @@ var BlockeToShaderIndex = {
 	"stone" : 2,
 	"iron" : 3,
 	"snow" : 4,
-	"obsidian" : 5
+	"obsidian" : 5,
+	"sand" : 9
 }
 
 var IndexToBlock = {
 	0 : "grass",
 	1 : "dirt",
 	2 : "stone",
+	3 : "iron",
+	4 : "snow",
+	5 : "obsidian", 
+	9 : "sand"
 }
 
 var click = 0
@@ -63,7 +72,7 @@ func _ready() -> void:
 	print(materialsForMesh)
 	
 	
-	for notNeededBlockID:int in range(25000):
+	for notNeededBlockID:int in range(20000):
 		var notNeededBlock:StaticBody3D = blockPrefab.instantiate()
 		notNeededBlock.set_physics_process(false)
 		notNeededBlocks.append(notNeededBlock)
@@ -77,11 +86,14 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
+	
 	click += 1
-	if click == 10:
+	
+	if click == 10 and len(notNeededBlocks) <= characters.get_child_count() * 7000:
 		var notNeededBlock2:StaticBody3D = blockPrefab.instantiate()
 		notNeededBlock2.set_physics_process(false)
 		notNeededBlocks.append(notNeededBlock2)
+		click = 0
 
 
 func makeChunkNodes() -> void:
@@ -116,9 +128,11 @@ func buildChunks(chunksToBuild:Array) -> void:
 						block.collision_layer = 1
 						block.collision_mask = 1
 						var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
+						var humidity = humidityNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
+						var temperature = temperatureNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
 						
 						block.position = Vector3(xCoordinate, -yCoordinate + flatNoise, zCoordinate)
-						var Meta = IndexToBlock[chooseMaterial(yCoordinate)]
+						var Meta = IndexToBlock[chooseMaterial(yCoordinate, temperature, humidity)]
 						
 						block.set_meta("Material", Meta)
 
@@ -135,9 +149,30 @@ func buildChunks(chunksToBuild:Array) -> void:
 					notNeededBlocks.append(child)
 			chunk.set_meta("isBuilt", false)
 
-func chooseMaterial(yCoordinate) ->int:
+func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
+	var humidityString = ""
+	var temperatureString = ""
+	if 1.0/float(len(BiomeChoosing.keys())) >= humidity:
+		humidityString = "dry"
+	elif 2*(1.0/float(len(BiomeChoosing.keys()))) >= humidity:
+		humidityString = "normally"
+	elif 3*(1.0/float(len(BiomeChoosing.keys()))) >= humidity:
+		humidityString = "rainy"
+	else:
+		humidityString = "snowy"
+	
+	if 1.0/float(len(BiomeChoosing["dry"].keys())) >= temperature:                             #"dry" can be anything ("normally", "rainy", "snowy")
+		temperatureString = "hot"
+	elif 2*(1.0/float(len(BiomeChoosing["dry"].keys()))) >= temperature:
+		temperatureString = "normal"
+	else:
+		temperatureString = "cold"
+	
+	var BiomeChosen = BiomeChoosing[humidityString][temperatureString]
+	var BiomeBlockID = BlockeToShaderIndex[BiomeChosen]
+	
 	if  yCoordinate == 0:
-		return 0
+		return BiomeBlockID
 	elif yCoordinate >= chunkSize-6:
 		return 2
 	elif yCoordinate <= chunkSize-6:
@@ -147,11 +182,26 @@ func chooseMaterial(yCoordinate) ->int:
 
 
 func makeNoise() -> void:
-	terrainNoise.seed = randi()
-	terrainNoise.noise_type = FastNoiseLite.TYPE_PERLIN #TYPE_SIMPLEX_SMOOTH
-	terrainNoise.fractal_octaves = 4 #4
-	terrainNoise.fractal_gain = 0.45 # 0.4
-	terrainNoise.frequency = 0.025 #0.005
+	terrainNoise.seed = randi()                                                 #terrainNoise = not so smooth
+	terrainNoise.noise_type = FastNoiseLite.TYPE_PERLIN
+	terrainNoise.fractal_octaves = 4 
+	terrainNoise.fractal_gain = 0.45
+	terrainNoise.frequency = 0.025 
+	
+	humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
+	humidityNoise.fractal_octaves = 4
+	humidityNoise.fractal_gain = 0.4
+	humidityNoise.frequency = 0.005
+	
+	temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
+	temperatureNoise.fractal_octaves = 4
+	temperatureNoise.fractal_gain = 0.4
+	temperatureNoise.frequency = 0.005
+	
+	extremeNoise.noise_type = FastNoiseLite.TYPE_PERLIN                         #extremeNoise = not so smooth
+	extremeNoise.fractal_octaves = 4
+	extremeNoise.fractal_gain = 0.45
+	extremeNoise.frequency = 0.03
 
 
 var MultiMeshGenerator
@@ -163,7 +213,7 @@ func useMultiMesh() -> void:
 		MultiMeshGenerator.reparent(chunk)
 		MultiMeshGenerator.position = Vector3(0, 0.5,0)
 
-		var mesh := BoxMesh.new()
+		var mesh:ArrayMesh = blockMesh  #BoxMesh.new() #
 		var mm := MultiMesh.new()
 
 	
@@ -176,7 +226,9 @@ func useMultiMesh() -> void:
 		material.shader = shader
 		material.set_shader_parameter("atlas_tex", atlasTexture)
 		material.set_shader_parameter("use_instance_data", true)
-		mesh.material = material  
+		#mesh.material = material  
+		
+		mesh.surface_set_material(0, material)
 
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_custom_data = true
@@ -194,9 +246,11 @@ func useMultiMesh() -> void:
 					var height := terrainNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
 					var pos := Vector3(x+0.05 , -y + height, z-0.05 )
 					var bigTransform := Transform3D(Basis(), pos)
+					var temperature = temperatureNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
+					var humidity = humidityNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
 					
 					mm.set_instance_transform(i, bigTransform)
 				
-					var color = Color(chooseMaterial(y) / 255.0, 0, 0, 1)
+					var color = Color(chooseMaterial(y, temperature, humidity) / 255.0, 0, 0, 1)
 					mm.set_instance_custom_data(i, color)
 					i += 1

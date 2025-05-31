@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=33 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -8,7 +8,6 @@
 [ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="8_tipki"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="9_85g3d"]
 [ext_resource type="Texture2D" uid="uid://bqtigs0nphq3h" path="res://scenes/lil bullet.png" id="9_choun"]
-[ext_resource type="Script" uid="uid://cdne4867q0ygo" path="res://scripts/TestMultiMeshScript.gd" id="10_choun"]
 [ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_85g3d"]
@@ -109,8 +108,6 @@ size = Vector3(0.1, 0.1, 0.2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_eb6dy"]
 size = Vector3(0.1, 0.1, 0.2)
 
-[sub_resource type="MultiMesh" id="MultiMesh_choun"]
-
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -119,11 +116,6 @@ environment = SubResource("Environment_ya4ey")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0.931056, 0.170737, -0.322466, 0, 13.5, 0)
 shadow_enabled = true
-
-[node name="PlayerBody" parent="." instance=ExtResource("2_tipki")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
-floor_max_angle = 1.55334
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.1324, 1, -15.5624)
@@ -437,10 +429,13 @@ shape = SubResource("BoxShape3D_eb6dy")
 unique_name_in_owner = true
 script = ExtResource("9_85g3d")
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8838, 3.39343, -13.9224)
-multimesh = SubResource("MultiMesh_choun")
-script = ExtResource("10_choun")
+[node name="Characters" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="PlayerBody" parent="Characters" instance=ExtResource("2_tipki")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+floor_max_angle = 1.55334
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]
