@@ -1,7 +1,7 @@
 extends  Node3D
 
 #-------------settings-----------------
-var worldSize:int = 30
+var worldSize:int = 10
 var chunkSize:int = 10
 var renderDistance:int = 2
 var LLODR:int = renderDistance * 2 #Low Level Of Detail Range
@@ -229,10 +229,9 @@ func useMultiMesh() -> void:
 		material.shader = shader
 		material.set_shader_parameter("atlas_tex", atlasTexture)
 		material.set_shader_parameter("use_instance_data", true)
-		#mesh.material = material  
+		material.set_shader_parameter("block_scale", 2.0) # If BoxMesh size is 2
 		
 		mesh.material = material
-		#mesh.material_override = material
 
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_custom_data = true
