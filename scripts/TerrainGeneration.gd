@@ -17,7 +17,7 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
  								"rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
  								"snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
 
-@onready var characters: Node3D = %Characters
+@onready var characters: Node3D = %characters
 
 # 0 = grass
 #1 = dirt
