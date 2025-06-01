@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=36 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -8,7 +8,9 @@
 [ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="8_tipki"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="9_85g3d"]
 [ext_resource type="Texture2D" uid="uid://bqtigs0nphq3h" path="res://scenes/lil bullet.png" id="9_choun"]
+[ext_resource type="Script" uid="uid://cdne4867q0ygo" path="res://scripts/TestMultiMeshScript.gd" id="10_choun"]
 [ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
+[ext_resource type="Script" uid="uid://c1trk7d8yd7ed" path="res://scenes/cloud_spawner.gd" id="11_eb6dy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_85g3d"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -24,6 +26,7 @@ tonemap_mode = 2
 glow_enabled = true
 fog_sun_scatter = 0.5
 fog_density = 0.0553
+volumetric_fog_density = 0.025
 volumetric_fog_albedo = Color(0.946752, 1, 0.999581, 1)
 volumetric_fog_emission = Color(0, 0.0189283, 0.0213828, 1)
 volumetric_fog_anisotropy = 0.1
@@ -108,6 +111,11 @@ size = Vector3(0.1, 0.1, 0.2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_eb6dy"]
 size = Vector3(0.1, 0.1, 0.2)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a8y0u"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0)
+
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -116,6 +124,11 @@ environment = SubResource("Environment_ya4ey")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0.931056, 0.170737, -0.322466, 0, 13.5, 0)
 shadow_enabled = true
+
+[node name="PlayerBody" parent="." instance=ExtResource("2_tipki")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+floor_max_angle = 1.56207
 
 [node name="SentryBody" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.1324, 1, -15.5624)
@@ -429,13 +442,16 @@ shape = SubResource("BoxShape3D_eb6dy")
 unique_name_in_owner = true
 script = ExtResource("9_85g3d")
 
-[node name="Characters" type="Node3D" parent="."]
-unique_name_in_owner = true
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8838, 3.39343, -13.9224)
+script = ExtResource("10_choun")
 
-[node name="PlayerBody" parent="Characters" instance=ExtResource("2_tipki")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
-floor_max_angle = 1.55334
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.84161, 82.8874, -15.7469)
+size = Vector3(500, 10, 500)
+material = SubResource("StandardMaterial3D_a8y0u")
+script = ExtResource("11_eb6dy")
+clouds_ammount = 750
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]

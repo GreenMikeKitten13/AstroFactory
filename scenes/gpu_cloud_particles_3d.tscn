@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://ceb67oj0uwdnn"]
+
+[ext_resource type="Texture2D" uid="uid://dembvphm5krux" path="res://some stuff/fx_cloudalpha01.png" id="1_dctrc"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eb6dy"]
+emission_shape = 3
+emission_box_extents = Vector3(7, 0.25, 6)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -2.23517e-06
+radial_accel_max = -2.23517e-06
+scale_min = 3.0
+scale_max = 7.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trceg"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("1_dctrc")
+billboard_mode = 1
+billboard_keep_scale = true
+grow = true
+distance_fade_min_distance = 6.3
+
+[sub_resource type="QuadMesh" id="QuadMesh_a8y0u"]
+material = SubResource("StandardMaterial3D_trceg")
+size = Vector2(2.5, 2.5)
+
+[node name="GPU_Cloud_particles3D" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 0)
+amount = 40
+lifetime = 60.0
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_eb6dy")
+draw_pass_1 = SubResource("QuadMesh_a8y0u")
