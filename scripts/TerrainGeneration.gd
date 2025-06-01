@@ -27,20 +27,20 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
 var BlockeToShaderIndex = {
 	"grass" : 0, #true
 	"dirt" : 1,  #true
-	"stone" : 3,  #false?
-	#"iron" : 3,
+	"stone" : 2,  #false?
+	"iron" : 3,
 	"snow" : 4,
-	#"obsidian" : 10,
+	"obsidian" : 10,
 	"sand" : 9  #true
 }
 
 var IndexToBlock = {
 	0 : "grass", #true
 	1 : "dirt",
-	3 : "stone",
-	#3 : "iron",
+	2 : "stone",
+	3 : "iron",
 	4 : "snow",
-	#10 : "obsidian", 
+	10 : "obsidian", 
 	9 : "sand" #true
 }
 
@@ -293,4 +293,5 @@ func useMultiMesh() -> void:
 				if child is MultiMeshInstance3D:
 					var MultiMeshInstance:MultiMeshInstance3D = child
 					for mmID:int in MultiMeshInstance.multimesh.instance_count:
+						@warning_ignore("standalone_expression")
 						MultiMeshInstance.multimesh

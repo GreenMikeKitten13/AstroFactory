@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="9_85g3d"]
 [ext_resource type="Texture2D" uid="uid://bqtigs0nphq3h" path="res://scenes/lil bullet.png" id="9_choun"]
 [ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
-[ext_resource type="Script" path="res://scenes/cloud_spawner.gd" id="11_eb6dy"]
+[ext_resource type="Script" uid="uid://c1trk7d8yd7ed" path="res://scripts/cloud_spawner.gd" id="11_eb6dy"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_85g3d"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
