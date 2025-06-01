@@ -20,8 +20,6 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
 
 @onready var characters: Node3D = %Characters
 
-@onready var blockMesh = preload("res://scenes/newBlockMesh.tres")
-
 var BlockeToShaderIndex = {
 	"grass" : 0,
 	"dirt" : 1,
@@ -48,9 +46,11 @@ var notNeededBlocks = []
 
 var materialsForMesh:Dictionary = {}
 
-var atlasTexture = preload("res://AtlasTextures/betterAtlasTexture.tres")    #betterAtlasTexture / OldAtlasTextures
+var atlasTexture = preload("res://AtlasTextures/OldAtlasTextures.tres")    #betterAtlasTexture / OldAtlasTextures
 
-var thread:Thread = Thread.new()
+var biomeNextThread:Thread = Thread.new()
+var biomeNextNextThread:Thread = Thread.new()
+var biomeNextNextNextThread:Thread = Thread.new()
 
 @onready var playerBody: CharacterBody3D = %PlayerBody
 
@@ -69,10 +69,9 @@ func _ready() -> void:
 		material.set_shader_parameter("tile_index", block)
 		
 		materialsForMesh.set(block, material)
-	print(materialsForMesh)
 	
 	
-	for notNeededBlockID:int in range(20000):
+	for notNeededBlockID:int in range(2500): #5000
 		var notNeededBlock:StaticBody3D = blockPrefab.instantiate()
 		notNeededBlock.set_physics_process(false)
 		notNeededBlocks.append(notNeededBlock)
@@ -118,9 +117,13 @@ func buildChunks(chunksToBuild:Array) -> void:
 			for yCoordinate in int(chunkSize/5.0):
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
-						
-						var block:StaticBody3D = notNeededBlocks.get(0) #blockPrefab.instantiate()
-						notNeededBlocks.erase(block)
+						var block:StaticBody3D
+						if len(notNeededBlocks) != 0:
+							block = notNeededBlocks.get(0) #blockPrefab.instantiate()
+							notNeededBlocks.erase(block)
+						else:
+							block = blockPrefab.instantiate()
+
 						chunk.add_child(block)
 						block.set_process(true)
 						block.set_physics_process(true)
@@ -213,7 +216,7 @@ func useMultiMesh() -> void:
 		MultiMeshGenerator.reparent(chunk)
 		MultiMeshGenerator.position = Vector3(0, 0,0)
 
-		var mesh:ArrayMesh = blockMesh.duplicate()  #BoxMesh.new() #
+		var mesh:BoxMesh = BoxMesh.new()
 		var mm := MultiMesh.new()
 
 	
@@ -228,13 +231,13 @@ func useMultiMesh() -> void:
 		material.set_shader_parameter("use_instance_data", true)
 		#mesh.material = material  
 		
-		mesh.surface_set_material(0, material)
+		mesh.material = material
 		#mesh.material_override = material
 
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_custom_data = true
 		mm.instance_count = instance_count 
-		mm.visible_instance_count =2 #instance_count
+		mm.visible_instance_count = instance_count
 
 
 	
@@ -242,16 +245,19 @@ func useMultiMesh() -> void:
 	
 		var i := 0
 		for x in range(chunkSize):
-			for y in range(chunkSize):
+			for y in range(round(chunkSize/2.0)):
 				for z in range(chunkSize):
 					var height := terrainNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
-					var pos := Vector3(x , -y + height, z )
+					var pos := Vector3(x ,-y + height, z )
 					var bigTransform := Transform3D( Basis(), pos)
-					var temperature = temperatureNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
-					var humidity = humidityNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
+					var temperature = temperatureNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z )
+					var humidity = humidityNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z )
 					
 					mm.set_instance_transform(i, bigTransform)
+					
+					#var biomeNextMaterial = biomeNextThread.start(chooseMaterial.bind(y, temperature, humidity))
 				
 					var color = Color(chooseMaterial(y, temperature, humidity) / 255.0, 0, 0, 1)
+					
 					mm.set_instance_custom_data(i, color)
 					i += 1
