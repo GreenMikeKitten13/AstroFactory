@@ -9,7 +9,7 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-@export var renderDistance:int = 25
+@export var renderDistance:int = 50
 
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
@@ -50,7 +50,7 @@ var inventory:Dictionary = {
 func _ready() -> void:
 	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera.far = renderDistance * 2
+	camera.far = renderDistance
 	add_to_group("target")
 	
 	await  get_tree().create_timer(0.1).timeout
@@ -173,7 +173,8 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 	if playerVelocity.x == 0 and playerVelocity.z == 0:
 		return
 
-	var radius = round(renderDistance/ 1.25)
+	var radius = round(renderDistance/ 2.0)
+	var LLODradius = round(renderDistance)
 	var playerXZ = Vector2(position.x, position.z)
 
 	for chunk: Node3D in chunksToCheck:
@@ -181,3 +182,4 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 		var distance = playerXZ.distance_to(chunkXZ)
 
 		chunk.set_meta("isInRange", distance <= radius)
+		chunk.set_meta("isInLLODRange", distance <= radius)
