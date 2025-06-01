@@ -19,24 +19,29 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
 
 @onready var characters: Node3D = %Characters
 
+# 0 = grass
+#1 = dirt
+#2 = coal
+#3 = 
+
 var BlockeToShaderIndex = {
-	"grass" : 0,
-	"dirt" : 1,
-	"stone" : 9,
-	"iron" : 3,
+	"grass" : 0, #true
+	"dirt" : 1,  #true
+	"stone" : 3,  #false?
+	#"iron" : 3,
 	"snow" : 4,
-	"obsidian" : 5,
-	"sand" : 8
+	#"obsidian" : 10,
+	"sand" : 9  #true
 }
 
 var IndexToBlock = {
-	0 : "grass",
+	0 : "grass", #true
 	1 : "dirt",
-	9: "stone",
-	3 : "iron",
+	3 : "stone",
+	#3 : "iron",
 	4 : "snow",
-	5 : "obsidian", 
-	8 : "sand"
+	#10 : "obsidian", 
+	9 : "sand" #true
 }
 
 var click = 0
