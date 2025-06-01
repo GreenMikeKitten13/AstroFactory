@@ -20,7 +20,7 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
 
 @onready var characters: Node3D = %Characters
 
-@onready var blockMesh = preload("res://scenes/blockMesh.tres")
+@onready var blockMesh = preload("res://scenes/newBlockMesh.tres")
 
 var BlockeToShaderIndex = {
 	"grass" : 0,
@@ -211,9 +211,9 @@ func useMultiMesh() -> void:
 		MultiMeshGenerator = MultiMeshInstance3D.new()
 		chunk.add_child(MultiMeshGenerator)
 		MultiMeshGenerator.reparent(chunk)
-		MultiMeshGenerator.position = Vector3(0, 0.5,0)
+		MultiMeshGenerator.position = Vector3(0, 0,0)
 
-		var mesh:ArrayMesh = blockMesh  #BoxMesh.new() #
+		var mesh:ArrayMesh = blockMesh.duplicate()  #BoxMesh.new() #
 		var mm := MultiMesh.new()
 
 	
@@ -229,11 +229,12 @@ func useMultiMesh() -> void:
 		#mesh.material = material  
 		
 		mesh.surface_set_material(0, material)
+		#mesh.material_override = material
 
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_custom_data = true
 		mm.instance_count = instance_count 
-		mm.visible_instance_count = instance_count
+		mm.visible_instance_count =2 #instance_count
 
 
 	
@@ -244,8 +245,8 @@ func useMultiMesh() -> void:
 			for y in range(chunkSize):
 				for z in range(chunkSize):
 					var height := terrainNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
-					var pos := Vector3(x+0.05 , -y + height, z-0.05 )
-					var bigTransform := Transform3D(Basis(), pos)
+					var pos := Vector3(x , -y + height, z )
+					var bigTransform := Transform3D( Basis(), pos)
 					var temperature = temperatureNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
 					var humidity = humidityNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
 					

@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=34 format=3 uid="uid://qachlfwuf6f6"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -8,6 +8,7 @@
 [ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="8_tipki"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="9_85g3d"]
 [ext_resource type="Texture2D" uid="uid://bqtigs0nphq3h" path="res://scenes/lil bullet.png" id="9_choun"]
+[ext_resource type="ArrayMesh" uid="uid://cwkpn2hmcs2gt" path="res://scenes/newBlockMesh.tres" id="10_choun"]
 [ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_85g3d"]
@@ -436,6 +437,10 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
 floor_max_angle = 1.55334
+
+[node name="BlockMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -7.65214, 1.12579, -17.8281)
+mesh = ExtResource("10_choun")
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]
