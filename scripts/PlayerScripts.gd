@@ -9,7 +9,7 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-@export var renderDistance:int = 100
+@export var renderDistance:int = 50
 
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
@@ -50,7 +50,7 @@ var inventory:Dictionary = {
 func _ready() -> void:
 	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera.far = renderDistance * 2
+	camera.far = renderDistance
 	add_to_group("target")
 	
 	await  get_tree().create_timer(0.1).timeout
@@ -69,18 +69,23 @@ func _input(event: InputEvent) -> void:
 		if collider is StaticBody3D:
 			changeNodeType(collider, "RigidBody3D")
 		elif collider is RigidBody3D:
-			for item:String in blocks:
-				if item.begins_with(collider.name):
+			for item:String in blocks.keys():
+				print(item)
+				if not collider.has_meta("Material"):
+					return
+				if item.begins_with(collider.get_meta("Material")):
 					var itemName = blocks[item]
 					inventory.set(itemName, inventory.get(itemName) +1)  # inventory[itemName]
 					collider.queue_free()
 	if event.is_action_pressed("F"):
 		for item in %Area3D.get_overlapping_bodies():
-			print(item, " item")
 			if item is RigidBody3D:
 				for lookUpItem:String in blocks:
 					#print(lookUpItem, item, " working")
-					if lookUpItem.begins_with(item.name):
+					if not item.has_meta("Material"):
+						return
+						
+					if lookUpItem.begins_with(item.get_meta("Material")):
 						var itemName = blocks[lookUpItem]
 						inventory.set(itemName, inventory.get(itemName) + 1)
 						print(inventory)
@@ -101,7 +106,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	cameraPivot.rotation.x += cameraInputDirection.y * delta
-	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/2, PI/2)
+	cameraPivot.rotation.x = clamp(cameraPivot.rotation.x, -PI/2.2, PI/2.2)
 	cameraPivot.rotation.y -= cameraInputDirection.x * delta
 	
 	cameraInputDirection = Vector2.ZERO
@@ -143,6 +148,11 @@ func changeNodeType(oldType:Node3D, newType:String) -> void:
 	newThingy.position = oldType.position
 	newThingy.rotation = oldType.rotation
 	newThingy.name = oldType.name
+	for metaData:String in oldType.get_meta_list():
+		newThingy.set_meta(metaData, oldType.get_meta(metaData))
+		
+		
+		
 	for child:Node in oldType.get_children():
 		child.reparent(newThingy)
 		child.scale /=2
@@ -159,17 +169,17 @@ func onBulletEntered(body: Node3D) -> void:
 		bullet.linear_velocity = Vector3i.ZERO
 		bullet.set_process(false)
 
-func checkChunkRange(chunksToCheck:Array, playerVelocity:Vector3):
+func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 	if playerVelocity.x == 0 and playerVelocity.z == 0:
 		return
-	
-	for chunk:Node3D in chunksToCheck:
-		var chunkXPos = chunk.position.x
-		var chunkZPos = chunk.position.z
-		var inXRange = position.x + renderDistance
-		var inZRange = position.z + renderDistance
-		
-		if chunkXPos <= inXRange and chunkZPos <= inZRange:
-			chunk.set_meta("isInRange", true)
-		else:
-			chunk.set_meta("isInRange", false)
+
+	var radius = round(renderDistance/ 2.0)
+	var LLODradius = round(renderDistance)
+	var playerXZ = Vector2(position.x, position.z)
+
+	for chunk: Node3D in chunksToCheck:
+		var chunkXZ = Vector2(chunk.position.x, chunk.position.z)
+		var distance = playerXZ.distance_to(chunkXZ)
+
+		chunk.set_meta("isInRange", distance <= radius)
+		chunk.set_meta("isInLLODRange", distance <= radius)

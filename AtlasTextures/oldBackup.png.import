@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmbs2ctb6j1t3"
-path.s3tc="res://.godot/imported/inventorySlot.png-b37c56a674d68a9708d7ef2182f2bc26.s3tc.ctex"
+uid="uid://cyr2bsl6upitw"
+path.s3tc="res://.godot/imported/oldBackup.png-a2f94386b473a3e0e043e6ea6543aad1.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://some stuff/inventorySlot.png"
-dest_files=["res://.godot/imported/inventorySlot.png-b37c56a674d68a9708d7ef2182f2bc26.s3tc.ctex"]
+source_file="res://AtlasTextures/oldBackup.png"
+dest_files=["res://.godot/imported/oldBackup.png-a2f94386b473a3e0e043e6ea6543aad1.s3tc.ctex"]
 
 [params]
 
