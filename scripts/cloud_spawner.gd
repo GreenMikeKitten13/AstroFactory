@@ -24,5 +24,10 @@ func spawn_clouds():
 		var cloud := _cloud.instantiate()
 		cloud.amount = rng.randi_range(10, 30)
 		cloud.process_material.emission_box_extents.x = rng.randi_range(int(round(cloud.amount / 10.0)), int(round(cloud.amount / 5.0)))
+		#cloud.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		#cloud.process_material.set("flags_cast_shadow", false)
+		#cloud.material_override = StandardMaterial3D.new()
+		#cloud.material_override.depth_draw_mode = StandardMaterial3D.DEPTH_DRAW_ALWAYS
+		#cloud.material_override.params_cull_mode = StandardMaterial3D.CULL_DISABLED
 		add_child(cloud)
 		cloud.global_position = self.global_position + spawn_pos

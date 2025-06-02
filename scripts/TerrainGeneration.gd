@@ -1,57 +1,47 @@
 extends  Node3D
 
 #-------------settings-----------------
-var worldSize:int = 50
+var worldSize:int = 5
 var chunkSize:int = 10
 var renderDistance:int = 2
+var LLODR:int = renderDistance * 2 #Low Level Of Detail Range
 #-------------neededThings-------------
 var existingChunks:Array = []
 #-------------noise--------------------
 var terrainNoise:Noise = FastNoiseLite.new()
 var extremeNoise:Noise = FastNoiseLite.new() #how extreme the mountains are or smt
 var humidityNoise:Noise = FastNoiseLite.new()
-var temperatureNoise:Noise = FastNoiseLite.new()
+var temperatureNoise:Noise = FastNoiseLite.new() #for biomes
 #-------------Dictionarys--------------
 var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold" : "snow"},
- 								"normally" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
- 								"rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
- 								"snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
-
-@onready var characters: Node3D = %characters
+ "normally" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
+ "rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
+ "snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
 
 var BlockeToShaderIndex = {
 	"grass" : 0,
 	"dirt" : 1,
-	"stone" : 9,
+	"stone" : 2,
 	"iron" : 3,
 	"snow" : 4,
-	"obsidian" : 5,
-	"sand" : 8
+	"obsidian" : 5
 }
 
 var IndexToBlock = {
 	0 : "grass",
 	1 : "dirt",
-	9: "stone",
-	3 : "iron",
-	4 : "snow",
-	5 : "obsidian", 
-	8 : "sand"
+	2 : "stone",
 }
 
 var click = 0
 
 var notNeededBlocks = []
 
-#var notNeededMultiMeshes = []
-
 var materialsForMesh:Dictionary = {}
 
-var atlasTexture = preload("res://AtlasTextures/oldAtlasBackup.tres")    #betterAtlasTexture / OldAtlasTextures
+var atlasTexture = preload("res://AtlasTextures/betterAtlasTexture.tres")    #betterAtlasTexture / OldAtlasTextures
 
-var biomeNextThread:Thread = Thread.new()
-var biomeNextNextThread:Thread = Thread.new()
-var biomeNextNextNextThread:Thread = Thread.new()
+var thread:Thread = Thread.new()
 
 @onready var playerBody: CharacterBody3D = %PlayerBody
 
@@ -70,35 +60,28 @@ func _ready() -> void:
 		material.set_shader_parameter("tile_index", block)
 		
 		materialsForMesh.set(block, material)
+	print(materialsForMesh)
 	
 	
-	for notNeededBlockID:int in range(2500): #5000
+	for notNeededBlockID:int in range(25000):
 		var notNeededBlock:StaticBody3D = blockPrefab.instantiate()
 		notNeededBlock.set_physics_process(false)
 		notNeededBlocks.append(notNeededBlock)
-	
-	
-	#for notNeededMultiMeshID in range(50000): #camerarenderdistance (50) * chunkSize*chunkSize*chunkSize (10*10*10)
-		#var notNeededMesh:BoxMesh = BoxMesh.new()
-		#notNeededMultiMeshes.append(notNeededMesh)
 
 	
 	makeNoise()
 	makeChunkNodes()
 	await get_tree().create_timer(0.05).timeout
 	buildChunks(existingChunks)
-	useMultiMesh()																					#here
+	useMultiMesh()
 
 func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
-	
 	click += 1
-	
-	if click == 10 and len(notNeededBlocks) <= characters.get_child_count() * 7000:
+	if click == 10:
 		var notNeededBlock2:StaticBody3D = blockPrefab.instantiate()
 		notNeededBlock2.set_physics_process(false)
 		notNeededBlocks.append(notNeededBlock2)
-		click = 0
 
 
 func makeChunkNodes() -> void:
@@ -111,11 +94,8 @@ func makeChunkNodes() -> void:
 			chunk.position = Vector3i(chunkPosX, 0, chunkPosZ)
 			chunk.set_meta("isInRange", false)
 			chunk.set_meta("isBuilt", false)
-			chunk.set_meta("isInLLODRange", false)
-			chunk.set_meta("isLLODBuilt", false)
 			if x == 0 and z == 0:
 				chunk.set_meta("isInRange",true)
-				chunk.set_meta("isInLLODRange", true)
 
 			add_child(chunk)
 			existingChunks.append(chunk)
@@ -126,13 +106,9 @@ func buildChunks(chunksToBuild:Array) -> void:
 			for yCoordinate in int(chunkSize/5.0):
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
-						var block:StaticBody3D
-						if len(notNeededBlocks) != 0:
-							block = notNeededBlocks.get(0) #blockPrefab.instantiate()
-							notNeededBlocks.erase(block)
-						else:
-							block = blockPrefab.instantiate()
-
+						
+						var block:StaticBody3D = notNeededBlocks.get(0) #blockPrefab.instantiate()
+						notNeededBlocks.erase(block)
 						chunk.add_child(block)
 						block.set_process(true)
 						block.set_physics_process(true)
@@ -140,11 +116,9 @@ func buildChunks(chunksToBuild:Array) -> void:
 						block.collision_layer = 1
 						block.collision_mask = 1
 						var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
-						var humidity = humidityNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
-						var temperature = temperatureNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
 						
 						block.position = Vector3(xCoordinate, -yCoordinate + flatNoise, zCoordinate)
-						var Meta = IndexToBlock[chooseMaterial(yCoordinate, temperature, humidity)]
+						var Meta = IndexToBlock[chooseMaterial(yCoordinate)]
 						
 						block.set_meta("Material", Meta)
 
@@ -160,34 +134,10 @@ func buildChunks(chunksToBuild:Array) -> void:
 					chunk.remove_child(child)
 					notNeededBlocks.append(child)
 			chunk.set_meta("isBuilt", false)
-		elif chunk.get_meta("isInLLODRange") and not chunk.get_meta("isLLODBuilt"):
-			useMultiMesh()																			#here
-			chunk.set_meta("isLLODBuilt", true)
 
-func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
-	var humidityString = ""
-	var temperatureString = ""
-	if 1.0/float(len(BiomeChoosing.keys())) >= humidity:
-		humidityString = "dry"
-	elif 2*(1.0/float(len(BiomeChoosing.keys()))) >= humidity:
-		humidityString = "normally"
-	elif 3*(1.0/float(len(BiomeChoosing.keys()))) >= humidity:
-		humidityString = "rainy"
-	else:
-		humidityString = "snowy"
-	
-	if 1.0/float(len(BiomeChoosing["dry"].keys())) >= temperature:                             #"dry" can be anything ("normally", "rainy", "snowy")
-		temperatureString = "hot"
-	elif 2*(1.0/float(len(BiomeChoosing["dry"].keys()))) >= temperature:
-		temperatureString = "normal"
-	else:
-		temperatureString = "cold"
-	
-	var BiomeChosen = BiomeChoosing[humidityString][temperatureString]
-	var BiomeBlockID = BlockeToShaderIndex[BiomeChosen]
-	
+func chooseMaterial(yCoordinate) ->int:
 	if  yCoordinate == 0:
-		return BiomeBlockID
+		return 0
 	elif yCoordinate >= chunkSize-6:
 		return 2
 	elif yCoordinate <= chunkSize-6:
@@ -197,95 +147,56 @@ func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
 
 
 func makeNoise() -> void:
-	terrainNoise.seed = randi()                                                 #terrainNoise = not so smooth
-	terrainNoise.noise_type = FastNoiseLite.TYPE_PERLIN
-	terrainNoise.fractal_octaves = 4 
-	terrainNoise.fractal_gain = 0.45
-	terrainNoise.frequency = 0.025 
-	
-	humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
-	humidityNoise.fractal_octaves = 4
-	humidityNoise.fractal_gain = 0.4
-	humidityNoise.frequency = 0.005
-	
-	temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
-	temperatureNoise.fractal_octaves = 4
-	temperatureNoise.fractal_gain = 0.4
-	temperatureNoise.frequency = 0.005
-	
-	extremeNoise.noise_type = FastNoiseLite.TYPE_PERLIN                         #extremeNoise = not so smooth
-	extremeNoise.fractal_octaves = 4
-	extremeNoise.fractal_gain = 0.45
-	extremeNoise.frequency = 0.03
+	terrainNoise.seed = randi()
+	terrainNoise.noise_type = FastNoiseLite.TYPE_PERLIN #TYPE_SIMPLEX_SMOOTH
+	terrainNoise.fractal_octaves = 4 #4
+	terrainNoise.fractal_gain = 0.45 # 0.4
+	terrainNoise.frequency = 0.025 #0.005
 
 
 var MultiMeshGenerator
 
 func useMultiMesh() -> void:
-	for chunk:Node3D in existingChunks:
-		if chunk.get_meta("isInLLODRange") and not chunk.get_meta("isLLODBuilt"):
-			MultiMeshGenerator = MultiMeshInstance3D.new()
-			chunk.add_child(MultiMeshGenerator)
-			MultiMeshGenerator.reparent(chunk)
-			MultiMeshGenerator.position = Vector3(0, 0,0)
+	for chunk in existingChunks:
+		MultiMeshGenerator = MultiMeshInstance3D.new()
+		chunk.add_child(MultiMeshGenerator)
+		MultiMeshGenerator.reparent(chunk)
+		MultiMeshGenerator.position = Vector3(0, 0,0)
 
-			var mesh:BoxMesh
-			#if len(notNeededMultiMeshes) != 0:
-			#	mesh = notNeededMultiMeshes[0]
-			#	notNeededMultiMeshes.erase(mesh)
-			#else:
-			mesh = BoxMesh.new()
+		var mesh := BoxMesh.new()
+		var mm := MultiMesh.new()
+
+	
+		var instance_count := chunkSize * chunkSize * chunkSize
+		mm.mesh = mesh
+		var shader := Shader.new()
+		shader.code =  preload("res://shaders/shaderScript.gdshader").code
+
+		var material := ShaderMaterial.new()
+		material.shader = shader
+		material.set_shader_parameter("atlas_tex", atlasTexture)
+		material.set_shader_parameter("use_instance_data", true)
+		mesh.material = material  
+
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.use_custom_data = true
+		mm.instance_count = instance_count 
+		mm.visible_instance_count = instance_count
+
+
+	
+		MultiMeshGenerator.multimesh = mm
+	
+		var i := 0
+		for x in range(chunkSize):
+			for y in range(chunkSize):
+				for z in range(chunkSize):
+					var height := terrainNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
+					var pos := Vector3(x , -y + height, z )
+					var bigTransform := Transform3D(Basis(), pos)
+					
+					mm.set_instance_transform(i, bigTransform)
 				
-			var mm := MultiMesh.new()
-
-	
-			var instance_count := chunkSize * chunkSize * chunkSize
-			mm.mesh = mesh
-			var shader := Shader.new()
-			shader.code =  preload("res://shaders/shaderScript.gdshader").code
-
-			var material := ShaderMaterial.new()
-			material.shader = shader
-			material.set_shader_parameter("atlas_tex", atlasTexture)
-			material.set_shader_parameter("use_instance_data", true)
-			material.set_shader_parameter("block_scale", 2.0)
-			material.set_shader_parameter("texture_scale", 1) 
-			material.set_shader_parameter("UV_Scale", 1)      
-		
-			mesh.material = material
-
-			mm.transform_format = MultiMesh.TRANSFORM_3D
-			mm.use_custom_data = true
-			mm.instance_count = instance_count 
-			mm.visible_instance_count = instance_count
-	
-			MultiMeshGenerator.multimesh = mm
-	
-			var i := 0
-			for x in range(chunkSize):
-				for y in range(round(chunkSize/2.0)):
-					for z in range(chunkSize):
-						var height := terrainNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z ) * 10.0
-						var pos := Vector3(x ,-y + height, z )
-						var temperature = temperatureNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z )
-						var humidity = humidityNoise.get_noise_2d(x + chunk.position.x, z + chunk.position.z )
-
-
-						mm.set_instance_transform(i, Transform3D(Basis(), pos))
-						var block_id = chooseMaterial(y, temperature, humidity)
-						var x_norm = pos.x / float(worldSize)
-						var y_norm = pos.y / float(worldSize)
-						var z_norm = pos.z / float(worldSize)
-						var custom = Color(block_id / 255.0, x_norm, y_norm, z_norm)
-					
-						mm.set_instance_custom_data(i, custom)
-
-					
-						i += 1
-			chunk.set_meta("isLLODBuilt", true)
-		#elif not chunk.get_meta("isInLLODRange") and chunk.get_meta("isLLODBuilt"):
-		#	for child:Node3D in chunk.get_children():
-		#		if child is MultiMeshInstance3D:
-			#		var MultiMeshInstance:MultiMeshInstance3D = child
-		#			for mmID:int in MultiMeshInstance.multimesh.instance_count:
-		#				MultiMeshInstance.multimesh
+					var color = Color(chooseMaterial(y) / 255.0, 0, 0, 1)
+					mm.set_instance_custom_data(i, color)
+					i += 1
