@@ -1,4 +1,4 @@
-extends CSGBox3D
+extends MeshInstance3D
 
 @export var clouds_ammount : int = 10
 @export var _cloud : PackedScene = preload("res://scenes/gpu_cloud_particles_3d.tscn")
@@ -11,6 +11,8 @@ var rng = RandomNumberGenerator.new()
 func spawn_clouds():
 	while clouds_ammount >= 0:
 		clouds_ammount -= 1
+		var aabb: AABB = mesh.get_aabb()
+		var size: Vector3 = aabb.size
 		
 		var x : float = rng.randf_range(size.x / 2, -size.x /2 )
 		var y : float = rng.randf_range(size.y / 2, -size.y /2 )
@@ -21,6 +23,6 @@ func spawn_clouds():
 		
 		var cloud := _cloud.instantiate()
 		cloud.amount = rng.randi_range(10, 30)
-		#cloud.process_material.emission_box_extents.x = rng.randi_range(int(round(cloud.amount / 10.0)), int(round(cloud.amount / 5.0)))
+		cloud.process_material.emission_box_extents.x = rng.randi_range(int(round(cloud.amount / 10.0)), int(round(cloud.amount / 5.0)))
 		add_child(cloud)
 		cloud.global_position = self.global_position + spawn_pos

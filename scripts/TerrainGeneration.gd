@@ -43,7 +43,7 @@ var click = 0
 
 var notNeededBlocks = []
 
-var notNeededMultiMeshes = []
+#var notNeededMultiMeshes = []
 
 var materialsForMesh:Dictionary = {}
 
@@ -78,16 +78,16 @@ func _ready() -> void:
 		notNeededBlocks.append(notNeededBlock)
 	
 	
-	for notNeededMultiMeshID in range(50000): #camerarenderdistance (50) * chunkSize*chunkSize*chunkSize (10*10*10)
-		var notNeededMesh:BoxMesh = BoxMesh.new()
-		notNeededMultiMeshes.append(notNeededMesh)
+	#for notNeededMultiMeshID in range(50000): #camerarenderdistance (50) * chunkSize*chunkSize*chunkSize (10*10*10)
+		#var notNeededMesh:BoxMesh = BoxMesh.new()
+		#notNeededMultiMeshes.append(notNeededMesh)
 
 	
 	makeNoise()
 	makeChunkNodes()
 	await get_tree().create_timer(0.05).timeout
 	buildChunks(existingChunks)
-	#useMultiMesh()																					#here
+	useMultiMesh()																					#here
 
 func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
@@ -161,7 +161,7 @@ func buildChunks(chunksToBuild:Array) -> void:
 					notNeededBlocks.append(child)
 			chunk.set_meta("isBuilt", false)
 		elif chunk.get_meta("isInLLODRange") and not chunk.get_meta("isLLODBuilt"):
-			#useMultiMesh()																			#here
+			useMultiMesh()																			#here
 			chunk.set_meta("isLLODBuilt", true)
 
 func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
@@ -230,11 +230,11 @@ func useMultiMesh() -> void:
 			MultiMeshGenerator.position = Vector3(0, 0,0)
 
 			var mesh:BoxMesh
-			if len(notNeededMultiMeshes) != 0:
-				mesh = notNeededMultiMeshes[0]
-				notNeededMultiMeshes.erase(mesh)
-			else:
-				mesh = BoxMesh.new()
+			#if len(notNeededMultiMeshes) != 0:
+			#	mesh = notNeededMultiMeshes[0]
+			#	notNeededMultiMeshes.erase(mesh)
+			#else:
+			mesh = BoxMesh.new()
 				
 			var mm := MultiMesh.new()
 
@@ -282,10 +282,10 @@ func useMultiMesh() -> void:
 
 					
 						i += 1
-			chunk.set_meta("isLLODBuilt", false)
-		elif not chunk.get_meta("isInLLODRange") and chunk.get_meta("isLLODBuilt"):
-			for child:Node3D in chunk.get_children():
-				if child is MultiMeshInstance3D:
-					var MultiMeshInstance:MultiMeshInstance3D = child
-					for mmID:int in MultiMeshInstance.multimesh.instance_count:
-						MultiMeshInstance.multimesh
+			chunk.set_meta("isLLODBuilt", true)
+		#elif not chunk.get_meta("isInLLODRange") and chunk.get_meta("isLLODBuilt"):
+		#	for child:Node3D in chunk.get_children():
+		#		if child is MultiMeshInstance3D:
+			#		var MultiMeshInstance:MultiMeshInstance3D = child
+		#			for mmID:int in MultiMeshInstance.multimesh.instance_count:
+		#				MultiMeshInstance.multimesh
