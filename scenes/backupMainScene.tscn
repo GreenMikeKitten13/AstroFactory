@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=35 format=3 uid="uid://bhl8ah5sywmv2"]
 
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
@@ -25,6 +25,7 @@ tonemap_mode = 2
 glow_enabled = true
 fog_sun_scatter = 0.5
 fog_density = 0.0553
+volumetric_fog_density = 0.025
 volumetric_fog_albedo = Color(0.946752, 1, 0.999581, 1)
 volumetric_fog_emission = Color(0, 0.0189283, 0.0213828, 1)
 volumetric_fog_anisotropy = 0.1
@@ -435,13 +436,8 @@ shape = SubResource("BoxShape3D_eb6dy")
 unique_name_in_owner = true
 script = ExtResource("9_85g3d")
 
-[node name="Characters" type="Node3D" parent="."]
-unique_name_in_owner = true
-
-[node name="PlayerBody" parent="Characters" instance=ExtResource("2_tipki")]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
-floor_max_angle = 1.55334
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8838, 3.39343, -13.9224)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.84161, 82.8874, -15.7469)
@@ -449,6 +445,14 @@ size = Vector3(500, 10, 500)
 material = SubResource("StandardMaterial3D_a8y0u")
 script = ExtResource("11_eb6dy")
 clouds_ammount = 750
+
+[node name="characters" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="PlayerBody" parent="characters" instance=ExtResource("2_tipki")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+floor_max_angle = 1.56207
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]

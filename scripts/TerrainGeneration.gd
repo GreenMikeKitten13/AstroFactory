@@ -17,31 +17,26 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
  								"rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
  								"snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
 
-@onready var characters: Node3D = %characters
-
-# 0 = grass
-#1 = dirt
-#2 = coal
-#3 = 
+@onready var characters: Node3D = %Characters
 
 var BlockeToShaderIndex = {
-	"grass" : 0, #true
-	"dirt" : 1,  #true
-	"stone" : 2,  #false?
+	"grass" : 0,
+	"dirt" : 1,
+	"stone" : 9,
 	"iron" : 3,
 	"snow" : 4,
-	"obsidian" : 10,
-	"sand" : 9  #true
+	"obsidian" : 5,
+	"sand" : 8
 }
 
 var IndexToBlock = {
-	0 : "grass", #true
+	0 : "grass",
 	1 : "dirt",
-	2 : "stone",
+	9: "stone",
 	3 : "iron",
 	4 : "snow",
-	10 : "obsidian", 
-	9 : "sand" #true
+	5 : "obsidian", 
+	8 : "sand"
 }
 
 var click = 0
@@ -92,7 +87,7 @@ func _ready() -> void:
 	makeChunkNodes()
 	await get_tree().create_timer(0.05).timeout
 	buildChunks(existingChunks)
-	useMultiMesh()
+	#useMultiMesh()																					#here
 
 func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
@@ -166,7 +161,7 @@ func buildChunks(chunksToBuild:Array) -> void:
 					notNeededBlocks.append(child)
 			chunk.set_meta("isBuilt", false)
 		elif chunk.get_meta("isInLLODRange") and not chunk.get_meta("isLLODBuilt"):
-			useMultiMesh()
+			#useMultiMesh()																			#here
 			chunk.set_meta("isLLODBuilt", true)
 
 func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
@@ -293,5 +288,4 @@ func useMultiMesh() -> void:
 				if child is MultiMeshInstance3D:
 					var MultiMeshInstance:MultiMeshInstance3D = child
 					for mmID:int in MultiMeshInstance.multimesh.instance_count:
-						@warning_ignore("standalone_expression")
 						MultiMeshInstance.multimesh
