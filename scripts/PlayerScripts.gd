@@ -182,4 +182,4 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 		var distance = playerXZ.distance_to(chunkXZ)
 
 		chunk.set_meta("isInRange", distance <= radius)
-		chunk.set_meta("isInLLODRange", distance <= radius)
+		chunk.set_meta("isInLLODRange", distance <= LLODradius)

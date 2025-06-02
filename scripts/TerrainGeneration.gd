@@ -87,7 +87,7 @@ func _ready() -> void:
 	makeChunkNodes()
 	await get_tree().create_timer(0.05).timeout
 	buildChunks(existingChunks)
-	useMultiMesh()
+	#useMultiMesh()																					#here
 
 func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
@@ -161,7 +161,7 @@ func buildChunks(chunksToBuild:Array) -> void:
 					notNeededBlocks.append(child)
 			chunk.set_meta("isBuilt", false)
 		elif chunk.get_meta("isInLLODRange") and not chunk.get_meta("isLLODBuilt"):
-			useMultiMesh()
+			#useMultiMesh()																			#here
 			chunk.set_meta("isLLODBuilt", true)
 
 func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
