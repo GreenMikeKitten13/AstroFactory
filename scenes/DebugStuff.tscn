@@ -2,7 +2,7 @@
 
 [node name="DebugStuff" type="Control"]
 layout_mode = 3
-anchors_preset = 15
+anchor_left = 0.9
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -11,7 +11,6 @@ grow_vertical = 2
 [node name="BiomeIndicator" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.85
 anchor_right = 0.99
 anchor_bottom = 0.05
 offset_right = 8.0
@@ -22,10 +21,19 @@ editable = false
 [node name="PositionIndicator" type="TextEdit" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.85
 anchor_top = 0.07
-anchor_right = 1.0
+anchor_right = 0.99
 anchor_bottom = 0.14
+grow_horizontal = 2
+grow_vertical = 2
+placeholder_text = "Mewo :3"
+
+[node name="UndergroundIndicator" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+anchor_right = 0.99
+anchor_bottom = 0.22
 grow_horizontal = 2
 grow_vertical = 2
 placeholder_text = "Mewo :3"

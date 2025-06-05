@@ -120,6 +120,7 @@ func makeChunkNodes() -> void:
 			chunk.set_meta("isBuilt", false)
 			chunk.set_meta("isInLLODRange", false)
 			chunk.set_meta("isLLODBuilt", false)
+			chunk.set_meta("isHalfBuilt", false)
 			if x == 0 and z == 0:
 				chunk.set_meta("isInRange",true)
 
@@ -130,10 +131,16 @@ func buildChunks(chunksToBuild:Array) -> void:
 	for chunk:Node3D in chunksToBuild:
 		if chunk.get_meta("isInRange") && !chunk.get_meta("isBuilt"):
 			var yChunkBig
-			if playerBody.position.y <= 0:
+			
+			if playerBody.position.y <= terrainNoise.get_noise_2d(playerBody.position.x, playerBody.position.z):
 				yChunkBig = chunkSize
+				playerBody.get_child(-1, false).get_child(-1).text = "built"
 			else:
-				yChunkBig = chunkSize/5.0
+				playerBody.get_child(-1, false).get_child(-1).text = "halfBuilt"
+				if chunk.get_meta("isHalfBuilt"):
+					return
+				else:
+					yChunkBig = chunkSize/5.0
 				
 			for yCoordinate in yChunkBig:
 				for xCoordinate in chunkSize:
@@ -161,8 +168,12 @@ func buildChunks(chunksToBuild:Array) -> void:
 						
 						
 							block.set_meta("Material", Meta)
-
-			chunk.set_meta("isBuilt", true)
+			
+			if yChunkBig == chunkSize:
+				chunk.set_meta("isBuilt", true)
+			else:
+				chunk.set_meta("isHalfBuilt", true)
+			
 		elif chunk.get_meta("isBuilt") and not chunk.get_meta("isInRange"):
 			for child:Node3D in chunk.get_children():
 				if child is StaticBody3D:

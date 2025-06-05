@@ -104,9 +104,6 @@ target_position = Vector3(0, 0, -5)
 [node name="HealthBar" parent="." instance=ExtResource("4_ynroq")]
 unique_name_in_owner = true
 
-[node name="DebugStuff" parent="." instance=ExtResource("5_55lj8")]
-unique_name_in_owner = true
-
 [node name="HBoxContainer" parent="." instance=ExtResource("5_v6d5b")]
 
 [node name="Area3D" type="Area3D" parent="."]
@@ -115,5 +112,8 @@ unique_name_in_owner = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, -0.25)
 shape = SubResource("CapsuleShape3D_55lj8")
+
+[node name="DebugStuff" parent="." instance=ExtResource("5_55lj8")]
+unique_name_in_owner = true
 
 [connection signal="body_entered" from="Area3D" to="." method="onBulletEntered"]

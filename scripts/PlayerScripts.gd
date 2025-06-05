@@ -61,7 +61,6 @@ var humiditySeed
 func _ready() -> void:
 	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	#camera.far = renderDistance
 	add_to_group("target")
 	
 	await  get_tree().create_timer(0.25).timeout
@@ -168,9 +167,11 @@ func _physics_process(delta: float) -> void:
 	var targetAngle :float= Vector3.BACK.signed_angle_to(lastMovementDirection, Vector3.UP)
 	lilMan.global_rotation.y = lerp_angle(lilMan.rotation.y, targetAngle, rotationSpeed * delta)
 	var biomeIndicator = DebugStuff.get_child(0)
-	var positionIndicator = DebugStuff.get_child(-1)
+	var positionIndicator = DebugStuff.get_child(1)
+	#var undergroundIndicator = DebugStuff.get_child(-1)
 	positionIndicator.text = str(round(self.position.x)) + ", " + str(round(self.position.y)) + ", " + str( round(self.position.z))
 	biomeIndicator.text = chooseBiome(temperatureNoise.get_noise_2d(self.position.x, self.position.z), humidityNoise.get_noise_2d(self.position.x, self.position.z))
+	#undergroundIndicator.text =  str(self.position.y <= 0)
 
 func changeNodeType(oldType:Node3D, newType:String) -> void:
 	var newThingy:Node3D = types[newType].new()
@@ -229,7 +230,7 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 	if playerVelocity.x == 0 and playerVelocity.z == 0:
 		return
 
-	var radius = max(round(renderDistance/ 2.0), 20)
+	var radius = max(round(renderDistance/ 2.0), 22)
 	var LLODradius = round(renderDistance)
 	var playerXZ = Vector2(position.x, position.z)
 
