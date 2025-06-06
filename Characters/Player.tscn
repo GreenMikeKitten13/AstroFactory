@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://vwhdh3633lgp"]
+[gd_scene load_steps=15 format=3 uid="uid://vwhdh3633lgp"]
 
 [ext_resource type="Script" uid="uid://c0grtt7pav323" path="res://scripts/PlayerScripts.gd" id="1_kne1u"]
 [ext_resource type="Texture2D" uid="uid://dsomb5f2uwjym" path="res://Characters/lil man/lil man.png" id="2_e80uo"]
 [ext_resource type="ArrayMesh" uid="uid://cstf30lpbs4f4" path="res://Characters/lil man/lil man.obj" id="3_cxr5p"]
 [ext_resource type="PackedScene" uid="uid://c3h7hetejosdd" path="res://scenes/healthBar.tscn" id="4_ynroq"]
+[ext_resource type="PackedScene" uid="uid://2l1wv2t3hw8e" path="res://scenes/DebugStuff.tscn" id="5_55lj8"]
 [ext_resource type="PackedScene" uid="uid://brmanaq5xkpn" path="res://scenes/HotBar.tscn" id="5_v6d5b"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v6d5b"]
@@ -111,5 +112,8 @@ unique_name_in_owner = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, -0.25)
 shape = SubResource("CapsuleShape3D_55lj8")
+
+[node name="DebugStuff" parent="." instance=ExtResource("5_55lj8")]
+unique_name_in_owner = true
 
 [connection signal="body_entered" from="Area3D" to="." method="onBulletEntered"]

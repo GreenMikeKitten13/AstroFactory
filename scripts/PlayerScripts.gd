@@ -9,11 +9,12 @@ extends CharacterBody3D
 @export var rotationSpeed :float=12.0
 @export var jumpImpulse :float=12.0
 
-@export var renderDistance:int = 100
+@export var renderDistance:int = 40
 
 @onready var cameraPivot: Node3D = %Node3D
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan
+@onready var DebugStuff: Control = %DebugStuff
 
 
 var lastMovementDirection:Vector3 = Vector3.BACK
@@ -26,6 +27,11 @@ var thread:Thread = Thread.new()
 var types:Dictionary = {
 	"RigidBody3D" : RigidBody3D
 }
+
+var BiomeChoosing:Dictionary = {"dry": {"hot" : "desert", "normal" : "steppe", "cold" : "snow field"},
+ "normally" : {"hot" : "jungle", "normal" : "grass field", "cold" : "mountain"},
+ "rainy" : {"hot" : "big jungle", "normal" : "big grass field", "cold" : "rainy mountain"},
+ "snowy": {"hot" : "vulcanic field", "normal" : "snowy mountain", "cold" : "snow field/mountain"} }
 
 var blocks:Dictionary = {
 	"stone" : "Stone",
@@ -47,15 +53,35 @@ var inventory:Dictionary = {
 	"Sand" : 0
 }
 
+var temperatureSeed
+var humiditySeed
+@onready var humidityNoise = FastNoiseLite.new()
+@onready var temperatureNoise = FastNoiseLite.new()
+
 func _ready() -> void:
 	set_meta("health", 100)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera.far = renderDistance
 	add_to_group("target")
 	
-	await  get_tree().create_timer(0.1).timeout
+	await  get_tree().create_timer(0.25).timeout
 	for chunk in %TerrainGeneration.get_children():
 		chunks.append(chunk)
+	
+	temperatureSeed = self.get_meta("temperature")
+	humiditySeed = self.get_meta("humidity")
+	
+	
+	humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
+	humidityNoise.fractal_octaves = 22         #4   
+	humidityNoise.fractal_gain = 0.025         #0.5    
+	humidityNoise.frequency =   0.003          #0.015  
+	humidityNoise.seed = humiditySeed
+	
+	temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
+	temperatureNoise.fractal_octaves = 22
+	temperatureNoise.fractal_gain = 0.025
+	temperatureNoise.frequency = 0.003
+	temperatureNoise.seed = temperatureSeed
 
 
 
@@ -140,6 +166,12 @@ func _physics_process(delta: float) -> void:
 
 	var targetAngle :float= Vector3.BACK.signed_angle_to(lastMovementDirection, Vector3.UP)
 	lilMan.global_rotation.y = lerp_angle(lilMan.rotation.y, targetAngle, rotationSpeed * delta)
+	var biomeIndicator = DebugStuff.get_child(0)
+	var positionIndicator = DebugStuff.get_child(1)
+	#var undergroundIndicator = DebugStuff.get_child(-1)
+	positionIndicator.text = str(round(self.position.x)) + ", " + str(round(self.position.y)) + ", " + str( round(self.position.z))
+	biomeIndicator.text = chooseBiome(temperatureNoise.get_noise_2d(self.position.x, self.position.z), humidityNoise.get_noise_2d(self.position.x, self.position.z))
+	#undergroundIndicator.text =  str(self.position.y <= 0)
 
 func changeNodeType(oldType:Node3D, newType:String) -> void:
 	var newThingy:Node3D = types[newType].new()
@@ -158,6 +190,31 @@ func changeNodeType(oldType:Node3D, newType:String) -> void:
 		child.scale /=2
 	oldType.queue_free()
 
+func chooseBiome( temperature:float, humidity:float) ->String:
+	var humidityString = ""
+	var temperatureString = ""
+	var biomeString = ""
+	
+	if (1.0/float(len(BiomeChoosing.keys()))) >= (humidity+1)/2:
+		humidityString = "dry"
+	elif 2*(1.0/float(len(BiomeChoosing.keys()))) >= (humidity+1)/2:
+		humidityString = "normally"
+	elif 3*(1.0/float(len(BiomeChoosing.keys()))) >= (humidity+1)/2:
+		humidityString = "rainy"
+	else:
+		humidityString = "snowy"
+	
+	if (1.0/float(len(BiomeChoosing["dry"].keys()))) >= (temperature+1)/2:                             #"dry" can be anything ("normally", "rainy", "snowy")
+		temperatureString = "hot"
+	elif 2*(1.0/float(len(BiomeChoosing["dry"].keys()))) >= (temperature+1)/2:
+		temperatureString = "normal"
+	else:
+		temperatureString = "cold"
+		
+	biomeString = BiomeChoosing[humidityString][temperatureString]
+	
+	return biomeString
+
 var hitItems = []
 
 func onBulletEntered(body: Node3D) -> void:
@@ -173,7 +230,7 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 	if playerVelocity.x == 0 and playerVelocity.z == 0:
 		return
 
-	var radius = round(renderDistance/ 2.0)
+	var radius = max(round(renderDistance/ 2.0), 22)
 	var LLODradius = round(renderDistance)
 	var playerXZ = Vector2(position.x, position.z)
 
