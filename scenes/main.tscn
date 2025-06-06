@@ -448,7 +448,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.84161, 82.8874, -15.7469)
 size = Vector3(500, 10, 500)
 material = SubResource("StandardMaterial3D_a8y0u")
 script = ExtResource("11_eb6dy")
-clouds_ammount = 750
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]
