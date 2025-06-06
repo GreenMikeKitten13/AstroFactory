@@ -23,11 +23,23 @@ background_mode = 2
 sky = SubResource("Sky_choun")
 tonemap_mode = 2
 glow_enabled = true
-fog_sun_scatter = 0.5
-fog_density = 0.0553
-volumetric_fog_albedo = Color(0.946752, 1, 0.999581, 1)
-volumetric_fog_emission = Color(0, 0.0189283, 0.0213828, 1)
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.759383, 0.893955, 1, 1)
+fog_light_energy = 0.5
+fog_sun_scatter = 0.2
+fog_density = 0.04
+fog_aerial_perspective = 0.5
+fog_height = 50.0
+fog_height_density = -0.05
+fog_depth_begin = 100.0
+fog_depth_end = 150.0
+volumetric_fog_enabled = true
+volumetric_fog_albedo = Color(0.951913, 0.96453, 1, 1)
+volumetric_fog_emission = Color(0, 0.00784314, 0.0196078, 1)
 volumetric_fog_anisotropy = 0.1
+volumetric_fog_length = 32.0
+volumetric_fog_detail_spread = 6.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
 albedo_texture = ExtResource("6_o6xl0")
@@ -98,7 +110,7 @@ size = Vector3(0.2, 0.1, 0.1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ya4ey"]
 material = SubResource("StandardMaterial3D_choun")
-size = Vector3(250, 2, 250)
+size = Vector3(500, 10, 500)
 
 [node name="Main" type="Node3D"]
 
@@ -405,11 +417,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 floor_max_angle = 1.55334
 
 [node name="cloudgenerator3000" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 40, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 73.1397, 10)
 layers = 2
 visibility_range_end = 0.1
 mesh = SubResource("BoxMesh_ya4ey")
 script = ExtResource("10_choun")
+clouds_ammount = 100
 
 [connection signal="body_entered" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_entered"]
 [connection signal="body_exited" from="SentryBody/TurretBarrelBody3D/TurretBarrel/SentryArea" to="SentryBody/TurretBarrelBody3D" method="_on_sentry_area_body_exited"]

@@ -4,7 +4,7 @@
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eb6dy"]
 emission_shape = 3
-emission_box_extents = Vector3(7, 0.25, 6)
+emission_box_extents = Vector3(8, 5, 8)
 spread = 0.0
 gravity = Vector3(0, 0, 0)
 radial_accel_min = -2.23517e-06
@@ -27,7 +27,7 @@ size = Vector2(2.5, 2.5)
 
 [node name="GPU_Cloud_particles3D" type="GPUParticles3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 0)
-amount = 40
+amount = 30
 lifetime = 60.0
 explosiveness = 1.0
 randomness = 1.0
