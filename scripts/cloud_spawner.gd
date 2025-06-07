@@ -1,7 +1,12 @@
+# use this script for weather controll
+	#rain --> more, bigger clouds
+	#clear weather --> no clouds
+
 extends MeshInstance3D
 
 @export var clouds_ammount : int = 10
 @export var _cloud : PackedScene = preload("res://scenes/gpu_cloud_particles_3d.tscn")
+
 
 func _ready():
 	spawn_clouds()
@@ -22,8 +27,8 @@ func spawn_clouds():
 		var spawn_pos : Vector3 = Vector3(x, y, z)
 		
 		var cloud := _cloud.instantiate()
-		cloud.amount = rng.randi_range(10, 30)
-		cloud.process_material.emission_box_extents.x = rng.randi_range(int(round(cloud.amount / 10.0)), int(round(cloud.amount / 5.0)))
+		cloud.amount = rng.randi_range(20, 50)
+		#cloud.process_material.emission_box_extents.x = rng.randi_range(int(round(cloud.amount / 10.0)), int(round(cloud.amount / 5.0)))
 		#cloud.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		#cloud.process_material.set("flags_cast_shadow", false)
 		#cloud.material_override = StandardMaterial3D.new()

@@ -8,11 +8,12 @@
 [ext_resource type="PackedScene" uid="uid://brmanaq5xkpn" path="res://scenes/HotBar.tscn" id="5_v6d5b"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v6d5b"]
+lifetime_randomness = 0.5
 emission_shape_scale = Vector3(10, 10, 10)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
-direction = Vector3(0, -1, 0)
-spread = 5.0
+direction = Vector3(0.05, -1, 0.05)
+spread = 2.0
 initial_velocity_min = 25.0
 initial_velocity_max = 30.0
 gravity = Vector3(0, -11, 0)
@@ -61,7 +62,6 @@ script = ExtResource("1_kne1u")
 
 [node name="GPU_Rain_Particles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(2, 0, 3.97904e-13, 0, 1.5, 0, -3.97904e-13, 0, 2, 0, 12.7779, 0)
-emitting = false
 amount = 17900
 lifetime = 5.0
 randomness = 0.56
