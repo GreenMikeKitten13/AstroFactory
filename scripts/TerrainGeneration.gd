@@ -19,6 +19,8 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
  "rainy" : {"hot" : "grass", "normal" : "grass", "cold" : "stone"},
  "snowy": {"hot" : "obsidian", "normal" : "stone", "cold" : "snow"} }
 
+var blockPositions:Dictionary = {}
+
 #0 : grass
 #1 : dirt
 #2 : stone
@@ -129,62 +131,50 @@ func makeChunkNodes() -> void:
 
 func buildChunks(chunksToBuild:Array) -> void:
 	for chunk:Node3D in chunksToBuild:
-		if chunk.get_meta("isInRange") && !chunk.get_meta("isBuilt"):
-			var yChunkBig
-			
-			if playerBody.position.y <= terrainNoise.get_noise_2d(playerBody.position.x, playerBody.position.z):
-				yChunkBig = chunkSize
-				playerBody.get_child(-1, false).get_child(-1).text = "built"
-			else:
-				playerBody.get_child(-1, false).get_child(-1).text = "halfBuilt"
-				if chunk.get_meta("isHalfBuilt"):
-					return
-				else:
-					yChunkBig = chunkSize/5.0
-				
-			for yCoordinate in yChunkBig:
+		if chunk.get_meta("isInRange"):
+			for yCoordinate in clamp( round(-(playerBody.position.y -3)), 2, chunkSize ):
 				for xCoordinate in chunkSize:
 					for zCoordinate in chunkSize:
-						#var isCave = false
-						var cave = (caveNoise.get_noise_3d(xCoordinate + chunk.position.x, yCoordinate, zCoordinate + chunk.position.z)+1)/2
+						var chunkX = chunk.position.x
+						var chunkZ = chunk.position.z
 						
+						var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunkX, zCoordinate + chunkZ) * 10
+						var blockY = -yCoordinate + flatNoise
+						var globalPos = Vector3(xCoordinate + chunkX, blockY, zCoordinate + chunkZ)
+						var key = globalPos.snapped(Vector3(0.1, 0.1, 0.1)) # Key for hashing
 						
-						if cave >= 0.45:
-							var block:StaticBody3D = notNeededBlocks.get(0) #blockPrefab.instantiate()
-							notNeededBlocks.erase(block)
-						
-							chunk.add_child(block)
-							block.set_process(true)
-							block.set_physics_process(true)
-							block.disable_mode = CollisionObject3D.DISABLE_MODE_KEEP_ACTIVE
-							block.collision_layer = 1
-							block.collision_mask = 1
-							var flatNoise = terrainNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z) * 10
-							var humidity = humidityNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z)
-							var temperature = temperatureNoise.get_noise_2d(xCoordinate + chunk.position.x, zCoordinate + chunk.position.z)
-						
-							block.position = Vector3(xCoordinate, -yCoordinate + flatNoise, zCoordinate)
-							var Meta = IndexToBlock[chooseMaterial(yCoordinate,temperature, humidity)]
-						
-						
-							block.set_meta("Material", Meta)
-			
-			if yChunkBig == chunkSize:
-				chunk.set_meta("isBuilt", true)
-			else:
-				chunk.set_meta("isHalfBuilt", true)
-			
-		elif chunk.get_meta("isBuilt") and not chunk.get_meta("isInRange"):
+						if not blockPositions.has(key):
+							var cave = (caveNoise.get_noise_3d(xCoordinate + chunkX, yCoordinate, zCoordinate + chunkZ)+1)/2
+							
+							if cave >= 0.45:
+								var block:StaticBody3D
+								if notNeededBlocks.is_empty():
+									block = blockPrefab.instantiate()
+								else:
+									block = notNeededBlocks.pop_front()
+								
+								chunk.add_child(block)
+								block.disable_mode = CollisionObject3D.DISABLE_MODE_KEEP_ACTIVE
+								
+								var humidity = humidityNoise.get_noise_2d(xCoordinate + chunkX, zCoordinate + chunkZ)
+								var temperature = temperatureNoise.get_noise_2d(xCoordinate + chunkX, zCoordinate + chunkZ)
+								
+								
+								
+								block.position = Vector3(xCoordinate, blockY, zCoordinate) #.snapped(Vector3.ONE)
+								var Meta = IndexToBlock[chooseMaterial(yCoordinate,temperature, humidity)]
+								
+								block.set_meta("Material", Meta)
+								block.set_meta("isBuilt", true)
+								blockPositions[key] = true
+		elif not chunk.get_meta("isInRange"):
 			for child:Node3D in chunk.get_children():
 				if child is StaticBody3D:
-					child.set_process(false)
-					child.set_physics_process(false)
+					var searchKey =  Vector3(child.position.x + chunk.position.x, child.position.y, child.position.z + chunk.position.z).snapped(Vector3(0.1, 0.1, 0.1))    #chunk.to_global(child.position).snapped(Vector3.ONE)
+					blockPositions.erase(searchKey)
 					child.disable_mode = CollisionObject3D.DISABLE_MODE_REMOVE
-					child.collision_layer = 0
-					child.collision_mask = 0
 					chunk.remove_child(child)
 					notNeededBlocks.append(child)
-			chunk.set_meta("isBuilt", false)
 
 func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
 	var humidityString = ""
@@ -207,10 +197,7 @@ func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
 	
 	var BiomeChosen = BiomeChoosing[humidityString][temperatureString]
 	var BiomeBlockID = BlockeToShaderIndex[BiomeChosen]
-	
-	#if cave <= 0.5:
-	#	return len(BlockeToShaderIndex) +1
-	
+
 	if  yCoordinate == 0:
 		return BiomeBlockID
 	elif yCoordinate >= chunkSize-6:
@@ -340,3 +327,19 @@ func useMultiMesh() -> void:
 func giveInfoToPlayer() -> void:
 	playerBody.set_meta("temperature", temperatureNoise.seed)
 	playerBody.set_meta("humidity", humidityNoise.seed)
+
+func isStaticbodyAtPosition(checkPosition: Vector3) -> bool:
+	var space_state = get_world_3d().direct_space_state
+
+	var box_shape = BoxShape3D.new()
+	box_shape.size = Vector3(0.5, 0.5, 0.5) # Small box centered at position
+
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = box_shape
+	query.transform.origin = checkPosition
+
+	var results = space_state.intersect_shape(query, 10)
+	for result in results:
+		if result.collider is StaticBody3D:
+			return true
+	return false
