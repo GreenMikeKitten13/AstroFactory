@@ -1,5 +1,6 @@
-[gd_scene load_steps=31 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=32 format=3 uid="uid://qachlfwuf6f6"]
 
+[ext_resource type="Script" uid="uid://4xrb10rnr45n" path="res://scenes/world_environment_controller.gd" id="1_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
 [ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="5_tipki"]
@@ -11,16 +12,16 @@
 [ext_resource type="Script" uid="uid://c1trk7d8yd7ed" path="res://scripts/cloud_spawner.gd" id="10_choun"]
 [ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_85g3d"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_choun"]
+sky_horizon_color = Color(0, 0, 0, 1)
 
-[sub_resource type="Sky" id="Sky_choun"]
-sky_material = SubResource("ProceduralSkyMaterial_85g3d")
+[sub_resource type="Sky" id="Sky_ya4ey"]
+sky_material = SubResource("ProceduralSkyMaterial_choun")
 
 [sub_resource type="Environment" id="Environment_ya4ey"]
 background_mode = 2
-sky = SubResource("Sky_choun")
+background_color = Color(1, 0.433416, 0.700959, 1)
+sky = SubResource("Sky_ya4ey")
 tonemap_mode = 2
 glow_enabled = true
 fog_enabled = true
@@ -29,7 +30,6 @@ fog_light_color = Color(0.759383, 0.893955, 1, 1)
 fog_light_energy = 0.5
 fog_sun_scatter = 0.2
 fog_density = 0.04
-fog_aerial_perspective = 0.5
 fog_height = 50.0
 fog_height_density = -0.05
 fog_depth_begin = 100.0
@@ -116,6 +116,7 @@ size = Vector3(500, 10, 500)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ya4ey")
+script = ExtResource("1_ya4ey")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0.931056, 0.170737, -0.322466, 0, 13.5, 0)
