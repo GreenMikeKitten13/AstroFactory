@@ -6,6 +6,8 @@
 emission_shape = 3
 emission_box_extents = Vector3(8, 5, 8)
 spread = 0.0
+initial_velocity_min = 2.0
+initial_velocity_max = 2.0
 gravity = Vector3(0, 0, 0)
 radial_accel_min = -2.23517e-06
 radial_accel_max = -2.23517e-06
