@@ -71,17 +71,17 @@ func _ready() -> void:
 	humiditySeed = self.get_meta("humidity")
 	
 	
-	#humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
-	##humidityNoise.fractal_octaves = 22         #4   
-	#humidityNoise.fractal_gain = 0.025         #0.5    
-	#humidityNoise.frequency =   0.003          #0.015  
-	#humidityNoise.seed = humiditySeed
+	humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
+	humidityNoise.fractal_octaves = 22         #4   
+	humidityNoise.fractal_gain = 0.025         #0.5    
+	humidityNoise.frequency =   0.003          #0.015  
+	humidityNoise.seed = humiditySeed
 	
-	#temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
-	#temperatureNoise.fractal_octaves = 22
-	#temperatureNoise.fractal_gain = 0.025
-	#temperatureNoise.frequency = 0.003
-	#temperatureNoise.seed = temperatureSeed
+	temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
+	temperatureNoise.fractal_octaves = 22
+	temperatureNoise.fractal_gain = 0.025
+	temperatureNoise.frequency = 0.003
+	temperatureNoise.seed = temperatureSeed
 
 
 
@@ -166,12 +166,12 @@ func _physics_process(delta: float) -> void:
 
 	var targetAngle :float= Vector3.BACK.signed_angle_to(lastMovementDirection, Vector3.UP)
 	lilMan.global_rotation.y = lerp_angle(lilMan.rotation.y, targetAngle, rotationSpeed * delta)
-	#var biomeIndicator = DebugStuff.get_child(0)
+	var biomeIndicator = DebugStuff.get_child(0)
 	var positionIndicator = DebugStuff.get_child(1)
-	#var undergroundIndicator = DebugStuff.get_child(-1)
+	var fpsIndicator = DebugStuff.get_child(-1)
 	positionIndicator.text = str(round(self.position.x)) + ", " + str(round(self.position.y)) + ", " + str( round(self.position.z))
-	#biomeIndicator.text = chooseBiome(temperatureNoise.get_noise_2d(self.position.x, self.position.z), humidityNoise.get_noise_2d(self.position.x, self.position.z))
-	#undergroundIndicator.text =  str(self.position.y <= 0)
+	biomeIndicator.text = chooseBiome(temperatureNoise.get_noise_2d(self.position.x, self.position.z), humidityNoise.get_noise_2d(self.position.x, self.position.z))
+	fpsIndicator.text = str(Engine.get_frames_per_second())
 
 func changeNodeType(oldType:Node3D, newType:String) -> void:
 	var newThingy:Node3D = types[newType].new()
