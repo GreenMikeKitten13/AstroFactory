@@ -85,10 +85,10 @@ func _ready() -> void:
 		materialsForMesh.set(block, material)
 	
 	
-	for notNeededBlockID:int in range(25000):
-		var notNeededBlock:StaticBody3D = blockPrefab.instantiate()
-		notNeededBlock.set_physics_process(false)
-		notNeededBlocks.append(notNeededBlock)
+	#for notNeededBlockID:int in range(25000):
+	#	var notNeededBlock:StaticBody3D = blockPrefab.instantiate()
+	#	notNeededBlock.set_physics_process(false)
+	#	notNeededBlocks.append(notNeededBlock)
 	
 	for notNeededBoxMeshID:int in range(10000):
 		var notNeededBoxMesh:BoxMesh = BoxMesh.new()
@@ -106,11 +106,10 @@ func _process(_delta: float) -> void:
 	buildChunks(existingChunks)
 	click += 1
 	useMultiMesh()
-	if click == 10:
-		var notNeededBlock2:StaticBody3D = blockPrefab.instantiate()
-		notNeededBlock2.set_physics_process(false)
-		notNeededBlocks.append(notNeededBlock2)
-
+	#if click == 10:
+	#	var notNeededBlock2:StaticBody3D = blockPrefab.instantiate()
+	#	notNeededBlock2.set_physics_process(false)
+	#	notNeededBlocks.append(notNeededBlock2)
 
 func makeChunkNodes() -> void:
 	for x:int in worldSize:
@@ -132,11 +131,12 @@ func makeChunkNodes() -> void:
 			existingChunks.append(chunk)
 
 func buildChunks(chunksToBuild:Array) -> void:
-	var minY = clamp(round(-(playerBody.position.y - 2)), 2, chunkSize)
+	var minY = clamp(round(-(playerBody.position.y - 3)), 1, chunkSize)
 	for chunk:Node3D in chunksToBuild:
 		if chunk.get_meta("isInRange"):
 			var chunkX = int(chunk.position.x)
 			var chunkZ = int(chunk.position.z)
+			var placedBlocks = []
 			
 			for yCoordinate in range(minY):
 				for xCoordinate in range(chunkSize):
@@ -155,26 +155,29 @@ func buildChunks(chunksToBuild:Array) -> void:
 							var cave = (caveNoise.get_noise_3d(globalX, yCoordinate, globalZ)+1)/2
 							
 							if cave >= 0.45:
+								var shape_rid
+								var newBody
 								var space_rid = get_world_3d().space
-								
-								var newShape = SphereShape3D.new()
-								#var debugShape = SphereMesh.new()
-								#debugShape.radius = 0.5
-								#var debugMesh = MeshInstance3D.new()
-								#debugMesh.mesh = debugShape
-								#debugMesh.position = globalPos
-								#self.add_child(debugMesh)
-								newShape.radius = 0.5
-								var shape_rid = newShape.get_rid()
-								shapes_res.append(newShape)
-								
-								var newBody = PhysicsServer3D.body_create()
-								PhysicsServer3D.body_add_shape(newBody, shape_rid)
-								PhysicsServer3D.body_set_state(newBody, PhysicsServer3D.BODY_STATE_TRANSFORM, Transform3D(Basis(), globalPos))
-								PhysicsServer3D.body_set_mode(newBody, PhysicsServer3D.BODY_MODE_STATIC)
-								PhysicsServer3D.body_set_collision_layer(newBody, 1)
-								PhysicsServer3D.body_set_collision_mask(newBody, 1)
-								PhysicsServer3D.body_set_space(newBody, space_rid)
+								if notNeededBlocks.is_empty():
+									var newShape = SphereShape3D.new()
+									newShape.radius = 0.5
+									shape_rid = newShape.get_rid()
+									shapes_res.append(newShape)
+									
+									newBody = PhysicsServer3D.body_create()
+									PhysicsServer3D.body_add_shape(newBody, shape_rid)
+									PhysicsServer3D.body_set_state(newBody, PhysicsServer3D.BODY_STATE_TRANSFORM, Transform3D(Basis(), globalPos))
+									PhysicsServer3D.body_set_mode(newBody, PhysicsServer3D.BODY_MODE_STATIC)
+									PhysicsServer3D.body_set_collision_layer(newBody, 1)
+									PhysicsServer3D.body_set_collision_mask(newBody, 1)
+									PhysicsServer3D.body_set_space(newBody, space_rid)
+								else:
+									var notBlock = notNeededBlocks.pop_front()
+									shape_rid = notBlock["shape_rid"]
+									newBody = notBlock["body_rid"]
+									PhysicsServer3D.body_set_state(newBody, PhysicsServer3D.BODY_STATE_TRANSFORM, Transform3D(Basis(), globalPos))
+									PhysicsServer3D.body_set_space(newBody, space_rid)
+									
 								
 								var humidity = humidityNoise.get_noise_2d(globalX, globalZ)
 								var temperature = temperatureNoise.get_noise_2d(globalX, globalZ)
@@ -185,14 +188,22 @@ func buildChunks(chunksToBuild:Array) -> void:
 									"shape_rid": shape_rid,
 									"body_rid": newBody
 								}
-
+								placedBlocks.append(key)
+			chunk.set_meta("blocks", placedBlocks)
 		elif not chunk.get_meta("isInRange"):
-			for child:Node3D in chunk.get_children():
-				if child is StaticBody3D:
-					var searchKey =  Vector3(child.position.x + chunk.position.x, child.position.y, child.position.z + chunk.position.z).snapped(Vector3(0.1, 0.1, 0.1))    #chunk.to_global(child.position).snapped(Vector3.ONE)
-					var data = blockPositions[searchKey]
-					PhysicsServer3D.free_rid(data.rid)
-					blockPositions.erase(searchKey)
+			if chunk.has_meta("blocks"):
+				var keys = chunk.get_meta("blocks")
+				for key in keys:
+					if blockPositions.has(key):
+						var data = blockPositions[key]
+						PhysicsServer3D.body_set_space(data["body_rid"], RID()) # remove from world
+						notNeededBlocks.append({
+							"shape_rid": data["shape_rid"],
+							"body_rid": data["body_rid"]
+						})
+						blockPositions.erase(key)
+				chunk.set_meta("blocks", []) # clear for reuse
+
 
 func chooseMaterial(yCoordinate:float, temperature:float, humidity:float) ->int:
 	var humidityString = ""
