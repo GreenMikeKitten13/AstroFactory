@@ -1,6 +1,5 @@
-[gd_scene load_steps=32 format=3 uid="uid://qachlfwuf6f6"]
+[gd_scene load_steps=27 format=3 uid="uid://qachlfwuf6f6"]
 
-[ext_resource type="Script" uid="uid://4xrb10rnr45n" path="res://scenes/world_environment_controller.gd" id="1_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://vwhdh3633lgp" path="res://Characters/Player.tscn" id="2_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://bip0ux8digfti" path="res://placables/obj + textures/turret barrel.obj" id="4_tbgi4"]
 [ext_resource type="Script" uid="uid://4qjo6n2kixqg" path="res://scripts/sentry_behavior.gd" id="5_tipki"]
@@ -8,33 +7,30 @@
 [ext_resource type="ArrayMesh" uid="uid://w1vta1cpeb8j" path="res://placables/obj + textures/turret tower.obj" id="7_tipki"]
 [ext_resource type="ArrayMesh" uid="uid://62rimql2kmsq" path="res://placables/obj + textures/turret base.obj" id="8_tipki"]
 [ext_resource type="Script" uid="uid://c7dlumt4mnkef" path="res://scripts/TerrainGeneration.gd" id="9_85g3d"]
-[ext_resource type="Texture2D" uid="uid://bqtigs0nphq3h" path="res://scenes/lil bullet.png" id="9_choun"]
 [ext_resource type="Script" uid="uid://c1trk7d8yd7ed" path="res://scripts/cloud_spawner.gd" id="10_choun"]
-[ext_resource type="ArrayMesh" uid="uid://d3hw6tojuvk16" path="res://scenes/lil bullet.obj" id="10_ya4ey"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_choun"]
-sky_horizon_color = Color(0, 0, 0, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_85g3d"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 
-[sub_resource type="Sky" id="Sky_ya4ey"]
-sky_material = SubResource("ProceduralSkyMaterial_choun")
+[sub_resource type="Sky" id="Sky_choun"]
+sky_material = SubResource("ProceduralSkyMaterial_85g3d")
 
 [sub_resource type="Environment" id="Environment_ya4ey"]
 background_mode = 2
-background_color = Color(1, 0.433416, 0.700959, 1)
-sky = SubResource("Sky_ya4ey")
+sky = SubResource("Sky_choun")
 tonemap_mode = 2
 glow_enabled = true
-fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.759383, 0.893955, 1, 1)
 fog_light_energy = 0.5
 fog_sun_scatter = 0.2
 fog_density = 0.04
+fog_aerial_perspective = 0.5
 fog_height = 50.0
 fog_height_density = -0.05
 fog_depth_begin = 100.0
 fog_depth_end = 150.0
-volumetric_fog_enabled = true
 volumetric_fog_albedo = Color(0.951913, 0.96453, 1, 1)
 volumetric_fog_emission = Color(0, 0.00784314, 0.0196078, 1)
 volumetric_fog_anisotropy = 0.1
@@ -98,14 +94,6 @@ size = Vector3(0.1, 0.1, 0.2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
 size = Vector3(0.697496, 0.680176, 0.697449)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eb6dy"]
-albedo_color = Color(1, 1, 0, 1)
-albedo_texture = ExtResource("9_choun")
-albedo_texture_msdf = true
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_choun"]
-size = Vector3(0.2, 0.1, 0.1)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_choun"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ya4ey"]
@@ -116,7 +104,6 @@ size = Vector3(500, 10, 500)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ya4ey")
-script = ExtResource("1_ya4ey")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.364877, -0.435669, 0.822835, 0, 0.883766, 0.46793, -0.931056, 0.170737, -0.322466, 0, 13.5, 0)
@@ -185,219 +172,6 @@ draw_pass_1 = SubResource("BoxMesh_eb6dy")
 [node name="Sentry_body_collision_shape" type="CollisionShape3D" parent="SentryBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0458784, -0.159912, -0.114044)
 shape = SubResource("BoxShape3D_lquwl")
-
-[node name="Chamber" type="Node" parent="SentryBody"]
-unique_name_in_owner = true
-
-[node name="Bullet" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet2" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet2"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet2"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet2"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet3" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet3"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet3"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet3"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet4" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet4"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet4"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet4"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet5" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet5"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet5"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet5"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet6" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet6"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet6"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet6"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet7" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet7"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet7"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet7"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet8" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet8"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet8"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet8"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet9" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet9"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet9"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet9"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
-
-[node name="Bullet10" type="RigidBody3D" parent="SentryBody/Chamber"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59178, 0)
-visible = false
-mass = 0.001
-inertia = Vector3(1000, 1000, 1000)
-lock_rotation = true
-
-[node name="LilBullet" type="MeshInstance3D" parent="SentryBody/Chamber/Bullet10"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_eb6dy")
-mesh = ExtResource("10_ya4ey")
-skeleton = NodePath("")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SentryBody/Chamber/Bullet10"]
-light_color = Color(0.796078, 0.784314, 0.345098, 1)
-light_energy = 2.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SentryBody/Chamber/Bullet10"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.05, 0.05, 0)
-shape = SubResource("BoxShape3D_choun")
 
 [node name="Area3D" type="Area3D" parent="SentryBody"]
 
