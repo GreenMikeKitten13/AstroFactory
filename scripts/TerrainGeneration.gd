@@ -132,7 +132,7 @@ func makeChunkNodes() -> void:
 			existingChunks.append(chunk)
 
 func buildChunks(chunksToBuild:Array) -> void:
-	var minY = clamp(round(-(playerBody.position.y - 2)), 1, chunkSize)
+	var minY = clamp(round(-(playerBody.position.y - 2)), 2, chunkSize)
 	for chunk:Node3D in chunksToBuild:
 		if chunk.get_meta("isInRange"):
 			var chunkX = int(chunk.position.x)
@@ -152,18 +152,18 @@ func buildChunks(chunksToBuild:Array) -> void:
 						var key = globalPos.snapped(Vector3(1, 1, 1))
 						
 						if not blockPositions.has(key):
-							var cave = (caveNoise.get_noise_3d(globalX, blockY, globalZ)+1)/2
+							var cave = (caveNoise.get_noise_3d(globalX, yCoordinate, globalZ)+1)/2
 							
 							if cave >= 0.45:
 								var space_rid = get_world_3d().space
 								
 								var newShape = SphereShape3D.new()
-								var debugShape = SphereMesh.new()
-								debugShape.radius = 0.5
-								var debugMesh = MeshInstance3D.new()
-								debugMesh.mesh = debugShape
-								debugMesh.position = globalPos
-								self.add_child(debugMesh)
+								#var debugShape = SphereMesh.new()
+								#debugShape.radius = 0.5
+								#var debugMesh = MeshInstance3D.new()
+								#debugMesh.mesh = debugShape
+								#debugMesh.position = globalPos
+								#self.add_child(debugMesh)
 								newShape.radius = 0.5
 								var shape_rid = newShape.get_rid()
 								shapes_res.append(newShape)
