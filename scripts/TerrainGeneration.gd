@@ -4,7 +4,7 @@ extends  Node3D
 var worldSize:int = 50
 var yMultiplier:int = 1
 var chunkSize:int = 10
-var renderDistance:int = 2
+var renderDistance:int = 200
 #-------------neededThings-------------
 var existingChunks:Array = []
 #-------------noise--------------------
@@ -264,10 +264,11 @@ func makeNoise() -> void:
 	
 	caveNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	caveNoise.seed = randi()
-	caveNoise.frequency = 0.05
-	caveNoise.fractal_octaves = 4
-	caveNoise.fractal_gain = 0.55
-	caveNoise.fractal_lacunarity = 2.0
+	caveNoise.frequency = 0.1#0.05
+	caveNoise.fractal_octaves = 6#4
+	caveNoise.fractal_gain = 1#0.55
+	####################################
+	caveNoise.fractal_lacunarity = 0.2 # test value
 
 
 
