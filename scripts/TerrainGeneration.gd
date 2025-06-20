@@ -134,11 +134,11 @@ func makeChunkNodes() -> void:
 			add_child(chunk)
 			existingChunks.append(chunk)
 
-func generateChunkInfo(chunksToGenerate:Array) -> Array:
+func generateChunkInfo(chunksToGenerate:Array) -> Dictionary:
 	var minY = clamp(round(-(playerBody.position.y - 5)), 1, chunkSize)
+	var blockInfo:Dictionary = {}
 	for chunk:Node3D in chunksToGenerate:
 		if chunk.get_meta("isInInfoRange"):
-			var blockInfo:Array = []
 			var chunkX = int(chunk.position.x)
 			var chunkZ = int(chunk.position.z)
 			for yCoordinate in range(minY):
@@ -152,13 +152,12 @@ func generateChunkInfo(chunksToGenerate:Array) -> Array:
 						var blockY: float = -yCoordinate + flatNoise
 						
 						var globalPos = Vector3(globalX, blockY, globalZ)
-						blockInfo.append(globalPos)
-			return blockInfo
-	return []
+						blockInfo.set(str(chunkX) + ", " + str(chunkZ),globalPos)
+	return blockInfo
 
 func buildChunks(chunksToBuild:Array) -> void:
 	var minY = clamp(round(-(playerBody.position.y - 3)), 1, chunkSize)
-	for chunk:Node3D in chunksToBuild:
+	for chunk:Node3D  in chunksToBuild:
 		if chunk.get_meta("isInBuildRange"):
 			var chunkX = int(chunk.position.x)
 			var chunkZ = int(chunk.position.z)

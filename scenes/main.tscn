@@ -20,6 +20,7 @@ sky_material = SubResource("ProceduralSkyMaterial_85g3d")
 background_mode = 2
 sky = SubResource("Sky_choun")
 tonemap_mode = 2
+sdfgi_enabled = true
 sdfgi_use_occlusion = true
 sdfgi_bounce_feedback = 1.99
 glow_enabled = true
