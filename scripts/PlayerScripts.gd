@@ -230,13 +230,15 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 	if playerVelocity.x == 0 and playerVelocity.z == 0:
 		return
 
-	var radius = max(round(renderDistance/ 2.0), 22)
+	var buildRadius = max(round(renderDistance/ 2.0), 22)
 	var LLODradius = round(renderDistance)
+	var infoRadius = LLODradius + 15
 	var playerXZ = Vector2(position.x, position.z)
 
 	for chunk: Node3D in chunksToCheck:
 		var chunkXZ = Vector2(chunk.position.x, chunk.position.z)
 		var distance = playerXZ.distance_to(chunkXZ)
 
-		chunk.set_meta("isInRange", distance <= radius)
-		chunk.set_meta("isInLLODRange", distance <= LLODradius)
+		chunk.set_meta("isInBuildRange", distance <= buildRadius)
+		chunk.set_meta("isInRenderDistanceRange", distance <= LLODradius)
+		chunk.set_meta("isInInfoRange", distance <= infoRadius)

@@ -4,7 +4,7 @@ extends  Node3D
 var worldSize:int = 50
 var yMultiplier:int = 1
 var chunkSize:int = 10
-var renderDistance:int = 2
+var renderDistance:int = 200
 #-------------neededThings-------------
 var existingChunks:Array = []
 #-------------noise--------------------
@@ -22,6 +22,9 @@ var BiomeChoosing:Dictionary = {"dry": {"hot" : "sand", "normal" : "dirt", "cold
 var blockPositions:Dictionary = {}
 var shapes_res:Array = []
 var bodys_rid:Array = []
+
+var chunkThread:Thread = Thread.new()
+var chunkPool= {}
 
 #0 : grass
 #1 : dirt
@@ -119,21 +122,44 @@ func makeChunkNodes() -> void:
 			var chunkPosZ:int = z * chunkSize
 			chunk.name = "chunk " + str(x)+ " "+ str(z)
 			chunk.position = Vector3i(chunkPosX, 0, chunkPosZ)
-			chunk.set_meta("isInRange", false)
+			chunk.set_meta("isInBuildRange", false)
 			chunk.set_meta("isBuilt", false)
-			chunk.set_meta("isInLLODRange", false)
+			chunk.set_meta("isInRenderDistanceRange", false)
 			chunk.set_meta("isLLODBuilt", false)
 			chunk.set_meta("isHalfBuilt", false)
+			chunk.set_meta("isInInfoRange", false)
 			if x == 0 and z == 0:
-				chunk.set_meta("isInRange",true)
+				chunk.set_meta("isInBuildRange",true)
 
 			add_child(chunk)
 			existingChunks.append(chunk)
 
+func generateChunkInfo(chunksToGenerate:Array) -> Array:
+	var minY = clamp(round(-(playerBody.position.y - 5)), 1, chunkSize)
+	for chunk:Node3D in chunksToGenerate:
+		if chunk.get_meta("isInInfoRange"):
+			var blockInfo:Array = []
+			var chunkX = int(chunk.position.x)
+			var chunkZ = int(chunk.position.z)
+			for yCoordinate in range(minY):
+				for xCoordinate in range(chunkSize):
+					for zCoordinate in range(chunkSize):
+						
+						var globalX = xCoordinate + chunkX
+						var globalZ = zCoordinate + chunkZ
+						
+						var flatNoise = terrainNoise.get_noise_2d(globalX, globalZ) * 10
+						var blockY: float = -yCoordinate + flatNoise
+						
+						var globalPos = Vector3(globalX, blockY, globalZ)
+						blockInfo.append(globalPos)
+			return blockInfo
+	return []
+
 func buildChunks(chunksToBuild:Array) -> void:
 	var minY = clamp(round(-(playerBody.position.y - 3)), 1, chunkSize)
 	for chunk:Node3D in chunksToBuild:
-		if chunk.get_meta("isInRange"):
+		if chunk.get_meta("isInBuildRange"):
 			var chunkX = int(chunk.position.x)
 			var chunkZ = int(chunk.position.z)
 			var placedBlocks = []
@@ -190,7 +216,7 @@ func buildChunks(chunksToBuild:Array) -> void:
 								}
 								placedBlocks.append(key)
 			chunk.set_meta("blocks", placedBlocks)
-		elif not chunk.get_meta("isInRange"):
+		elif not chunk.get_meta("isInBuildRange"):
 			if chunk.has_meta("blocks"):
 				var keys = chunk.get_meta("blocks")
 				for key in keys:
@@ -264,10 +290,11 @@ func makeNoise() -> void:
 	
 	caveNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	caveNoise.seed = randi()
-	caveNoise.frequency = 0.05
-	caveNoise.fractal_octaves = 4
-	caveNoise.fractal_gain = 0.55
-	caveNoise.fractal_lacunarity = 2.0
+	caveNoise.frequency = 0.1#0.05
+	caveNoise.fractal_octaves = 6#4
+	caveNoise.fractal_gain = 1#0.55
+	####################################
+	caveNoise.fractal_lacunarity = 0.2 # test value
 
 
 
@@ -275,7 +302,7 @@ var MultiMeshGenerator:MultiMeshInstance3D
 
 func useMultiMesh() -> void:
 	for chunk:Node3D in existingChunks:
-		if not chunk.get_meta("isLLODBuilt") and chunk.get_meta("isInLLODRange"):
+		if not chunk.get_meta("isLLODBuilt") and chunk.get_meta("isInRenderDistanceRange"):
 			MultiMeshGenerator = MultiMeshInstance3D.new()
 			chunk.add_child(MultiMeshGenerator)
 			MultiMeshGenerator.reparent(chunk)
@@ -340,7 +367,7 @@ func useMultiMesh() -> void:
 						i += 1
 			chunk.set_meta("isLLODBuilt", true)
 			
-		elif chunk.get_meta("isLLODBuilt") and not chunk.get_meta("isInLLODRange"):
+		elif chunk.get_meta("isLLODBuilt") and not chunk.get_meta("isInRenderDistanceRange"):
 			for child:Node3D in chunk.get_children():
 				if child is MultiMeshInstance3D:
 					var MultiGenerator:MultiMeshInstance3D = child
