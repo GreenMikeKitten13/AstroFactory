@@ -62,7 +62,6 @@ script = ExtResource("1_kne1u")
 
 [node name="GPU_Rain_Particles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(2, 0, 3.97904e-13, 0, 1.5, 0, -3.97904e-13, 0, 2, 0, 12.7779, 0)
-emitting = false
 amount = 17900
 lifetime = 5.0
 randomness = 0.56
