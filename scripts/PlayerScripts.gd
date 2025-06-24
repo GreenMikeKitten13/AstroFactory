@@ -204,7 +204,7 @@ func chooseBiome( temperature:float, humidity:float) ->String:
 	else:
 		humidityString = "snowy"
 	
-	if (1.0/float(len(BiomeChoosing["dry"].keys()))) >= (temperature+1)/2:                             #"dry" can be anything ("normally", "rainy", "snowy")
+	if (1.0/float(len(BiomeChoosing["dry"].keys()))) >= (temperature+1)/2:                         
 		temperatureString = "hot"
 	elif 2*(1.0/float(len(BiomeChoosing["dry"].keys()))) >= (temperature+1)/2:
 		temperatureString = "normal"
