@@ -11,7 +11,7 @@ extends CharacterBody3D
 
 @export var renderDistance:int = 40
 
-@onready var cameraPivot: Node3D = %Node3D
+@onready var cameraPivot: Node3D = %CameraFixPoint
 @onready var camera: Camera3D = %Camera3D
 @onready var lilMan: MeshInstance3D = %LilMan
 @onready var DebugStuff: Control = %DebugStuff
@@ -67,21 +67,21 @@ func _ready() -> void:
 	for chunk in %TerrainGeneration.get_children():
 		chunks.append(chunk)
 	
-	temperatureSeed = self.get_meta("temperature")
-	humiditySeed = self.get_meta("humidity")
+	#temperatureSeed = self.get_meta("temperature")
+	#humiditySeed = self.get_meta("humidity")
 	
 	
-	humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
-	humidityNoise.fractal_octaves = 22         #4   
-	humidityNoise.fractal_gain = 0.025         #0.5    
-	humidityNoise.frequency =   0.003          #0.015  
-	humidityNoise.seed = humiditySeed
+	#humidityNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH                #humidityNoise = smooth
+	#humidityNoise.fractal_octaves = 22         #4   
+	#humidityNoise.fractal_gain = 0.025         #0.5    
+	#humidityNoise.frequency =   0.003          #0.015  
+	#humidityNoise.seed = humiditySeed
 	
-	temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
-	temperatureNoise.fractal_octaves = 22
-	temperatureNoise.fractal_gain = 0.025
-	temperatureNoise.frequency = 0.003
-	temperatureNoise.seed = temperatureSeed
+	#temperatureNoise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH             #temperatureNoise = smooth
+	#temperatureNoise.fractal_octaves = 22
+	#temperatureNoise.fractal_gain = 0.025
+	#temperatureNoise.frequency = 0.003
+	#temperatureNoise.seed = temperatureSeed
 
 
 
@@ -239,6 +239,6 @@ func checkChunkRange(chunksToCheck: Array, playerVelocity: Vector3):
 		var chunkXZ = Vector2(chunk.position.x, chunk.position.z)
 		var distance = playerXZ.distance_to(chunkXZ)
 
-		chunk.set_meta("isInBuildRange", distance <= buildRadius)
-		chunk.set_meta("isInRenderDistanceRange", distance <= LLODradius)
-		chunk.set_meta("isInInfoRange", distance <= infoRadius)
+		chunk.set_meta("info",{"isInBuildRange" : distance <= buildRadius})
+		chunk.set_meta("info",{"isInRenderRange" : distance <= LLODradius})
+		chunk.set_meta("info",{"isInInfoRange" : distance <= infoRadius})
