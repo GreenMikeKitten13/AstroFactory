@@ -58,6 +58,7 @@ func _physics_process(delta: float) -> void:
 		jumping = false
 	
 	if !self.is_on_floor() and not jumping:
+		can_jump= false
 		air_time += delta
 		motion.y -= gravity * air_time * gravity_strength
 	elif self.is_on_floor():
