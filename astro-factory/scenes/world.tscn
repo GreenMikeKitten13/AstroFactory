@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6x804docj1bh"]
+[gd_scene load_steps=12 format=3 uid="uid://b6x804docj1bh"]
 
 [ext_resource type="PackedScene" uid="uid://x8vcehwxboae" path="res://characters/player.tscn" id="1_nnsk1"]
 [ext_resource type="Script" uid="uid://b4ee7ahktf1xp" path="res://scripts/generate_terrain.gd" id="1_rwgxs"]
@@ -26,6 +26,19 @@ albedo_color = Color(0.2592937, 0.2592937, 0.2592937, 1)
 material = SubResource("StandardMaterial3D_4wyf3")
 size = Vector3(25, 0.05, 25)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rwgxs"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4wyf3"]
+material = SubResource("StandardMaterial3D_rwgxs")
+
+[sub_resource type="MultiMesh" id="MultiMesh_k0juu"]
+transform_format = 1
+use_colors = true
+use_custom_data = true
+instance_count = 1
+mesh = SubResource("BoxMesh_4wyf3")
+buffer = PackedFloat32Array(0, 8e-45, 1e-45, 0, 1e-44, 8e-45, 1e-45, 7e-45, 3e-45, 1e-45, 8e-45, 7e-45, 3e-45, 6e-45, 4e-45, 3e-45, 7e-45, 6e-45, 49.25, 68.01597)
+
 [node name="World" type="Node3D"]
 script = ExtResource("1_rwgxs")
 
@@ -47,3 +60,7 @@ mesh = SubResource("BoxMesh_nnsk1")
 [node name="Player" parent="." instance=ExtResource("1_nnsk1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 axis_lock_angular_x = true
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7507567, 0)
+multimesh = SubResource("MultiMesh_k0juu")

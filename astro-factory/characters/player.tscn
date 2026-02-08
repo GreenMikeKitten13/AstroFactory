@@ -6,7 +6,7 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nnsk1"]
 
-[node name="Player" type="StaticBody3D"]
+[node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_dnjla")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -15,8 +15,8 @@ mesh = SubResource("CapsuleMesh_e5uuo")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_nnsk1")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="camera_pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+[node name="Camera3D" type="Camera3D" parent="camera_pivot"]
+current = true
