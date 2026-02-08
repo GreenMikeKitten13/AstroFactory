@@ -11,7 +11,7 @@ var renderer = RenderingServer
 var chunk_count = 5
 var default_chunk_size = Vector3(15, 30, 15)
 
-var RID_pool = []
+var RID_pool = {} #IMPORTANT: RID's are saved as string ["RID"]
 
 @onready var RID_world = self.get_world_3d().scenario
 
@@ -46,3 +46,6 @@ func create_chunk(chunk_position:Vector3,_chunk_size:Vector3=default_chunk_size)
 	renderer.instance_set_transform(multimesh_rid, Transform3D(Basis.IDENTITY, chunk_position))
 	
 	multimesh_settings.set_instance_transform(0,Transform3D.IDENTITY)
+	
+	RID_pool[MultiMesh] = multimesh_settings
+	RID_pool["RID"] = multimesh_rid
