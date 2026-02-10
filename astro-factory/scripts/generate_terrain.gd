@@ -21,13 +21,19 @@ var render_RID_pool = {}	#IMPORTANT: RID's are saved as string ["RID"]
 @onready var default_box_shape:BoxMesh= BoxMesh.new()
 var cube_shape:RID = collisioner.box_shape_create()
 
+@onready var noise:FastNoiseLite = FastNoiseLite.new()
+
 func _ready() -> void:
 	default_box_shape.size = Vector3.ONE
 	collisioner.shape_set_data(cube_shape, Vector3.ONE * 0.5)
 	
-	#create_chunk(Vector3.UP)
-	create_default_cube()
-	create_default_cube_collision()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	noise.fractal_octaves = 10
+	noise.fractal_weighted_strength = 0.5
+	
+	create_chunk(Vector3.UP, Vector3(250, 3, 250))
+	#create_default_cube()
+	#create_default_cube_collision()
 
 func create_default_cube(shape_position:Vector3 =Vector3.ONE):
 	var cube_rid:RID = renderer.instance_create()
@@ -58,10 +64,16 @@ func create_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size)
 	for x in range(chunk_size.x):
 		for z in range(chunk_size.z):
 			for y in range(chunk_size.y):
-				var block_transform = Transform3D(Basis.IDENTITY,Vector3(x,y,z))
+				var height_noise = noise.get_noise_2d(x, z) *25
+				var block_transform:Transform3D = Transform3D(Basis.IDENTITY,Vector3(x,y + height_noise,z ))
 				multimesh_settings.set_instance_transform(block, block_transform)
+				var collision:RID = collisioner.body_create()
+				collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
+				collisioner.body_set_space(collision, RID_space)
+				collisioner.body_add_shape(collision, cube_shape)
+				var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, Vector3(x + chunk_position.x , y + chunk_position.y + height_noise, z + chunk_position.z))
+				collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
 				block += 1
-	
 	var multimesh_rid:RID = renderer.instance_create()
 	renderer.instance_set_base(multimesh_rid, multimesh_settings.get_rid())
 	renderer.instance_set_scenario(multimesh_rid, RID_world)
