@@ -12,8 +12,8 @@ var collisioner = PhysicsServer3D
 var chunk_count = 5
 var default_chunk_size = Vector3i(10, 20, 10)
 
-var collision_RID_pool = {}	#IMPORTANT: RID's are saved as string ["RID"]
-var render_RID_pool = {}	#IMPORTANT: RID's are saved as string ["RID"]
+var collision_RID_pool = {}
+var render_RID_pool = {}
 
 @onready var RID_world = self.get_world_3d().scenario	#for renderer
 @onready var RID_space = self.get_world_3d().space		#for collisions
@@ -30,10 +30,9 @@ func _ready() -> void:
 	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	noise.fractal_octaves = 10
 	noise.fractal_weighted_strength = 0.5
-	
-	create_chunk(Vector3.UP, Vector3(250, 3, 250))
-	#create_default_cube()
-	#create_default_cube_collision()
+	for x_chunk in range(20):
+		for y_chunk in range(20):
+			create_chunk(Vector3i(x_chunk * 10, -15, y_chunk * 10))
 
 func create_default_cube(shape_position:Vector3 =Vector3.ONE):
 	var cube_rid:RID = renderer.instance_create()
@@ -64,9 +63,10 @@ func create_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size)
 	for x in range(chunk_size.x):
 		for z in range(chunk_size.z):
 			for y in range(chunk_size.y):
-				var height_noise = noise.get_noise_2d(x, z) *25
-				var block_transform:Transform3D = Transform3D(Basis.IDENTITY,Vector3(x,y + height_noise,z ))
+				var height_noise = noise.get_noise_2d(x + chunk_position.x, z + chunk_position.z) *25
+				var block_transform:Transform3D = Transform3D(Basis.IDENTITY,Vector3(x + chunk_position.x,y + height_noise + chunk_position.y,z + chunk_position.z ))
 				multimesh_settings.set_instance_transform(block, block_transform)
+				
 				var collision:RID = collisioner.body_create()
 				collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
 				collisioner.body_set_space(collision, RID_space)
@@ -77,12 +77,12 @@ func create_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size)
 	var multimesh_rid:RID = renderer.instance_create()
 	renderer.instance_set_base(multimesh_rid, multimesh_settings.get_rid())
 	renderer.instance_set_scenario(multimesh_rid, RID_world)
-	renderer.instance_set_transform(multimesh_rid, Transform3D(Basis.IDENTITY, chunk_position))
+	renderer.instance_set_transform(multimesh_rid, Transform3D(Basis.IDENTITY, Vector3.ZERO))
 	
-	multimesh_settings.set_instance_transform(0,Transform3D.IDENTITY)
+	#multimesh_settings.set_instance_transform(0,Transform3D.IDENTITY)
 	
-	render_RID_pool[MultiMesh] = multimesh_settings
-	render_RID_pool["RID"] = multimesh_rid
+	render_RID_pool[multimesh_settings] = null
+	render_RID_pool[multimesh_rid] = null
 	
 	
 	
