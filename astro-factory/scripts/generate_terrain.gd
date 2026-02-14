@@ -9,7 +9,7 @@ extends Node3D
 
 var renderer = RenderingServer
 var collisioner = PhysicsServer3D
-var chunk_count = 5
+var chunk_count = 100
 var default_chunk_size = Vector3i(10, 20, 10)
 
 var collision_RID_pool = {}
@@ -20,6 +20,7 @@ var render_RID_pool = {}
 
 @onready var default_box_shape:BoxMesh= BoxMesh.new()
 var cube_shape:RID = collisioner.box_shape_create()
+var built_chunks = 0
 
 @onready var noise:FastNoiseLite = FastNoiseLite.new()
 
@@ -30,9 +31,10 @@ func _ready() -> void:
 	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	noise.fractal_octaves = 10
 	noise.fractal_weighted_strength = 0.5
-	for x_chunk in range(20):
-		for y_chunk in range(20):
+	for x_chunk in range(chunk_count):
+		for y_chunk in range(chunk_count):
 			create_chunk(Vector3i(x_chunk * 10, -15, y_chunk * 10))
+			built_chunks += 1
 
 func create_default_cube(shape_position:Vector3 =Vector3.ONE):
 	var cube_rid:RID = renderer.instance_create()
@@ -59,6 +61,8 @@ func create_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size)
 	multimesh_settings.instance_count = block_count
 	multimesh_settings.mesh = default_box_shape
 	
+	GlobalVariables.saved_chunk_collision[chunk_position] = []
+	
 	var block = 0
 	for x in range(chunk_size.x):
 		for z in range(chunk_size.z):
@@ -67,22 +71,16 @@ func create_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size)
 				var block_transform:Transform3D = Transform3D(Basis.IDENTITY,Vector3(x + chunk_position.x,y + height_noise + chunk_position.y,z + chunk_position.z ))
 				multimesh_settings.set_instance_transform(block, block_transform)
 				
-				var collision:RID = collisioner.body_create()
-				collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
-				collisioner.body_set_space(collision, RID_space)
-				collisioner.body_add_shape(collision, cube_shape)
-				var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, Vector3(x + chunk_position.x , y + chunk_position.y + height_noise, z + chunk_position.z))
-				collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
+				#var collision:RID = collisioner.body_create()
+				#collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
+				#collisioner.body_set_space(collision, RID_space)
+				#collisioner.body_add_shape(collision, cube_shape)
+				#var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, Vector3(x + chunk_position.x , y + chunk_position.y + height_noise, z + chunk_position.z))
+				#collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
+				GlobalVariables.saved_chunk_collision[chunk_position].append(Vector3(x + chunk_position.x,y + height_noise + chunk_position.y,z + chunk_position.z))
 				block += 1
 	var multimesh_rid:RID = renderer.instance_create()
 	renderer.instance_set_base(multimesh_rid, multimesh_settings.get_rid())
 	renderer.instance_set_scenario(multimesh_rid, RID_world)
 	renderer.instance_set_transform(multimesh_rid, Transform3D(Basis.IDENTITY, Vector3.ZERO))
-	
-	#multimesh_settings.set_instance_transform(0,Transform3D.IDENTITY)
-	
-	render_RID_pool[multimesh_settings] = null
-	render_RID_pool[multimesh_rid] = null
-	
-	
-	
+	render_RID_pool["chunk " + str(built_chunks)] = {"settings" : multimesh_settings, "RID" : [multimesh_rid]}

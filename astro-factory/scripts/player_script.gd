@@ -13,19 +13,24 @@ var can_jump = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var mouse_change = Vector2.ZERO
 var mouse_sensetivity = 0.01
+var collision_distance = 40
 
 var air_time = 0
 var gravity_strength = 2
 
 var build_mode = false
 
+var collisioner = PhysicsServer3D
+var cube_shape:RID = collisioner.box_shape_create()
+@onready var RID_space = self.get_world_3d().space		#for collisions
+
 @onready var camera_pivot: Node3D = $camera_pivot
 @onready var Raycast:RayCast3D = camera_pivot.get_node("RayCast3D")
 
 @onready var build_ui: RichTextLabel = $"Build UI"
 
-
 func _ready() -> void:
+	collisioner.shape_set_data(cube_shape, Vector3.ONE * 0.5)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _input(event: InputEvent) -> void:
@@ -48,8 +53,6 @@ func _process(_delta: float) -> void:
 		
 	else:
 		build_ui.visible= false
-		
-	
 
 func _physics_process(delta: float) -> void:
 	var motion = Vector3.ZERO
@@ -82,5 +85,31 @@ func _physics_process(delta: float) -> void:
 			if not jumping:
 				can_jump = true
 	
+	if motion != Vector3.ZERO:
+		for chunk_position:Vector3 in GlobalVariables.saved_chunk_collision.keys():
+			if self.position.x - collision_distance < chunk_position.x and self.position.x + collision_distance > chunk_position.x && self.position.z - collision_distance < chunk_position.z and self.position.z + collision_distance > chunk_position.z:
+				for block_position:Vector3 in GlobalVariables.saved_chunk_collision[chunk_position]:
+					var collision:RID
+					if GlobalVariables.collision_RID_pool.size() != 0:
+						collision = GlobalVariables.collision_RID_pool.pop_front()
+					else:
+						collision = collisioner.body_create()
+						GlobalVariables.collision_RID_pool.append(collision)
+						
+					collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
+					collisioner.body_set_space(collision, RID_space)
+					collisioner.body_add_shape(collision, cube_shape)
+					var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, block_position)
+					collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
+					
+					
+				GlobalVariables.saved_chunk_collision.erase(chunk_position)
+			#else:
+			#	for rid in GlobalVariables.active_collision_chunks[chunk_position]:
+			#		PhysicsServer3D.body_clear_shapes(rid)
+			#		PhysicsServer3D.body_set_space(rid, RID())
+			#		GlobalVariables.collision_RID_pool.append(rid)
+			#	GlobalVariables.active_collision_chunks.erase(chunk_position)
+					
 	self.velocity = motion
 	self.move_and_slide()
