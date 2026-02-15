@@ -9,7 +9,7 @@ extends Node3D
 
 var renderer = RenderingServer
 var collisioner = PhysicsServer3D
-var chunk_count = 100
+var chunk_count = 25
 var default_chunk_size = Vector3i(10, 20, 10)
 
 var collision_RID_pool = {}
@@ -71,12 +71,7 @@ func create_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size)
 				var block_transform:Transform3D = Transform3D(Basis.IDENTITY,Vector3(x + chunk_position.x,y + height_noise + chunk_position.y,z + chunk_position.z ))
 				multimesh_settings.set_instance_transform(block, block_transform)
 				
-				#var collision:RID = collisioner.body_create()
-				#collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
-				#collisioner.body_set_space(collision, RID_space)
-				#collisioner.body_add_shape(collision, cube_shape)
-				#var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, Vector3(x + chunk_position.x , y + chunk_position.y + height_noise, z + chunk_position.z))
-				#collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
+	
 				GlobalVariables.saved_chunk_collision[chunk_position].append(Vector3(x + chunk_position.x,y + height_noise + chunk_position.y,z + chunk_position.z))
 				block += 1
 	var multimesh_rid:RID = renderer.instance_create()
