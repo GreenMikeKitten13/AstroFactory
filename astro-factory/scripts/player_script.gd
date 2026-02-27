@@ -13,7 +13,7 @@ var can_jump = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var mouse_change = Vector2.ZERO
 var mouse_sensetivity = 0.01
-var collision_distance = 10
+var collision_distance = 30 #40, 10
 var distance_traveled_since_last_chunk_build = 20
 
 var air_time = 0
@@ -23,9 +23,11 @@ var build_mode = false
 
 var active_chunks = {}
 
+var usable_threads:Array[Thread] = []
+
 var collisioner = PhysicsServer3D
 var cube_shape:RID = collisioner.box_shape_create()
-@onready var RID_space = self.get_world_3d().space		#for collisions
+@onready var RID_space = self.get_world_3d().space #for collisions
 
 @onready var camera_pivot: Node3D = $camera_pivot
 @onready var Raycast:RayCast3D = camera_pivot.get_node("RayCast3D")
@@ -35,6 +37,10 @@ var cube_shape:RID = collisioner.box_shape_create()
 func _ready() -> void:
 	collisioner.shape_set_data(cube_shape, Vector3.ONE * 0.5)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
+	for t in GlobalVariables.chunk_count**2:
+		var thread:Thread = Thread.new()
+		usable_threads.append(thread)
 	
 	for rid in range(1000):
 		var new_collisioin = collisioner.body_create()
@@ -62,6 +68,8 @@ func _process(_delta: float) -> void:
 		
 	else:
 		build_ui.visible= false
+
+var last_rid_pool_size = GlobalVariables.collision_RID_pool.size()
 
 func _physics_process(delta: float) -> void:
 	var motion = Vector3.ZERO
@@ -94,34 +102,82 @@ func _physics_process(delta: float) -> void:
 			if not jumping:
 				can_jump = true
 	
-	if motion != Vector3.ZERO and distance_traveled_since_last_chunk_build >= 20:
+	if motion != Vector3.ZERO and distance_traveled_since_last_chunk_build > 30:
 		distance_traveled_since_last_chunk_build = 0
 		for chunk_position:Vector3 in GlobalVariables.saved_chunk_collision.keys():
-			if not active_chunks.has(chunk_position) and self.position.x - collision_distance < chunk_position.x and self.position.x + collision_distance > chunk_position.x && self.position.z - collision_distance < chunk_position.z and self.position.z + collision_distance > chunk_position.z:
+			var in_distance_check = self.position.x - collision_distance < chunk_position.x and self.position.x + collision_distance > chunk_position.x && self.position.z - collision_distance < chunk_position.z and self.position.z + collision_distance > chunk_position.z
+			if not active_chunks.keys().has(chunk_position) and in_distance_check:
 				active_chunks[chunk_position] = []
-				for block_position:Vector3 in GlobalVariables.saved_chunk_collision[chunk_position]:
-					var collision:RID
-					if GlobalVariables.collision_RID_pool.size() != 0:
-						collision = GlobalVariables.collision_RID_pool.pop_front()
-					else:
-						collision = collisioner.body_create()
-						collisioner.body_set_space(collision, RID_space)
-						collisioner.body_add_shape(collision, cube_shape)
-						
-					collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
+				var thread:Thread = usable_threads.pop_front()
 				
-					var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, block_position)
-					collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
-					active_chunks[chunk_position].append(collision)
-					
-			else:
-				if active_chunks.keys().has(chunk_position):
-					for block:RID in active_chunks[chunk_position]:
-						GlobalVariables.collision_RID_pool.append(block)
-						active_chunks.erase(chunk_position)
+				if thread.is_alive():
+					usable_threads.append(thread)
+					continue
+				if thread.is_started():
+					thread.wait_to_finish()
+				
+				
+				thread.start(chunk_math_and_settings.bind(chunk_position, active_chunks, GlobalVariables.saved_chunk_collision[chunk_position], thread))
+				
+			elif active_chunks.keys().has(chunk_position) and active_chunks[chunk_position].size() != 0 and not in_distance_check:
+				for block:RID in active_chunks[chunk_position]:
+					GlobalVariables.collision_RID_pool.append(block)
+					collisioner.body_set_space(block, RID())
+				active_chunks.erase(chunk_position)
 	
 	if motion.x != 0 or motion.z != 0:
 		distance_traveled_since_last_chunk_build += 1
 	
+	if GlobalVariables.collision_RID_pool.size() != last_rid_pool_size:
+		last_rid_pool_size = GlobalVariables.collision_RID_pool.size()
+		#print(GlobalVariables.collision_RID_pool.size())
+	
 	self.velocity = motion
 	self.move_and_slide()
+
+
+func chunk_math_and_settings(chunk_position:Vector3, active_chunks_while_thread, block_positions, thread):
+	var built_blocks:Array[RID] = []
+	active_chunks_while_thread[chunk_position] = []
+	##print("before: ", collision_RID_pool.size())
+	var start_frame = get_tree().get_frame()
+	var blocks_created = 0
+	var blocks_reused = 0
+	var failed_reuses = 0
+	for block_position:Vector3 in block_positions:
+		var collision:RID
+		if GlobalVariables.collision_RID_pool.size() > 50:
+			collision = GlobalVariables.collision_RID_pool.pop_back()
+			blocks_reused += 1
+			if not collision:
+				collision = collisioner.body_create()
+				collisioner.body_add_shape(collision, cube_shape)
+				failed_reuses += 1
+				blocks_reused -= 1
+				blocks_created += 1
+		else:
+			collision = collisioner.body_create()
+			blocks_created += 1
+			collisioner.body_add_shape(collision, cube_shape)
+		
+		collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
+	
+		var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, block_position)
+		collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
+		built_blocks.append(collision)
+	##print("after: ", collision_RID_pool.size())
+	var end_frame = get_tree().get_frame()
+	#var block_chunks = 0
+	#for blocks:Array in GlobalVariables.saved_chunk_collision.values():
+	#	if blocks.size() != 0:
+	#		block_chunks += 1
+	print("reused ", str(blocks_reused), " blocks\ncreated ", str(blocks_created), " blocks in ", str(end_frame-start_frame), " frames\nfailed attempts to reuse: ", str(failed_reuses), "\nrid_pool.size(): ", str(GlobalVariables.collision_RID_pool.size()), "\nactive chunks:", str(active_chunks.size()), "\n")
+	call_thread_safe("set_bodies_space", built_blocks, chunk_position)
+	usable_threads.append(thread)
+
+func set_bodies_space(bodies:Array[RID], chunk_position= null):
+	for body:RID in bodies:
+		collisioner.body_set_space(body, RID_space)
+		if chunk_position:
+			active_chunks[chunk_position].append(body)
+	##print(active_chunks[chunk_position].size())

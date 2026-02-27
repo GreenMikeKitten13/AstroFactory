@@ -1,15 +1,7 @@
 extends Node3D
 
-#box_shape.size = Vector3(5, 5,  5)
-	#for chunk:int in range(chunk_count):
-	#	var cube_meshinstance:RID = renderer.instance_create()
-	#	renderer.instance_set_base(cube_meshinstance, box_shape)
-	#	renderer.instance_set_scenario(cube_meshinstance, RID_world)
-	#	renderer.instance_set_transform(cube_meshinstance, Transform3D(Basis.IDENTITY, Vector3(chunk*5.1,15, 0)))
-
 var renderer = RenderingServer
 var collisioner = PhysicsServer3D
-var chunk_count = 25
 var default_chunk_size = Vector3i(10, 20, 10)
 
 var collision_RID_pool = {}
@@ -31,8 +23,8 @@ func _ready() -> void:
 	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	noise.fractal_octaves = 10
 	noise.fractal_weighted_strength = 0.5
-	for x_chunk in range(chunk_count):
-		for y_chunk in range(chunk_count):
+	for x_chunk in range(GlobalVariables.chunk_count):
+		for y_chunk in range(GlobalVariables.chunk_count):
 			create_chunk(Vector3i(x_chunk * 10, -15, y_chunk * 10))
 			built_chunks += 1
 
@@ -42,7 +34,7 @@ func create_default_cube(shape_position:Vector3 =Vector3.ONE):
 	renderer.instance_set_scenario(cube_rid, RID_world)
 	renderer.instance_set_transform(cube_rid, Transform3D(Basis.IDENTITY, shape_position))
 
-func create_default_cube_collision(shape_position:Vector3=Vector3.ONE):  #not needed here, but don't forget to save the RID's in a pool
+func create_default_cube_collision(shape_position:Vector3=Vector3.ONE):  #not needed here, but don't forget to save the RID's in a pool (maybe, IDK)
 	var body = collisioner.body_create()
 	collisioner.body_set_mode(body,PhysicsServer3D.BODY_MODE_STATIC)
 	collisioner.body_set_space(body, RID_space)
