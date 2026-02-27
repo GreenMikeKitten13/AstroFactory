@@ -15,7 +15,7 @@ var mouse_change = Vector2.ZERO
 var mouse_sensetivity = 0.01
 var collision_distance = 30 #40, 10
 var distance_traveled_since_last_chunk_build = 20
-
+var chunk_size = GlobalVariables.chunk_size.x * GlobalVariables.chunk_size.y * GlobalVariables.chunk_size.z
 var air_time = 0
 var gravity_strength = 2
 
@@ -116,8 +116,14 @@ func _physics_process(delta: float) -> void:
 				if thread.is_started():
 					thread.wait_to_finish()
 				
+				var rid_array = []
+				for block in chunk_size:
+					if GlobalVariables.collision_RID_pool.size() > 0:
+						rid_array.append(GlobalVariables.collision_RID_pool.pop_back() )
+					else:
+						break
 				
-				thread.start(chunk_math_and_settings.bind(chunk_position, active_chunks, GlobalVariables.saved_chunk_collision[chunk_position], thread))
+				thread.start(chunk_math_and_settings.bind(chunk_position, active_chunks, GlobalVariables.saved_chunk_collision[chunk_position], thread, rid_array))
 				
 			elif active_chunks.keys().has(chunk_position) and active_chunks[chunk_position].size() != 0 and not in_distance_check:
 				for block:RID in active_chunks[chunk_position]:
@@ -136,7 +142,7 @@ func _physics_process(delta: float) -> void:
 	self.move_and_slide()
 
 
-func chunk_math_and_settings(chunk_position:Vector3, active_chunks_while_thread, block_positions, thread):
+func chunk_math_and_settings(chunk_position:Vector3, active_chunks_while_thread, block_positions, thread, given_rids:Array):
 	var built_blocks:Array[RID] = []
 	active_chunks_while_thread[chunk_position] = []
 	##print("before: ", collision_RID_pool.size())
@@ -146,15 +152,9 @@ func chunk_math_and_settings(chunk_position:Vector3, active_chunks_while_thread,
 	var failed_reuses = 0
 	for block_position:Vector3 in block_positions:
 		var collision:RID
-		if GlobalVariables.collision_RID_pool.size() > 50:
-			collision = GlobalVariables.collision_RID_pool.pop_back()
+		if given_rids and given_rids.size() > 0:
+			collision = given_rids.pop_back()
 			blocks_reused += 1
-			if not collision:
-				collision = collisioner.body_create()
-				collisioner.body_add_shape(collision, cube_shape)
-				failed_reuses += 1
-				blocks_reused -= 1
-				blocks_created += 1
 		else:
 			collision = collisioner.body_create()
 			blocks_created += 1

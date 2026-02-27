@@ -2,7 +2,7 @@ extends Node3D
 
 var renderer = RenderingServer
 var collisioner = PhysicsServer3D
-var default_chunk_size = Vector3i(10, 20, 10)
+var default_chunk_size = GlobalVariables.chunk_size
 
 var collision_RID_pool = {}
 var render_RID_pool = {}
