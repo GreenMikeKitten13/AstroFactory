@@ -19,7 +19,11 @@ var gravity_strength = 2
 
 var render_distance = global_variables.render_distance
 
+var previewing = false
 var build_mode = false
+const PREVIEW_MATERIAL = preload("uid://b6plqgoenlkb4")
+const block_1x1 = preload("uid://ddsctqvtlb4q")
+var blocks:Array[PackedScene] =[block_1x1]
 
 var collision_distance = global_variables.collision_distance
 
@@ -28,7 +32,7 @@ var cube_shape:RID = collisioner.box_shape_create()
 @onready var RID_space = self.get_world_3d().space #for collisions
 
 @onready var camera_pivot: Node3D = $camera_pivot
-@onready var Raycast:RayCast3D = camera_pivot.get_node("RayCast3D")
+@onready var build_cast:RayCast3D = camera_pivot.get_node("RayCast3D")
 
 @onready var build_ui: RichTextLabel = $"Build UI"
 
@@ -46,6 +50,9 @@ func _input(event: InputEvent) -> void:
 	
 	if event.is_action_pressed("Build mode"):
 		build_mode = !build_mode
+		if preview:
+			preview.queue_free()
+			preview = null
 
 func _process(_delta: float) -> void:
 	camera_pivot.rotate(Vector3.LEFT, mouse_change.y * mouse_sensetivity)
@@ -54,9 +61,10 @@ func _process(_delta: float) -> void:
 	mouse_change = Vector2.ZERO
 	if build_mode:
 		build_ui.visible = true
-		
+		building()
 	else:
 		build_ui.visible= false
+		previewing =  false
 
 func _physics_process(delta: float) -> void:
 	var motion = Vector3.ZERO
@@ -110,3 +118,16 @@ func _physics_process(delta: float) -> void:
 
 	self.velocity = motion
 	self.move_and_slide()
+
+var preview
+
+func building():
+	if not previewing:
+		previewing = true
+		preview = blocks[0].instantiate()
+		preview.get_node("collision").queue_free()
+		preview.get_node("mesh").mesh.material = PREVIEW_MATERIAL
+		preview.position = build_cast.get_collision_point()
+		self.get_parent().add_child(preview)
+	else:
+		preview.position =  build_cast.get_collision_point()
