@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://b6x804docj1bh"]
 
 [ext_resource type="PackedScene" uid="uid://x8vcehwxboae" path="res://characters/player.tscn" id="1_nnsk1"]
-[ext_resource type="Script" uid="uid://b4ee7ahktf1xp" path="res://scripts/generate_terrain.gd" id="1_rwgxs"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e5uuo"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -27,7 +26,6 @@ material = SubResource("StandardMaterial3D_4wyf3")
 size = Vector3(25, 0.05, 25)
 
 [node name="World" type="Node3D" unique_id=933404130]
-script = ExtResource("1_rwgxs")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1844976556]
 environment = SubResource("Environment_rwgxs")
@@ -47,3 +45,5 @@ mesh = SubResource("BoxMesh_nnsk1")
 [node name="Player" parent="." unique_id=1017268513 instance=ExtResource("1_nnsk1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -9.50563)
 axis_lock_angular_x = true
+
+[node name="Placables" type="Node3D" parent="." unique_id=1738946135]

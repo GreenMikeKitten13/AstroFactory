@@ -21,7 +21,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GlobalVariables="*res://scripts/Global Variables.gd"
+global_variables="*res://scripts/global_variables.gd"
+generate_terrain="*uid://b4ee7ahktf1xp"
 
 [input]
 
