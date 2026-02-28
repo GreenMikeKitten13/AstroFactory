@@ -13,8 +13,8 @@ var can_jump = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var mouse_change = Vector2.ZERO
 var mouse_sensetivity = 0.01
-var collision_distance = 30 #40, 10
-var distance_traveled_since_last_chunk_build = 20
+var collision_distance = 12
+var distance_traveled_since_last_chunk_build = 17
 var chunk_size = GlobalVariables.chunk_size.x * GlobalVariables.chunk_size.y * GlobalVariables.chunk_size.z
 var air_time = 0
 var gravity_strength = 2
@@ -102,7 +102,7 @@ func _physics_process(delta: float) -> void:
 			if not jumping:
 				can_jump = true
 	
-	if motion != Vector3.ZERO and distance_traveled_since_last_chunk_build > 30:
+	if motion != Vector3.ZERO and distance_traveled_since_last_chunk_build > 20:
 		distance_traveled_since_last_chunk_build = 0
 		for chunk_position:Vector3 in GlobalVariables.saved_chunk_collision.keys():
 			var in_distance_check = self.position.x - collision_distance < chunk_position.x and self.position.x + collision_distance > chunk_position.x && self.position.z - collision_distance < chunk_position.z and self.position.z + collision_distance > chunk_position.z
@@ -145,19 +145,12 @@ func _physics_process(delta: float) -> void:
 func chunk_math_and_settings(chunk_position:Vector3, active_chunks_while_thread, block_positions, thread, given_rids:Array):
 	var built_blocks:Array[RID] = []
 	active_chunks_while_thread[chunk_position] = []
-	##print("before: ", collision_RID_pool.size())
-	var start_frame = get_tree().get_frame()
-	var blocks_created = 0
-	var blocks_reused = 0
-	var failed_reuses = 0
 	for block_position:Vector3 in block_positions:
 		var collision:RID
 		if given_rids and given_rids.size() > 0:
 			collision = given_rids.pop_back()
-			blocks_reused += 1
 		else:
 			collision = collisioner.body_create()
-			blocks_created += 1
 			collisioner.body_add_shape(collision, cube_shape)
 		
 		collisioner.body_set_mode(collision, PhysicsServer3D.BODY_MODE_STATIC)
@@ -165,13 +158,6 @@ func chunk_math_and_settings(chunk_position:Vector3, active_chunks_while_thread,
 		var collision_transform:Transform3D = Transform3D(Basis.IDENTITY, block_position)
 		collisioner.body_set_state(collision,PhysicsServer3D.BODY_STATE_TRANSFORM, collision_transform)
 		built_blocks.append(collision)
-	##print("after: ", collision_RID_pool.size())
-	var end_frame = get_tree().get_frame()
-	#var block_chunks = 0
-	#for blocks:Array in GlobalVariables.saved_chunk_collision.values():
-	#	if blocks.size() != 0:
-	#		block_chunks += 1
-	print("reused ", str(blocks_reused), " blocks\ncreated ", str(blocks_created), " blocks in ", str(end_frame-start_frame), " frames\nfailed attempts to reuse: ", str(failed_reuses), "\nrid_pool.size(): ", str(GlobalVariables.collision_RID_pool.size()), "\nactive chunks:", str(active_chunks.size()), "\n")
 	call_thread_safe("set_bodies_space", built_blocks, chunk_position)
 	usable_threads.append(thread)
 
