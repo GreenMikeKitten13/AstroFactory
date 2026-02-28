@@ -6,4 +6,4 @@ var render_RID_pool = []
 var chunk_count = 100
 var chunk_size = Vector3i(10,20,10)
 var collision_distance = 12
-var render_distance = 100
+var render_distance = 50

@@ -2,7 +2,10 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uu8l4"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uu8l4"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_12dgy"]
+material = SubResource("StandardMaterial3D_uu8l4")
 
 [node name="1x1" type="StaticBody3D" unique_id=204820372]
 

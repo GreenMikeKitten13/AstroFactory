@@ -56,7 +56,7 @@ func _input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	camera_pivot.rotate(Vector3.LEFT, mouse_change.y * mouse_sensetivity)
-	camera_pivot.rotation.x = clamp(camera_pivot.rotation.x, -PI/3, PI/3)
+	camera_pivot.rotation.x = clamp(camera_pivot.rotation.x, -PI/2, PI/2)
 	self.rotate(Vector3.DOWN, mouse_change.x * mouse_sensetivity)
 	mouse_change = Vector2.ZERO
 	if build_mode:
@@ -110,9 +110,10 @@ func _physics_process(delta: float) -> void:
 			
 			if not generate_terrain.active_collisions.keys().has(chunk_position) and in_collision_distance:
 				generate_terrain.load_collisions(chunk_position)
+			
 			elif generate_terrain.active_collisions.keys().has(chunk_position) and generate_terrain.active_collisions[chunk_position].size() > 0 and not in_collision_distance:
 				generate_terrain.unload_collisions(chunk_position)
-	
+
 	if motion.x != 0 or motion.z != 0:
 		distance_traveled_since_last_chunk_build += 1
 
@@ -120,14 +121,29 @@ func _physics_process(delta: float) -> void:
 	self.move_and_slide()
 
 var preview
-
+var placing = false
 func building():
-	if not previewing:
+	if not previewing and build_cast.get_collider_rid():
 		previewing = true
 		preview = blocks[0].instantiate()
 		preview.get_node("collision").queue_free()
-		preview.get_node("mesh").mesh.material = PREVIEW_MATERIAL
-		preview.position = build_cast.get_collision_point()
-		self.get_parent().add_child(preview)
-	else:
-		preview.position =  build_cast.get_collision_point()
+		var mesh:MeshInstance3D = preview.get_node("mesh")
+		mesh.material_override = PREVIEW_MATERIAL
+		preview.position = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin+ Vector3.UP
+		self.get_parent().get_node("Placables").add_child(preview)
+	elif build_cast.get_collider_rid():
+		var x_pos = round(build_cast.get_collision_point().x)
+		var body_y = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin.y
+		var y_pos = body_y + 1 if build_cast.get_collision_point().y > body_y else body_y - 1
+		var z_pos = round(build_cast.get_collision_point().z)
+		
+		preview.position = Vector3(x_pos, y_pos, z_pos)
+	
+	if Input.get_action_strength("left mouse button"):
+		if not placing:
+			placing = true
+			var block = blocks[0].instantiate()
+			block.position = preview.position
+			self.get_parent().get_node("Placables").add_child(block)
+			await get_tree().create_timer(0.25).timeout
+			placing = false

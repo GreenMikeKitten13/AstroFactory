@@ -18,7 +18,6 @@ var multimesh_pool = []
 
 @onready var default_box_shape:BoxMesh= BoxMesh.new()
 var cube_shape:RID = collisioner.box_shape_create()
-var built_chunks = 0
 
 @onready var noise:FastNoiseLite = FastNoiseLite.new()
 
@@ -27,7 +26,7 @@ func _ready() -> void:
 	collisioner.shape_set_data(cube_shape, Vector3.ONE * 0.5)
 	create_chunks()
 	
-	for t in global_variables.collision_distance*4:
+	for t in range(round(global_variables.collision_distance*0.35)):
 		var thread:Thread = Thread.new()
 		usable_threads.append(thread)
 	
@@ -50,7 +49,6 @@ func load_chunk(chunk_position:Vector3,chunk_size:Vector3i=default_chunk_size):
 	active_renders.append(chunk_position)
 	var block_count =  chunk_size.x * chunk_size.z * chunk_size.y
 	var multimesh_settings:MultiMesh
-	built_chunks +=1
 	if multimesh_pool.size() > 0:
 		multimesh_settings = multimesh_pool.pop_back()
 	else:
@@ -98,8 +96,8 @@ func load_collisions(chunk_position):
 	active_collisions[chunk_position] = []
 	var thread:Thread = usable_threads.pop_back()
 	
-	if thread.is_alive():
-		usable_threads.append(thread)
+	if not thread:
+		print("all threads busy")
 		return
 	if thread.is_started():
 		thread.wait_to_finish()
