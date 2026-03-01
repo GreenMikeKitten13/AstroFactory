@@ -6,6 +6,14 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nnsk1"]
 
+[sub_resource type="Gradient" id="Gradient_dnjla"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3eadt"]
+gradient = SubResource("Gradient_dnjla")
+width = 15
+height = 15
+
 [node name="Player" type="CharacterBody3D" unique_id=28783450]
 script = ExtResource("1_dnjla")
 
@@ -38,3 +46,18 @@ theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/normal_font_size = 50
 text = "Builder mode"
 horizontal_alignment = 1
+
+[node name="Crosshair" type="TextureRect" parent="." unique_id=641317224]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.5
+offset_top = -7.5
+offset_right = 7.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_3eadt")

@@ -17,13 +17,15 @@ var distance_traveled_since_last_chunk_build = 17
 var air_time = 0
 var gravity_strength = 2
 
+
 var render_distance = global_variables.render_distance
 
 var previewing = false
 var build_mode = false
 const PREVIEW_MATERIAL = preload("uid://b6plqgoenlkb4")
 const block_1x1 = preload("uid://ddsctqvtlb4q")
-var blocks:Array[PackedScene] =[block_1x1]
+const block_2x2 = preload("uid://dwng7yst7dok0")
+var blocks:Array[PackedScene] =[block_1x1, block_2x2]
 
 var collision_distance = global_variables.collision_distance
 
@@ -122,27 +124,41 @@ func _physics_process(delta: float) -> void:
 
 var preview
 var placing = false
+var block_placing = 0
 func building():
+	if Input.get_action_strength("1"):
+		block_placing = 0
+	if Input.get_action_strength("2"):
+		block_placing = 1
+	
 	if not previewing and build_cast.get_collider_rid():
 		previewing = true
-		preview = blocks[0].instantiate()
+		preview = blocks[block_placing].instantiate()
 		preview.get_node("collision").queue_free()
 		var mesh:MeshInstance3D = preview.get_node("mesh")
 		mesh.material_override = PREVIEW_MATERIAL
 		preview.position = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin+ Vector3.UP
 		self.get_parent().get_node("Placables").add_child(preview)
 	elif build_cast.get_collider_rid():
-		var x_pos = round(build_cast.get_collision_point().x)
-		var body_y = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin.y
-		var y_pos = body_y + 1 if build_cast.get_collision_point().y > body_y else body_y - 1
-		var z_pos = round(build_cast.get_collision_point().z)
+		var body_pos = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin
+		
+		var point_x = build_cast.get_collision_point().x
+		var x_pos = round(build_cast.get_collision_point().x + 0.1) if point_x > body_pos.x else round(build_cast.get_collision_point().x - 0.1)
+		
+		var body_size = collisioner.shape_get_data(collisioner.body_get_shape(build_cast.get_collider_rid(),build_cast.get_collider_shape()))*2
+		var point_y = build_cast.get_collision_point().y
+		var y_pos = body_pos.y if body_pos.y - body_size.y/2.0 < point_y and body_pos.y + body_size.y/2.0 > point_y else(body_pos.y + body_size.y if point_y > body_pos.y else body_pos.y - body_size.y)
+		
+		#var z_pos = round(build_cast.get_collision_point().z)
+		var point_z = build_cast.get_collision_point().z
+		var z_pos = round(build_cast.get_collision_point().z + 0.1) if point_z > body_pos.z else round(build_cast.get_collision_point().z - 0.1)
 		
 		preview.position = Vector3(x_pos, y_pos, z_pos)
 	
 	if Input.get_action_strength("left mouse button"):
 		if not placing:
 			placing = true
-			var block = blocks[0].instantiate()
+			var block = blocks[block_placing].instantiate()
 			block.position = preview.position
 			self.get_parent().get_node("Placables").add_child(block)
 			await get_tree().create_timer(0.25).timeout

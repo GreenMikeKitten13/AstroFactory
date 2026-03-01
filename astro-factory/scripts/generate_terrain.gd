@@ -98,7 +98,10 @@ func load_collisions(chunk_position):
 	
 	if not thread:
 		print("all threads busy")
-		return
+		while  usable_threads.size() == 0:
+			await get_tree().process_frame
+		thread = usable_threads.pop_back()
+		print("threads unbusied")
 	if thread.is_started():
 		thread.wait_to_finish()
 	
