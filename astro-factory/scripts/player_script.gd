@@ -57,6 +57,16 @@ func _input(event: InputEvent) -> void:
 		if preview:
 			preview.queue_free()
 			preview = null
+	
+	if event is InputEventKey and event.is_pressed() and event.keycode:
+		var key = event.keycode
+		if key >= KEY_0 and key <= KEY_9:
+			var number = key - KEY_0
+			block_placing = number-1
+			if build_mode:
+				previewing = false
+				preview.queue_free()
+				preview = null
 
 func _process(_delta: float) -> void:
 	camera_pivot.rotate(Vector3.LEFT, mouse_change.y * mouse_sensetivity)
@@ -128,13 +138,6 @@ var preview
 var placing = false
 var block_placing = 0
 func building():
-	if Input.get_action_strength("1"):
-		block_placing = 0
-	if Input.get_action_strength("2"):
-		block_placing = 1
-	if Input.get_action_strength("3"):
-		block_placing = 2
-	
 	if not previewing and build_cast.get_collider_rid():
 		previewing = true
 		preview = blocks[block_placing].instantiate()
@@ -144,19 +147,15 @@ func building():
 		preview.position = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin+ Vector3.UP
 		self.get_parent().get_node("Placables").add_child(preview)
 	elif build_cast.get_collider_rid():
-		var body_pos = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin
-		var body_size = collisioner.shape_get_data(collisioner.body_get_shape(build_cast.get_collider_rid(),build_cast.get_collider_shape()))*2
+		var body_pos = collisioner.body_get_state(build_cast.get_collider_rid(),PhysicsServer3D.BODY_STATE_TRANSFORM).origin
+		var body_size = collisioner.shape_get_data(collisioner.body_get_shape(build_cast.get_collider_rid(), build_cast.get_collider_shape())) * 2
+		var collision_normal = build_cast.get_collision_normal()
 		
-		var point_x = build_cast.get_collision_point().x
-		var x_pos = round(build_cast.get_collision_point().x + body_size.x/10) if point_x > body_pos.x else round(build_cast.get_collision_point().x - body_size.x/10)
-		
-		var point_y = build_cast.get_collision_point().y
-		var y_pos = body_pos.y if body_pos.y - body_size.y/2.0 < point_y and body_pos.y + body_size.y/2.0 > point_y else(body_pos.y + body_size.y if point_y > body_pos.y else body_pos.y - body_size.y)
-		
-		var point_z = build_cast.get_collision_point().z
-		var z_pos = round(build_cast.get_collision_point().z + body_size.z/10) if point_z > body_pos.z else round(build_cast.get_collision_point().z - body_size.z/10)
-		
-		preview.position = Vector3(x_pos, y_pos, z_pos)
+		var offset = collision_normal * body_size
+		var x_pos = round((body_pos + offset).x)
+		var y_pos = (body_pos + offset).y
+		var z_pos = round((body_pos + offset).z)
+		preview.position =Vector3(x_pos, y_pos, z_pos)
 	
 	if Input.get_action_strength("left mouse button"):
 		if not placing:
