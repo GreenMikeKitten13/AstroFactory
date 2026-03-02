@@ -25,7 +25,9 @@ var build_mode = false
 const PREVIEW_MATERIAL = preload("uid://b6plqgoenlkb4")
 const block_1x1 = preload("uid://ddsctqvtlb4q")
 const block_2x2 = preload("uid://dwng7yst7dok0")
-var blocks:Array[PackedScene] =[block_1x1, block_2x2]
+const block_3x3 = preload("uid://dxa16wbh3ps6j")
+
+var blocks:Array[PackedScene] =[block_1x1, block_2x2, block_3x3]
 
 var collision_distance = global_variables.collision_distance
 
@@ -130,6 +132,8 @@ func building():
 		block_placing = 0
 	if Input.get_action_strength("2"):
 		block_placing = 1
+	if Input.get_action_strength("3"):
+		block_placing = 2
 	
 	if not previewing and build_cast.get_collider_rid():
 		previewing = true
@@ -141,17 +145,16 @@ func building():
 		self.get_parent().get_node("Placables").add_child(preview)
 	elif build_cast.get_collider_rid():
 		var body_pos = collisioner.body_get_state(build_cast.get_collider_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM).origin
+		var body_size = collisioner.shape_get_data(collisioner.body_get_shape(build_cast.get_collider_rid(),build_cast.get_collider_shape()))*2
 		
 		var point_x = build_cast.get_collision_point().x
-		var x_pos = round(build_cast.get_collision_point().x + 0.1) if point_x > body_pos.x else round(build_cast.get_collision_point().x - 0.1)
+		var x_pos = round(build_cast.get_collision_point().x + body_size.x/10) if point_x > body_pos.x else round(build_cast.get_collision_point().x - body_size.x/10)
 		
-		var body_size = collisioner.shape_get_data(collisioner.body_get_shape(build_cast.get_collider_rid(),build_cast.get_collider_shape()))*2
 		var point_y = build_cast.get_collision_point().y
 		var y_pos = body_pos.y if body_pos.y - body_size.y/2.0 < point_y and body_pos.y + body_size.y/2.0 > point_y else(body_pos.y + body_size.y if point_y > body_pos.y else body_pos.y - body_size.y)
 		
-		#var z_pos = round(build_cast.get_collision_point().z)
 		var point_z = build_cast.get_collision_point().z
-		var z_pos = round(build_cast.get_collision_point().z + 0.1) if point_z > body_pos.z else round(build_cast.get_collision_point().z - 0.1)
+		var z_pos = round(build_cast.get_collision_point().z + body_size.z/10) if point_z > body_pos.z else round(build_cast.get_collision_point().z - body_size.z/10)
 		
 		preview.position = Vector3(x_pos, y_pos, z_pos)
 	
